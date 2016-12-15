@@ -1,0 +1,138 @@
+#ifndef METATILEMANAGER_H
+#define METATILEMANAGER_H
+
+#include <QWidget>
+#include <QGraphicsView>
+
+#include <QDragMoveEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QDragLeaveEvent>
+#include <QFileInfo>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QMimeData>
+#include <QMessageBox>
+
+#include <QtMath>
+
+#include "palettemanager.h"
+//#include "metatileitem.h"
+#include "metatileitem.h"
+
+
+#define roundToMult(x,f)     (f*qCeil(x/f))
+#define getMultDiff(x,f)     (roundToMult(x,f)-x)
+
+#define MTM_CANVAS_SIZE      256
+#define MTM_DEFAULT_ZOOM     1
+#define MTM_MAX_ZOOM         2
+#define MTM_THICK_GRID_LINES 1.0
+#define MTM_THIN_GRID_LINES  0.5
+
+#define MTM_FILE_OPEN_ERROR_TITLE   "Error opening metasprite file"
+#define MTM_FILE_OPEN_ERROR_BODY    "Could not open metasprite file. Please make sure you have the necessary permissions to access files in this location."
+#define MTM_INVALID_SPRITES_TITLE   "Invalid Data"
+#define MTM_INVALID_SPRITES_BODY    "Error reading metasprite data: Data is not a valid ASM sprite data file."
+#define MTM_EOF_ERROR_TITLE         "Invalid data"
+#define MTM_EOF_ERROR_BODY          "Error reading metasprite data: Unexpected end of file."
+#define MTM_COUNT_ERROR_TITLE       "Invalid data"
+#define MTM_COUNT_ERROR_BODY        "Error reading metasprite data: Sprite counts do not match length of data."
+#define MTM_SPRITELIMIT_ERROR_TITLE "Too many sprites"
+#define MTM_SPRITELIMIT_ERROR_BODY  "You already have 64 sprites on the stage. This is as much as the NES can handle. Any more added sprites will not be visible unless custom flickering is used. Are you sure you wish to continue?"
+
+
+class MetatileManager : public QGraphicsView
+{
+	Q_OBJECT
+public:
+	explicit MetatileManager(QWidget *parent = 0);
+	~MetatileManager();
+
+	qreal scale(){return this->iScale;}
+	void openMetatileFile(QString);
+	void importMetaspriteBinaryData(QVector<QByteArray>, QByteArray);
+	void clearAllMetatileData();
+
+	void selectAllSprites();
+	void deselectAllSprites();
+	void copySpritesToClipboard(bool);
+	void pasteSpritesFromClipboard();
+	void moveSelectedX(bool,bool);
+	void moveSelectedY(bool,bool);
+
+signals:
+	void requestNewTile(QPointF);
+	void requestNewSubtile(quint8,MetatileItem*);
+	void getMetatileUpdate(MetatileItem*);
+	void getPaletteUpdate(MetatileItem*);
+	void requestPaletteUpdates(quint8);
+	void metatileUpdated(MetatileItem*);
+	void sendMetatile(MetatileItem*);
+	void sendSelectedMetatile(MetatileItem*);
+	void sendMetatileEditorChange(MetatileList);
+	void sendMetatileEditorChange(quint8,MetatileItem*);
+	void stageMetatileReady(MetatileItem*,MetatileItem*);
+	void selectedStageTileReady(MetatileItem*,quint8);
+
+	void setMetaspriteLabel(QString);
+	void bankDividerChanged(quint16);
+
+	void updateList(GraphicsItemList,GraphicsItemList);
+
+public slots:
+	void setScale(qreal s){this->iScale=s;}
+	void setSelectionMode(bool);
+
+	void setNewTileColours(PaletteVector,quint8,bool);
+
+	void updateMetatileStage();
+	void sendTileUpdates(MetatileItem *t=NULL);
+	void getUpdatedMetatile(MetatileItem*);
+	void getMetatileEditorChange(quint8,MetatileItem*);
+	void getStageMetatile(MetatileItem*);
+	void getSelectedStageTile(MetatileItem*);
+
+	void toggleShowGrid8(bool);
+	void toggleShowGrid16(bool);
+	void setBankDivider(int);
+	void setSelectedBank(quint16);
+
+	QVector<QByteArray> createMetatileBinaryData();
+	QString createMetatileASMData(QString);
+
+protected:
+	void resizeEvent(QResizeEvent*);//{this->fitInView(this->gsMetatiles->itemsBoundingRect(),Qt::KeepAspectRatio);}
+	void dragMoveEvent(QDragMoveEvent*e){e->accept();}
+	void dragEnterEvent(QDragEnterEvent*e){e->acceptProposedAction();}
+	void dropEvent(QDropEvent*);
+	void dragLeaveEvent(QDragLeaveEvent*e){e->accept();}
+	void mousePressEvent(QMouseEvent*);
+	void mouseMoveEvent(QMouseEvent*);
+	void keyPressEvent(QKeyEvent*);
+
+private:
+	void populateBlankTiles();
+	void addNewSubtile(QPointF);
+	bool drawSelectionBox();
+	void drawGridLines();
+	MetatileList createFrame(quint8, qreal s=0);
+
+	qreal iScale;
+	int iMouseTranslateY;
+
+	bool bSelectionMode;
+	QPointF pSelection;
+	QGraphicsRectItem *griSelection[2];
+	quint8 iSelectedTile;
+
+	bool bShowGrid8, bShowGrid16;
+	quint16 iBankDivider;
+	quint16 iSelectedBank;
+	QGraphicsScene *gsMetatiles;
+	QGraphicsItemGroup *groupMetatiles;
+	QList<QGraphicsLineItem*> lGrid;
+	MetatileList mtlMetatiles;
+};
+
+#endif // METATILEMANAGER_H
