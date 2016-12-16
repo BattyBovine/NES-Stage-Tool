@@ -2,6 +2,7 @@
 #define NESSTAGETOOL_H
 
 #include <QMainWindow>
+#include <QSpinBox>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -46,6 +47,8 @@ private slots:
 	void showWikiPage();
 
 	void initTilesetManagement(QImage img);
+
+	void toggleAnimation(bool);
 
 	void saveShowScreenGrid();
 	void saveShowTileGrid();

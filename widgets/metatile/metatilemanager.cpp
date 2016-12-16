@@ -31,14 +31,14 @@ MetatileManager::~MetatileManager()
 
 
 
-void MetatileManager::resizeEvent(QResizeEvent *e)
+void MetatileManager::resizeEvent(QResizeEvent*)
 {
 	QRectF viewrect = this->mapToScene(this->rect()).boundingRect();
-	this->iScale = qFloor(viewrect.width()/(MTI_TILEWIDTH*16));
+	this->iScale = qFloor(viewrect.width()/(MTI_TILEWIDTH*MTM_METATILES_W));
 	this->groupMetatiles->setScale(this->iScale);
 	this->setSceneRect(0,0,
-					   MTI_TILEWIDTH*16*this->iScale,
-					   MTI_TILEWIDTH*16*this->iScale
+					   MTI_TILEWIDTH*MTM_METATILES_W*this->iScale,
+					   MTI_TILEWIDTH*MTM_METATILES_H*this->iScale
 					   );
 	this->drawGridLines();
 	this->drawSelectionBox();
@@ -109,12 +109,12 @@ void MetatileManager::keyPressEvent(QKeyEvent *e)
 
 void MetatileManager::populateBlankTiles() {
 	this->mtlMetatiles.clear();
-	for(int y=0; y<16; y++) {
-		for(int x=0; x<16; x++) {
+	for(int y=0; y<MTM_METATILES_H; y++) {
+		for(int x=0; x<MTM_METATILES_W; x++) {
 			MetatileItem *i = new MetatileItem();
 			i->setRealX(x*MTI_TILEWIDTH);
 			i->setRealY(y*MTI_TILEWIDTH);
-			i->setMetatileIndex((y*16)+x);
+			i->setMetatileIndex((y*MTM_METATILES_W)+x);
 			this->mtlMetatiles.append(i);
 			this->groupMetatiles->addToGroup(i);
 		}
@@ -128,9 +128,9 @@ bool MetatileManager::drawSelectionBox()
 	if(this->bSelectionMode) {
 		int tilex = roundToMult(qRound(this->pSelection.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
 		int tiley = roundToMult(qRound(this->pSelection.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-		if(tilex>=16||tiley>=16)	return false;
+		if(tilex>=MTM_METATILES_W||tiley>=MTM_METATILES_H)	return false;
 
-		if(this->griSelection[0] && this->griSelection[1]) {
+		if(this->griSelection[0]/* && this->griSelection[1]*/) {
 			if(this->griSelection[0]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[0]);
 //			if(this->griSelection[1]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[1]);
 			delete this->griSelection[0];
@@ -139,7 +139,7 @@ bool MetatileManager::drawSelectionBox()
 //			this->griSelection[1] = NULL;
 		}
 
-		this->iSelectedTile = tiley*MTI_SUBTILEWIDTH+tilex;
+		this->iSelectedTile = (tiley*MTM_METATILES_W)+tilex;
 
 		QPen dashes(Qt::red,1,Qt::DashLine);
 		QVector<qreal> dp;
@@ -218,13 +218,14 @@ void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool s)
 }
 
 void MetatileManager::addNewSubtile(QPointF p) {
-	if(p.x()<0 || p.y()<0)	return;
+	if(p.x()<0 || p.y()<0 || p.x()>=(MTM_CANVAS_SIZE*this->iScale) || p.y()>=(MTM_CANVAS_SIZE*this->iScale))
+		return;
 
-	int tilex = roundToMult(qRound(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-	int tiley = roundToMult(qRound(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-	int index = tiley*qFloor(MTI_TILEWIDTH/this->iScale)+tilex;
-	int subtilex = qFloor((qRound(p.x()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
-	int subtiley = qFloor((qRound(p.y()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
+	int tilex = roundToMult(qFloor(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tiley = roundToMult(qFloor(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int index = (tiley*MTM_METATILES_W)+tilex;
+	int subtilex = qFloor((qFloor(p.x()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
+	int subtiley = qFloor((qFloor(p.y()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
 	quint8 subtileindex = subtiley*(MTI_TILEWIDTH/MTI_SUBTILEWIDTH)+subtilex;
 
 	emit(this->requestNewSubtile(subtileindex, this->mtlMetatiles[index]));
@@ -233,43 +234,17 @@ void MetatileManager::addNewSubtile(QPointF p) {
 
 
 
-void MetatileManager::updateMetatileStage() {
-//	QList<QGraphicsItem*> items = this->gsMetatiles->items(Qt::AscendingOrder);
-//	QList<MetatileItem*> store;
-//	foreach(QGraphicsItem *i, items) {
-//		if(i->type()!=MetatileItem::Type) {
-//			this->gsMetatiles->removeItem(i);
-//		} else {
-//			MetatileItem *ms = qgraphicsitem_cast<MetatileItem*>(i);
-//			store.append(ms);
-//			this->gsMetatiles->removeItem(ms);
-//		}
-//	}
-//	this->mtlMetatiles = store;
-
-//	foreach(MetatileItem *ms, this->mtlMetatiles) {
-//		ms->setX(ms->realX()*this->iScale);
-//		ms->setY(ms->realY()*this->iScale);
-//		ms->setScale(this->iScale);
-//		this->gsMetatiles->addItem(ms);
-//	}
-
+void MetatileManager::updateMetatileStage()
+{
 	this->drawGridLines();
 	this->drawSelectionBox();
 	this->viewport()->update();
 }
 
-void MetatileManager::getMetatileEditorChange(quint8 i, MetatileItem *t) {
+void MetatileManager::getMetatileEditorChange(quint8 i, MetatileItem *t)
+{
 	MetatileItem *newtile = new MetatileItem(t);
 	this->mtlMetatiles.replace(i,newtile);
-//	emit(metatileUpdated(t));
-}
-
-void MetatileManager::getStageMetatile(MetatileItem *mtold)
-{
-//	quint8 index = mtold->metatileIndex();
-//	MetatileItem *mtnew = new MetatileItem(this->mtlMetatiles.at(index));
-//	emit(this->stageMetatileReady(mtold,mtnew));
 }
 
 void MetatileManager::getSelectedStageTile(MetatileItem *mtold)

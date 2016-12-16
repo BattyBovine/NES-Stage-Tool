@@ -25,6 +25,8 @@
 #define getMultDiff(x,f)     (roundToMult(x,f)-x)
 
 #define MTM_CANVAS_SIZE      256
+#define MTM_METATILES_W      16
+#define MTM_METATILES_H      16
 #define MTM_DEFAULT_ZOOM     1
 #define MTM_MAX_ZOOM         2
 #define MTM_THICK_GRID_LINES 1.0
@@ -90,7 +92,6 @@ public slots:
 	void sendTileUpdates(MetatileItem *t=NULL);
 	void getUpdatedMetatile(MetatileItem*);
 	void getMetatileEditorChange(quint8,MetatileItem*);
-	void getStageMetatile(MetatileItem*);
 	void getSelectedStageTile(MetatileItem*);
 
 	void toggleShowGrid8(bool);

@@ -27,7 +27,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabStage">
        <attribute name="title">
@@ -718,10 +718,16 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Banks</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_12">
              <item>
@@ -1026,6 +1032,30 @@
             </layout>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chkAnimation">
+               <property name="text">
+                <string>Animate</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <spacer name="verticalSpacer_5">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1070,14 +1100,13 @@
     <property name="title">
      <string>&amp;Stage</string>
     </property>
-    <addaction name="actionOpenMetaspriteBank"/>
-    <addaction name="actionSaveMetaspriteBankASM"/>
-    <addaction name="actionSaveMetaspriteBankBinary"/>
+    <addaction name="actionOpenStageFile"/>
+    <addaction name="actionSaveStageFileASM"/>
+    <addaction name="actionSaveStageFileBinary"/>
     <addaction name="separator"/>
     <addaction name="actionOpenCHR"/>
     <addaction name="separator"/>
     <addaction name="actionOpenPalette"/>
-    <addaction name="actionSavePalette"/>
    </widget>
    <widget class="QMenu" name="menuAnimation">
     <property name="title">
@@ -1120,12 +1149,12 @@
     <string>Open &amp;CHR</string>
    </property>
   </action>
-  <action name="actionSaveMetaspriteBankASM">
+  <action name="actionSaveStageFileASM">
    <property name="text">
-    <string>&amp;Save Metasprite Bank</string>
+    <string>&amp;Save Stage File</string>
    </property>
   </action>
-  <action name="actionSaveMetaspriteBankBinary">
+  <action name="actionSaveStageFileBinary">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1136,9 +1165,9 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="actionOpenMetaspriteBank">
+  <action name="actionOpenStageFile">
    <property name="text">
-    <string>&amp;Open Metasprite Bank</string>
+    <string>&amp;Open Stage File</string>
    </property>
   </action>
   <action name="actionLoadMetaspriteBankBinary">
@@ -1307,6 +1336,7 @@
     <slot>getUpdatedMetatile(MetatileItem*,MetatileItem*)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
     <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
+    <slot>updateScreen()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1330,8 +1360,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>887</x>
-     <y>334</y>
+     <x>906</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1346,12 +1376,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>758</x>
-     <y>144</y>
+     <x>743</x>
+     <y>435</y>
     </hint>
     <hint type="destinationlabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1362,12 +1392,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>848</x>
-     <y>144</y>
+     <x>833</x>
+     <y>435</y>
     </hint>
     <hint type="destinationlabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1378,12 +1408,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>758</x>
-     <y>193</y>
+     <x>743</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1394,12 +1424,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>848</x>
-     <y>193</y>
+     <x>833</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1410,12 +1440,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
-     <x>758</x>
-     <y>144</y>
+     <x>743</x>
+     <y>435</y>
     </hint>
    </hints>
   </connection>
@@ -1426,12 +1456,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
-     <x>848</x>
-     <y>144</y>
+     <x>833</x>
+     <y>435</y>
     </hint>
    </hints>
   </connection>
@@ -1442,12 +1472,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
-     <x>758</x>
-     <y>193</y>
+     <x>743</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -1458,12 +1488,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
-     <x>848</x>
-     <y>193</y>
+     <x>833</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -1474,12 +1504,12 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
-     <x>445</x>
-     <y>213</y>
+     <x>908</x>
+     <y>289</y>
     </hint>
    </hints>
   </connection>
@@ -1490,8 +1520,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
      <x>159</x>
@@ -1506,8 +1536,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
      <x>888</x>
@@ -1538,8 +1568,8 @@
    <slot>sendTileUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>213</y>
+     <x>908</x>
+     <y>289</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -1558,8 +1588,8 @@
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>465</x>
-     <y>213</y>
+     <x>908</x>
+     <y>289</y>
     </hint>
    </hints>
   </connection>
@@ -1574,8 +1604,8 @@
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>875</x>
-     <y>293</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1586,8 +1616,8 @@
    <slot>toggleShowGrid8(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>235</x>
-     <y>325</y>
+     <x>499</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>237</x>
@@ -1602,8 +1632,8 @@
    <slot>toggleShowGrid16(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>267</x>
-     <y>325</y>
+     <x>558</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>267</x>
@@ -1622,8 +1652,8 @@
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>465</x>
-     <y>213</y>
+     <x>908</x>
+     <y>289</y>
     </hint>
    </hints>
   </connection>
@@ -1650,8 +1680,8 @@
    <slot>toggleShowTileGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>554</y>
+     <x>559</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>499</x>
@@ -1666,8 +1696,8 @@
    <slot>toggleShowScreenGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>549</x>
-     <y>553</y>
+     <x>626</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>532</x>
@@ -1682,24 +1712,8 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>469</x>
-     <y>212</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>751</x>
-     <y>203</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvStage</sender>
-   <signal>getMetatileUpdate(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getStageMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>308</x>
-     <y>325</y>
+     <x>908</x>
+     <y>288</y>
     </hint>
     <hint type="destinationlabel">
      <x>751</x>
@@ -1746,8 +1760,8 @@
    <slot>setNewGlobalPalette(PaletteVector)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>762</x>
-     <y>260</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
      <x>308</x>
@@ -1766,8 +1780,8 @@
      <y>325</y>
     </hint>
     <hint type="destinationlabel">
-     <x>762</x>
-     <y>260</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
    </hints>
   </connection>
@@ -1778,8 +1792,8 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>469</x>
-     <y>212</y>
+     <x>908</x>
+     <y>288</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -1794,8 +1808,8 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>469</x>
-     <y>212</y>
+     <x>908</x>
+     <y>288</y>
     </hint>
     <hint type="destinationlabel">
      <x>166</x>
@@ -1810,8 +1824,8 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>762</x>
-     <y>260</y>
+     <x>860</x>
+     <y>536</y>
     </hint>
     <hint type="destinationlabel">
      <x>393</x>
@@ -1826,8 +1840,8 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>853</x>
-     <y>94</y>
+     <x>908</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>698</x>
@@ -1990,8 +2004,40 @@
      <y>325</y>
     </hint>
     <hint type="destinationlabel">
-     <x>469</x>
-     <y>212</y>
+     <x>908</x>
+     <y>288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkAnimation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>toggleAnimation(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>356</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>937</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>tilesetChanged(QImage)</signal>
+   <receiver>gvStage</receiver>
+   <slot>updateScreen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>401</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>328</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>
@@ -2019,5 +2065,6 @@
   <slot>saveProject()</slot>
   <slot>showWikiPage()</slot>
   <slot>sendBankUpdates()</slot>
+  <slot>toggleAnimation(bool)</slot>
  </slots>
 </ui>

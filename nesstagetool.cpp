@@ -28,13 +28,13 @@ NESStageTool::NESStageTool(QWidget *parent) :
 
 	connect(ui->comboPalettes,SIGNAL(currentIndexChanged(int)),this,SLOT(savePaletteSwatch()));
 	connect(ui->comboBankSize,SIGNAL(currentIndexChanged(int)),this,SLOT(changeBankSize()));
-	this->changeBankSize();
 
 	connect(ui->gvGlobalTileset,SIGNAL(chrDataChanged(QImage)),this,SLOT(initTilesetManagement(QImage)));
 
 	ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
 	ui->gvMetatileSelector->setSelectionMode(true);
 
+	this->changeBankSize();
 	this->sendBankUpdates();
 }
 
@@ -185,6 +185,14 @@ void NESStageTool::initTilesetManagement(QImage img)
 
 
 
+void NESStageTool::toggleAnimation(bool)
+{
+	ui->gvGlobalTileset->enableAnimation(ui->chkAnimation->isChecked());
+	this->sSettings.setValue("ShowAnimation", ui->chkAnimation->isChecked());
+}
+
+
+
 void NESStageTool::saveShowScreenGrid()
 {
 	this->sSettings.setValue("ShowScreenGrid", ui->chkShowScreenGrid->isChecked());
@@ -242,6 +250,7 @@ void NESStageTool::restoreSettings()
 	ui->chkShowGrid8->setChecked(this->sSettings.value("ShowGrid8",true).toBool());
 	ui->comboBankSize->setCurrentIndex(this->sSettings.value("BankSize",0).toInt());
 	ui->comboPalettes->setCurrentIndex(this->sSettings.value("PaletteSwatch",0).toInt());
+	ui->chkAnimation->setChecked(this->sSettings.value("ShowAnimation",false).toBool());
 }
 
 
@@ -258,7 +267,7 @@ void NESStageTool::sendBankUpdates() {
 
 void NESStageTool::openMetatileBank()
 {
-	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenMetaspriteBank->text(), "", tr("All files (*.*)"));
+	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text(), "", tr("All files (*.*)"));
 	if(filename.isEmpty())  return;
 	ui->gvStage->openMetatileFile(filename);
 }
@@ -267,7 +276,7 @@ void NESStageTool::saveASMMetatileBank(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
-		filename = QFileDialog::getSaveFileName(this, ui->actionSaveMetaspriteBankASM->text(), "", tr("All files (*.*)"));
+		filename = QFileDialog::getSaveFileName(this, ui->actionSaveStageFileASM->text(), "", tr("All files (*.*)"));
 		if(filename.isEmpty())  return;
 	} else {
 		filename = path;
@@ -288,7 +297,7 @@ void NESStageTool::saveBinaryMetatileBank(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
-		filename = QFileDialog::getSaveFileName(this, ui->actionSaveMetaspriteBankBinary->text(), "", tr("All files (*.*)"));
+		filename = QFileDialog::getSaveFileName(this, ui->actionSaveStageFileBinary->text(), "", tr("All files (*.*)"));
 		if(filename.isEmpty())  return;
 	} else {
 		filename = path;

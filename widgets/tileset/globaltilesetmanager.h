@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <QTimer>
 
 #include <QDragMoveEvent>
 #include <QDragEnterEvent>
@@ -54,6 +55,9 @@ public slots:
 	void getCHRError(QString,QString);
 	void getBankSize(int);
 	void getBankSelections(int,int,int,int,int,int,int,int);
+	void enableAnimation(bool);
+	void getAnimBank(int i){this->iAnimBank=i;}
+	void switchToNextAnimBank();
 
 	void reloadCurrentTileset();
 
@@ -75,6 +79,7 @@ private:
 	QString sCurrentTilesetFile;
 	QFileSystemWatcher fswCHR;
 	CHRThread *threadCHR;
+
 	QImage imgTileset;
 	QImage imgSelectedBank;
 	PaletteVector pvCurrentColours;
@@ -85,6 +90,10 @@ private:
 	quint8 iBankDivider;
 	int iBankList[8];
 	quint16 iSelectedBank;
+
+	QTimer tAnimation;
+	bool bAnimation;
+	int iAnimBank;
 
 	QGraphicsRectItem *griSelection[2];
 	QPointF pSelection;

@@ -30,6 +30,8 @@ GlobalTilesetManager::GlobalTilesetManager(QWidget *parent) : QGraphicsView(pare
 	this->iBankList[5] = 5;
 	this->iBankList[6] = 6;
 	this->iBankList[7] = 7;
+	this->iAnimBank = 0;
+	this->bAnimation = false;
 
 	this->pSelection = QPointF(0,0);
 
@@ -38,6 +40,8 @@ GlobalTilesetManager::GlobalTilesetManager(QWidget *parent) : QGraphicsView(pare
 	connect(this->threadCHR,SIGNAL(error(QString,QString)),this,SLOT(getCHRError(QString,QString)));
 
 	connect(&this->fswCHR,SIGNAL(fileChanged(QString)),this,SLOT(reloadCurrentTileset()));
+
+	connect(&this->tAnimation,SIGNAL(timeout()),this,SLOT(switchToNextAnimBank()));
 }
 
 GlobalTilesetManager::~GlobalTilesetManager()
@@ -151,8 +155,11 @@ void GlobalTilesetManager::loadCHRBank()
 	uchar *dest = this->imgSelectedBank.bits();
 	for(int i=0; i<this->iBankDivider; i++) {
 //		int yoffset = bankheight*this->iBankList[i];
-		for(int j=0; j<128*bankheight; j++)
-			dest[(128*bankheight*i)+j] = src[(128*bankheight*(this->iBankList[i]%(this->imgTileset.height()/bankheight)))+j];
+		for(int j=0; j<128*bankheight; j++) {
+			int bankval = this->iBankList[i];
+			if(this->bAnimation && i==(this->iBankDivider-1)) bankval += this->iAnimBank;
+			dest[(128*bankheight*i)+j] = src[(128*bankheight*(bankval%(this->imgTileset.height()/bankheight)))+j];
+		}
 	}
 //	this->setFixedSize(256,this->iBankDivider);
 //	this->setSceneRect(0,0,256,this->iBankDivider);
@@ -238,11 +245,31 @@ void GlobalTilesetManager::getBankSelections(int b0, int b1,
 	this->loadCHRBank();
 }
 
+void GlobalTilesetManager::enableAnimation(bool b)
+{
+	this->bAnimation = b;
+	this->iAnimBank = 0;
+	if(b)
+		this->tAnimation.start(50);
+	else
+		this->tAnimation.stop();
+	this->loadCHRBank();
+}
+
+void GlobalTilesetManager::switchToNextAnimBank()
+{
+	this->iAnimBank++;
+	if(this->iAnimBank>=4/* || (this->iBankList[this->iBankDivider-1]+this->iAnimBank)>256*/)
+		this->iAnimBank = 0;
+	this->loadCHRBank();
+	this->tAnimation.start(50);
+}
+
 
 
 QImage GlobalTilesetManager::createNewTile(quint32 tile)
 {
-	QImage newtile(GTSM_TILEWIDTH, GTSM_TILEWIDTH*(this->bTallSprite?2:1), QImage::Format_Indexed8);
+	QImage newtile(GTSM_TILEWIDTH, GTSM_TILEWIDTH, QImage::Format_Indexed8);
 
 	int x = (tile&0x0F)*GTSM_TILEWIDTH;
 	int y = (((tile%this->iBankDivider)&0xF0)>>4)*GTSM_TILEWIDTH;
@@ -270,23 +297,6 @@ QImage GlobalTilesetManager::createNewTile(quint32 tile)
 			}
 		}
 	}
-
-//	for(quint8 y=0; y<GTSM_TILEWIDTH; y++) {
-//		for(quint8 x=0; x<GTSM_TILEWIDTH; x++) {
-//			newtile.setPixel(x,y,toptile.pixelIndex(x,y));
-//		}
-//	}
-
-//	if(this->bTallSprite) {
-//		x = ((tile+1)&0x0F)*GTSM_TILEWIDTH;
-//		y = (((tile%this->iBankDivider)&0xF0)>>4)*GTSM_TILEWIDTH;
-//		QImage antoniostellabottomtile = (this->imgSelectedBank.copy(x,y,GTSM_TILEWIDTH,GTSM_TILEWIDTH));
-//		for(quint8 y=0; y<GTSM_TILEWIDTH; y++) {
-//			for(quint8 x=0; x<GTSM_TILEWIDTH; x++) {
-//				newtile.setPixel(x,y+GTSM_TILEWIDTH,antoniostellabottomtile.pixelIndex(x,y));
-//			}
-//		}
-//	}
 
 	return newtile;
 }
