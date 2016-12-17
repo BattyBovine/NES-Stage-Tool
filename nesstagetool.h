@@ -60,9 +60,9 @@ private slots:
 
 	void sendBankUpdates();
 
-	void openMetatileBank();
-	void saveASMMetatileBank(QString path="");
-	void saveBinaryMetatileBank(QString path="");
+	void openStage();
+	void saveASMStage(QString path="");
+	void saveBinaryStage(QString path="");
 
 	void openCHR();
 	void openPalette();

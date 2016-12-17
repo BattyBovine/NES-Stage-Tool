@@ -32,16 +32,14 @@
 #define MTM_THICK_GRID_LINES 1.0
 #define MTM_THIN_GRID_LINES  0.5
 
-#define MTM_FILE_OPEN_ERROR_TITLE   "Error opening metasprite file"
-#define MTM_FILE_OPEN_ERROR_BODY    "Could not open metasprite file. Please make sure you have the necessary permissions to access files in this location."
+#define MTM_FILE_OPEN_ERROR_TITLE   "Error opening metatile file"
+#define MTM_FILE_OPEN_ERROR_BODY    "Could not open metatile file. Please make sure you have the necessary permissions to access files in this location."
 #define MTM_INVALID_SPRITES_TITLE   "Invalid Data"
-#define MTM_INVALID_SPRITES_BODY    "Error reading metasprite data: Data is not a valid ASM sprite data file."
+#define MTM_INVALID_SPRITES_BODY    "Error reading metatile data: Data is not a valid ASM sprite data file."
 #define MTM_EOF_ERROR_TITLE         "Invalid data"
-#define MTM_EOF_ERROR_BODY          "Error reading metasprite data: Unexpected end of file."
+#define MTM_EOF_ERROR_BODY          "Error reading metatile data: Unexpected end of file."
 #define MTM_COUNT_ERROR_TITLE       "Invalid data"
-#define MTM_COUNT_ERROR_BODY        "Error reading metasprite data: Sprite counts do not match length of data."
-#define MTM_SPRITELIMIT_ERROR_TITLE "Too many sprites"
-#define MTM_SPRITELIMIT_ERROR_BODY  "You already have 64 sprites on the stage. This is as much as the NES can handle. Any more added sprites will not be visible unless custom flickering is used. Are you sure you wish to continue?"
+#define MTM_COUNT_ERROR_BODY        "Error reading metatile data: Subtile counts do not match length of data."
 
 
 class MetatileManager : public QGraphicsView
@@ -52,8 +50,6 @@ public:
 	~MetatileManager();
 
 	qreal scale(){return this->iScale;}
-	void openMetatileFile(QString);
-	void importMetaspriteBinaryData(QVector<QByteArray>, QByteArray);
 	void clearAllMetatileData();
 
 	void selectAllSprites();
@@ -99,6 +95,8 @@ public slots:
 	void setBankDivider(int);
 	void setSelectedBank(quint16);
 
+	void openMetatileFile(QString);
+	void importMetatileBinaryData(QVector<QByteArray>);
 	QVector<QByteArray> createMetatileBinaryData();
 	QString createMetatileASMData(QString);
 

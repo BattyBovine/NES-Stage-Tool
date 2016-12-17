@@ -265,14 +265,15 @@ void NESStageTool::sendBankUpdates() {
 
 
 
-void NESStageTool::openMetatileBank()
+void NESStageTool::openStage()
 {
 	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text(), "", tr("All files (*.*)"));
 	if(filename.isEmpty())  return;
-	ui->gvStage->openMetatileFile(filename);
+	ui->gvStage->openStageFile(filename);
+	ui->gvMetatileEditor->openMetatileFile(filename);
 }
 
-void NESStageTool::saveASMMetatileBank(QString path)
+void NESStageTool::saveASMStage(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
@@ -288,12 +289,14 @@ void NESStageTool::saveASMMetatileBank(QString path)
 		return;
 	}
 
-	file.write(ui->gvStage->createMetaspriteASMData(ui->lineASMLabel->text()+"_").toLocal8Bit());
+	file.write(ui->gvStage->createStageASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write("\n");
+	file.write(ui->gvMetatileEditor->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
 
 	file.close();
 }
 
-void NESStageTool::saveBinaryMetatileBank(QString path)
+void NESStageTool::saveBinaryStage(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
@@ -309,7 +312,7 @@ void NESStageTool::saveBinaryMetatileBank(QString path)
 		return;
 	}
 
-	QVector<QByteArray> bindata = ui->gvStage->createMetaspriteBinaryData();
+	QVector<QByteArray> bindata = ui->gvStage->createStageBinaryData();
 	foreach(QByteArray bin, bindata) {
 		if(!bin.isEmpty())  file.write(bin);
 	}

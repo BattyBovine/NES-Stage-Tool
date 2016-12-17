@@ -286,17 +286,6 @@ QImage GlobalTilesetManager::createNewTile(quint32 tile)
 			newtilepixels[(y*GTSM_TILEWIDTH)+x] = toptilepixels[(y*GTSM_TILEWIDTH)+x];
 		}
 	}
-	if(this->bTallSprite) {
-		x = ((tile+1)&0x0F)*GTSM_TILEWIDTH;
-		y = (((tile%this->iBankDivider)&0xF0)>>4)*GTSM_TILEWIDTH;
-		QImage antoniostellabottomtile = (this->imgSelectedBank.copy(x,y,GTSM_TILEWIDTH,GTSM_TILEWIDTH));
-		uchar *antoniostellabottomtilepixels = antoniostellabottomtile.bits();
-		for(quint8 y=0; y<GTSM_TILEWIDTH; y++) {
-			for(quint8 x=0; x<GTSM_TILEWIDTH; x++) {
-				newtilepixels[(GTSM_TILEWIDTH*GTSM_TILEWIDTH)+(y*GTSM_TILEWIDTH)+x] = antoniostellabottomtilepixels[(y*GTSM_TILEWIDTH)+x];
-			}
-		}
-	}
 
 	return newtile;
 }

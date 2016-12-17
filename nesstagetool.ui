@@ -1336,7 +1336,7 @@
     <slot>getUpdatedMetatile(MetatileItem*,MetatileItem*)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
     <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
-    <slot>updateScreen()</slot>
+    <slot>refreshScreen()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2029,7 +2029,7 @@
    <sender>gvGlobalTileset</sender>
    <signal>tilesetChanged(QImage)</signal>
    <receiver>gvStage</receiver>
-   <slot>updateScreen()</slot>
+   <slot>refreshScreen()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>401</x>
@@ -2038,6 +2038,38 @@
     <hint type="destinationlabel">
      <x>328</x>
      <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSaveStageFileASM</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>saveASMStage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenStageFile</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>openStage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -2050,12 +2082,10 @@
   <slot>openPalette()</slot>
   <slot>openCHR()</slot>
   <slot>setNewPaletteFile(QString)</slot>
-  <slot>saveASMMetaspriteBank()</slot>
-  <slot>saveBinaryMetaspriteBank()</slot>
-  <slot>openMetaspriteBank()</slot>
+  <slot>saveASMStage()</slot>
+  <slot>saveBinaryStage()</slot>
+  <slot>openStage()</slot>
   <slot>newProject()</slot>
-  <slot>nextMetasprite()</slot>
-  <slot>prevMetasprite()</slot>
   <slot>setAnimationLabelPrefix(QString)</slot>
   <slot>setPlayButtonText()</slot>
   <slot>setPauseButtonText()</slot>

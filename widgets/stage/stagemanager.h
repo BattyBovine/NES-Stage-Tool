@@ -41,12 +41,12 @@
 
 #define SM_FILE_OPEN_ERROR_TITLE   "Error opening metasprite file"
 #define SM_FILE_OPEN_ERROR_BODY    "Could not open metasprite file. Please make sure you have the necessary permissions to access files in this location."
-#define SM_INVALID_SPRITES_TITLE   "Invalid Data"
-#define SM_INVALID_SPRITES_BODY    "Error reading metasprite data: Data is not a valid ASM sprite data file."
+#define SM_INVALID_STAGE_TITLE     "Invalid Data"
+#define SM_INVALID_STAGE_BODY      "Error reading metatile data: Data is not a valid ASM tile data file."
 #define SM_EOF_ERROR_TITLE         "Invalid data"
 #define SM_EOF_ERROR_BODY          "Error reading metasprite data: Unexpected end of file."
 #define SM_COUNT_ERROR_TITLE       "Invalid data"
-#define SM_COUNT_ERROR_BODY        "Error reading metasprite data: Sprite counts do not match length of data."
+#define SM_COUNT_ERROR_BODY        "Error reading metatile data: Tile counts do not match length of data."
 #define SM_SPRITELIMIT_ERROR_TITLE "Too many sprites"
 #define SM_SPRITELIMIT_ERROR_BODY  "You already have 64 sprites on the stage. This is as much as the NES can handle. Any more added sprites will not be visible unless custom flickering is used. Are you sure you wish to continue?"
 
@@ -59,8 +59,6 @@ public:
 	~StageManager();
 
 	qreal scale(){return this->iScale;}
-	void openMetatileFile(QString);
-	void importMetatileBinaryData(QVector<QByteArray>, QByteArray);
 	void clearAllMetatileData();
 
 	void changePalette(int);
@@ -85,15 +83,18 @@ public slots:
 	void setNewGlobalPalette(PaletteVector);
 	void deleteSelectedTiles();
 
-	void updateScreen();
-
 	void toggleShowScreenGrid(bool);
 	void toggleShowTileGrid(bool);
 
 	void getUpdatedTile(MetatileItem*,quint8);
 
-	QVector<QByteArray> createMetaspriteBinaryData();
-	QString createMetaspriteASMData(QString);
+	void openStageFile(QString);
+	void importStageBinaryData(QVector<QByteArray>);
+	QVector<QByteArray> createStageBinaryData();
+	QString createStageASMData(QString);
+
+	void refreshScreen();
+	void updateScreen();
 
 protected:
 	void dragMoveEvent(QDragMoveEvent*e){e->accept();}

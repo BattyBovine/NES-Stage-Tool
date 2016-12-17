@@ -283,74 +283,43 @@ QVector<QByteArray> MetatileManager::createMetatileBinaryData()
 {
 	this->updateMetatileStage();
 
-	QVector<QByteArray> bindata = QVector<QByteArray>(256);
-	for(int i=0; i<256; i++) {
-		MetatileList mslist = this->mtlMetatiles;
-		QByteArray bin;
-		if(!mslist.isEmpty()) {
-			bin.append(quint8(mslist.length()));
-			for(int j=mslist.size()-1; j>=0; j--) {
-				MetatileItem *ms = mslist.at(j);
-				quint8 oamx = ms->realX();
-				quint8 oamy = ms->realY();
-				quint8 oamindex = ms->tileIndex(0)%this->iBankDivider;
-				quint8 oamattr = ms->palette();//|(ms->flippedHorizontal()?0x40:0x00)|(ms->flippedVertical()?0x80:0x00);
-				bin.append(oamy);
-				bin.append(oamindex);
-				bin.append(oamattr);
-				bin.append(oamx);
-			}
-			bindata.replace(i,bin);
-		}
+	QVector<QByteArray> bindata = QVector<QByteArray>(4);
+	for(int i=0; i<this->mtlMetatiles.size(); i++) {
+		bindata[0].append(this->mtlMetatiles[i]->tileIndex(0));
+		bindata[1].append(this->mtlMetatiles[i]->tileIndex(1));
+		bindata[2].append(this->mtlMetatiles[i]->tileIndex(2));
+		bindata[3].append(this->mtlMetatiles[i]->tileIndex(3));
 	}
 	return bindata;
 }
 
 QString MetatileManager::createMetatileASMData(QString labelprefix)
 {
-	QString asmlabel = labelprefix.isEmpty()?"emptylabel_":labelprefix;
-	QString datatable_hi = asmlabel+"hi:\n\t.byte ";
-	QString datatable_lo = asmlabel+"lo:\n\t.byte ";
-	QString databanks = asmlabel+"bank:\n\t.byte ";
-	QString databytes;
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	asmlabel += "_subtiles";
+	QString databytes_tl = asmlabel+"_tl:\n\t.byte ";
+	QString databytes_tr = asmlabel+"_tr:\n\t.byte ";
+	QString databytes_bl = asmlabel+"_bl:\n\t.byte ";
+	QString databytes_br = asmlabel+"_br:\n\t.byte ";
 
-	for(int i=0; i<256; i++) {
-		MetatileList mslist = this->mtlMetatiles;
-		if(mslist.isEmpty())    continue;
-		QString countedlabel = labelprefix+QString::number(i);
-
-		datatable_hi += QString(">").append(countedlabel).append(",");
-		datatable_lo += QString("<").append(countedlabel).append(",");
-
-		databytes += "\n";
-		databytes += countedlabel+":\n\t.byte ";
-		databytes += QString("$%1").arg(mslist.size(),2,16,QChar('0')).toUpper();
-		quint8 oamfullindex;
-		foreach(MetatileItem *mti, mslist) {
-			quint8 oamx = mti->realX();
-			quint8 oamy = mti->realY();
-			oamfullindex = (oamfullindex>mti->tileIndex(0)) ? oamfullindex : mti->tileIndex(0);
-			quint8 oamindex = mti->tileIndex(0)%this->iBankDivider;
-			quint8 oamattr = mti->palette();//|(mti->flippedHorizontal()?0x40:0x00)|(mti->flippedVertical()?0x80:0x00);
-			databytes += QString(",$%1").arg(oamy,2,16,QChar('0')).toUpper();
-			databytes += QString(",$%1").arg(oamindex,2,16,QChar('0')).toUpper();
-			databytes += QString(",$%1").arg(oamattr,2,16,QChar('0')).toUpper();
-			databytes += QString(",$%1").arg(oamx,2,16,QChar('0')).toUpper();
-		}
-		databanks += QString("$%1").arg(int(floor(oamfullindex/this->iBankDivider)),2,16,QChar('0')).append(",");
-		oamfullindex = 0;
+	for(int i=0; i<this->mtlMetatiles.size(); i++) {
+		databytes_tl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(0),2,16,QChar('0')).append(",").toUpper();
+		databytes_bl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(2),2,16,QChar('0')).append(",").toUpper();
+		databytes_tr += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(1),2,16,QChar('0')).append(",").toUpper();
+		databytes_br += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(3),2,16,QChar('0')).append(",").toUpper();
 	}
 
-	datatable_hi.remove(datatable_hi.size()-1,1);
-	datatable_lo.remove(datatable_lo.size()-1,1);
-	databanks.remove(databanks.size()-1,1);
-	datatable_hi += "\n";
-	datatable_lo += "\n";
-	databanks += "\n";
-	databytes += "\n";
-	databytes += asmlabel+"end:\n";
+	databytes_tl = databytes_tl.left(databytes_tl.length()-1);
+	databytes_bl = databytes_bl.left(databytes_bl.length()-1);
+	databytes_tr = databytes_tr.left(databytes_tr.length()-1);
+	databytes_br = databytes_br.left(databytes_br.length()-1);
 
-	return datatable_hi+datatable_lo+databanks+databytes;
+	databytes_tl += "\n";
+	databytes_bl += "\n";
+	databytes_tr += "\n";
+	databytes_br += "\n";
+
+	return databytes_tl+databytes_bl+databytes_tr+databytes_br;
 }
 
 
@@ -363,33 +332,10 @@ void MetatileManager::openMetatileFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-	QVector<QByteArray> inputbytes(256);
-	QByteArray bankbytes;
-	QString labelname;
+	QVector<QByteArray> inputbytes(4);
 	while(!file.atEnd()) {
 		QString line = file.readLine();
 
-		QRegularExpression banklabel("^(.*?)_bank:$");
-		QRegularExpressionMatch banklabelmatch = banklabel.match(line);
-		if(banklabelmatch.hasMatch()) {
-			QString line = file.readLine();
-			QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
-			QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
-			while(bytesiter.hasNext()) {
-				QRegularExpressionMatch bytesmatch = bytesiter.next();
-				bankbytes.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
-			}
-		}
-
-		QRegularExpression label("^(.*?)_(\\d+?):$");
-		QRegularExpressionMatch labelmatch = label.match(line);
-		if(labelmatch.hasMatch()) {
-			if(labelname.isEmpty()) {
-				labelname = labelmatch.captured(1);
-				emit(this->setMetaspriteLabel(labelname));
-			}
-			labelnum = labelmatch.captured(2).toInt();
-		}
 		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
 		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
 		QByteArray bytesin;
@@ -397,89 +343,40 @@ void MetatileManager::openMetatileFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty())  inputbytes.replace(labelnum,bytesin);
-	}
-	if(!labelname.isEmpty() && !bankbytes.isEmpty()) {
-		foreach(QByteArray test, inputbytes) {
-			if(!test.isEmpty()) {
-//				this->importMetaspriteBinaryData(inputbytes,bankbytes);
-				file.close();
-				return;
-			}
+		if(!bytesin.isEmpty() && bytesin.size()==(MTM_METATILES_W*MTM_METATILES_H)) {
+			inputbytes.replace(labelnum,bytesin);
+			labelnum++;
 		}
 	}
-
-//    file.reset();
-//    QByteArray byteblob = file.readAll(), bytesin;
-//    QByteArray::iterator i = byteblob.begin();
-//    int loopcount = 0;
-//    while(i!=byteblob.end()) {
-//        bytesin.append(*i);
-//        if((i+((*i)*4))>=byteblob.end()) {
-//            QMessageBox::critical(this,tr(MTM_EOF_ERROR_TITLE),tr(MTM_EOF_ERROR_BODY),QMessageBox::NoButton);
-//            return;
-//        }
-//        for(int count=*(i++); count>0; count--) {
-//            for(int j=0; j<4; j++) {
-//                bytesin.append(*(i++));
-//            }
-//        }
-//        inputbytes.replace(loopcount++,bytesin);
-//    }
-//    QFileInfo fileinfo(filename);
-//    emit(this->setMetaspriteLabel(fileinfo.baseName()));
-
-//    this->importMetaspriteBinaryData(inputbytes);
+	if(!inputbytes.isEmpty()) {
+		this->importMetatileBinaryData(inputbytes);
+		file.close();
+		return;
+	}
 
 	file.close();
 	QMessageBox::critical(this,tr(MTM_INVALID_SPRITES_TITLE),tr(MTM_INVALID_SPRITES_BODY),QMessageBox::NoButton);
 }
 
-//void MetatileManager::importMetaspriteBinaryData(QVector<QByteArray> bindata, QByteArray banks)
-//{
-//	int blankcounter = 0;
-//	for(int j=0; j<256; j++) {
-//		QByteArray bin = bindata.at(j);
-//		QList<MetatileItem*> mslist = this->vMetaspriteStages.at(j);
-//		mslist.clear();
-//		QByteArray::iterator biniter = bin.begin();
-//		for(int count = *biniter; count>0; count--) {
-//			if((biniter+(count*4))>=bin.end()) {
-//				QMessageBox::critical(this,tr(MTM_COUNT_ERROR_TITLE),tr(MTM_COUNT_ERROR_BODY),QMessageBox::NoButton);
-//				return;
-//			}
-//			int oamy = *(++biniter);
-//			quint8 oamindex = *(++biniter);
-//			quint8 oamattr = *(++biniter);
-//			int oamx = *(++biniter);
-//			MetatileItem *ms = new MetatileItem();
-//			ms->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
-//			ms->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
-//			ms->setScale(this->iScale);
-//			ms->setTallSprite(this->bTallSprites);
-//			ms->setRealX(oamx);
-//			ms->setRealY(oamy);
-//			ms->setTileIndex((oamindex&(this->bTallSprites?0xFE:0xFF))+(this->iBankDivider*banks[j-blankcounter]));
-//			ms->setPalette(oamattr&0x03);
-//			ms->flipHorizontal((oamattr&0x40)?true:false);
-//			ms->flipVertical((oamattr&0x80)?true:false);
-//			emit(this->getTileUpdate(ms));
-//			emit(this->getPaletteUpdate(ms));
-//			mslist.append(ms);
-//		}
-//		this->vMetaspriteStages.replace(j,mslist);
-//		if(mslist.isEmpty()) blankcounter += 1;
-//	}
+void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
+{
+	if(bindata.size()!=4 ||
+			bindata[0].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
+			bindata[1].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
+			bindata[2].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
+			bindata[3].size()!=(MTM_METATILES_W*MTM_METATILES_H)) {
+		QMessageBox::critical(this,tr(MTM_COUNT_ERROR_TITLE),tr(MTM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	for(int count=0; count<(MTM_METATILES_W*MTM_METATILES_H); count++) {
+		this->mtlMetatiles[count]->setTileIndex(0,bindata[0].at(count));
+		this->mtlMetatiles[count]->setTileIndex(2,bindata[1].at(count));
+		this->mtlMetatiles[count]->setTileIndex(1,bindata[2].at(count));
+		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
+	}
 
-//	QList<MetatileItem*> store = this->vMetaspriteStages.at(this->iMetaspriteStage);
-//	this->gsMetasprite->clear();
-//	this->drawGridLines();
-//	foreach(MetaspriteTileItem *ms, store) {
-//		this->gsMetasprite->addItem(ms);
-//	}
-
-//	this->sendTileUpdates();
-//}
+	this->sendTileUpdates();
+}
 
 void MetatileManager::clearAllMetatileData()
 {

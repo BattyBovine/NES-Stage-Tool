@@ -37,7 +37,7 @@ StageManager::~StageManager()
 void StageManager::dropEvent(QDropEvent *e)
 {
 	e->acceptProposedAction();
-	this->openMetatileFile(e->mimeData()->urls()[0].toLocalFile());
+	this->openStageFile(e->mimeData()->urls()[0].toLocalFile());
 }
 
 void StageManager::mousePressEvent(QMouseEvent *e)
@@ -88,8 +88,8 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 
 void StageManager::wheelEvent(QWheelEvent *e)
 {
-	this->pSceneTranslation.setX(qRound(this->transform().dx()/this->iScale));
-	this->pSceneTranslation.setY(qRound(this->transform().dy()/this->iScale));
+	this->pSceneTranslation.setX(qFloor(this->transform().dx()/this->iScale));
+	this->pSceneTranslation.setY(qFloor(this->transform().dy()/this->iScale));
 
 	qreal steps = (((qreal)e->angleDelta().y()/8)/15)/4;
 	if(((this->iScale+steps)>=1) && ((this->iScale+steps)<=SM_MAX_ZOOM))
@@ -305,83 +305,54 @@ void StageManager::toggleShowTileGrid(bool showgrid)
 
 
 
-QVector<QByteArray> StageManager::createMetaspriteBinaryData()
+QVector<QByteArray> StageManager::createStageBinaryData()
 {
 	this->updateScreen();
 
-	QVector<QByteArray> bindata = QVector<QByteArray>(256);
-//	for(int i=0; i<256; i++) {
-//		MetatileList mslist = this->vScreens[i];
-//		QByteArray bin;
-//		if(!mslist.isEmpty()) {
-//			bin.append(quint8(mslist.length()));
-//			for(int j=mslist.size()-1; j>=0; j--) {
-//				MetatileItem *ms = mslist.at(j);
-//				quint8 oamx = ms->realX();
-//				quint8 oamy = ms->realY();
-//				quint8 oamindex = ms->tileIndex()%this->iBankDivider;
-//				quint8 oamattr = ms->palette()|(ms->flippedHorizontal()?0x40:0x00)|(ms->flippedVertical()?0x80:0x00);
-//				bin.append(oamy);
-//				bin.append(oamindex);
-//				bin.append(oamattr);
-//				bin.append(oamx);
-//			}
-//			bindata.replace(i,bin);
-//		}
-//	}
+	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
+	QVector<QByteArray> bindata = QVector<QByteArray>(numscreens);
+	for(int s=0; s<numscreens; s++) {
+		QByteArray bin;
+		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth++) {
+			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight++) {
+				bin.append(this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->metatileIndex());
+			}
+		}
+		bindata.replace(s,bin);
+	}
 	return bindata;
 }
 
-QString StageManager::createMetaspriteASMData(QString labelprefix)
+QString StageManager::createStageASMData(QString labelprefix)
 {
-	QString asmlabel = labelprefix.isEmpty()?"emptylabel_":labelprefix;
-	QString datatable_hi = asmlabel+"hi:\n\t.byte ";
-	QString datatable_lo = asmlabel+"lo:\n\t.byte ";
-	QString databanks = asmlabel+"bank:\n\t.byte ";
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	asmlabel += "_metatiles";
 	QString databytes;
 
-//	for(int i=0; i<256; i++) {
-//		MetatileList mslist = this->vScreens[i];
-//		if(mslist.isEmpty())    continue;
-//		QString countedlabel = labelprefix+QString::number(i);
+	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
+	for(int s=0; s<numscreens; s++) {
+		QString countedlabel = asmlabel+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
 
-//		datatable_hi += QString(">").append(countedlabel).append(",");
-//		datatable_lo += QString("<").append(countedlabel).append(",");
+		databytes += countedlabel+":\n\t.byte ";
 
-//		databytes += "\n";
-//		databytes += countedlabel+":\n\t.byte ";
-//		databytes += QString("$%1").arg(mslist.size(),2,16,QChar('0')).toUpper();
-//		quint8 oamfullindex;
-//		foreach(MetatileItem *mti, mslist) {
-//			quint8 oamx = mti->realX();
-//			quint8 oamy = mti->realY();
-//			oamfullindex = (oamfullindex>mti->tileIndex()) ? oamfullindex : mti->tileIndex();
-//			quint8 oamindex = mti->tileIndex()%this->iBankDivider;
-//			quint8 oamattr = mti->palette()|(mti->flippedHorizontal()?0x40:0x00)|(mti->flippedVertical()?0x80:0x00);
-//			databytes += QString(",$%1").arg(oamy,2,16,QChar('0')).toUpper();
-//			databytes += QString(",$%1").arg(oamindex,2,16,QChar('0')).toUpper();
-//			databytes += QString(",$%1").arg(oamattr,2,16,QChar('0')).toUpper();
-//			databytes += QString(",$%1").arg(oamx,2,16,QChar('0')).toUpper();
-//		}
-//		databanks += QString("$%1").arg(int(floor(oamfullindex/this->iBankDivider)),2,16,QChar('0')).append(",");
-//		oamfullindex = 0;
-//	}
+		QString screenbytes;
+		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth++) {
+			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight++) {
+				screenbytes += QString("$%1").arg(this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->metatileIndex(),2,16,QChar('0')).toUpper().append(",");
+			}
+		}
+		screenbytes = screenbytes.left(screenbytes.length()-1);
+		databytes.append(screenbytes).append("\n");
+	}
 
-//	datatable_hi.remove(datatable_hi.size()-1,1);
-//	datatable_lo.remove(datatable_lo.size()-1,1);
-//	databanks.remove(databanks.size()-1,1);
-//	datatable_hi += "\n";
-//	datatable_lo += "\n";
-//	databanks += "\n";
-//	databytes += "\n";
-//	databytes += asmlabel+"end:\n";
+	databytes += asmlabel+"_end:\n";
 
-	return datatable_hi+datatable_lo+databanks+databytes;
+	return databytes;
 }
 
 
 
-void StageManager::openMetatileFile(QString filename)
+void StageManager::openStageFile(QString filename)
 {
 	QFile file(filename);
 	if(!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
@@ -389,32 +360,18 @@ void StageManager::openMetatileFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-	QVector<QByteArray> inputbytes(256);
-	QByteArray bankbytes;
+	QVector<QByteArray> inputbytes(SM_SCREENS_W*SM_SCREENS_H);
 	QString labelname;
 	while(!file.atEnd()) {
 		QString line = file.readLine();
 
-		QRegularExpression banklabel("^(.*?)_bank:$");
-		QRegularExpressionMatch banklabelmatch = banklabel.match(line);
-		if(banklabelmatch.hasMatch()) {
-			QString line = file.readLine();
-			QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
-			QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
-			while(bytesiter.hasNext()) {
-				QRegularExpressionMatch bytesmatch = bytesiter.next();
-				bankbytes.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
-			}
-		}
-
-		QRegularExpression label("^(.*?)_(\\d+?):$");
+		QRegularExpression label("^(.*?)_metatiles_([0-9a-fA-F]+?):$");
 		QRegularExpressionMatch labelmatch = label.match(line);
 		if(labelmatch.hasMatch()) {
 			if(labelname.isEmpty()) {
 				labelname = labelmatch.captured(1);
-				emit(this->setMetaspriteLabel(labelname));
 			}
-			labelnum = labelmatch.captured(2).toInt();
+			labelnum = labelmatch.captured(2).toUInt(NULL,16);
 		}
 		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
 		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
@@ -423,90 +380,46 @@ void StageManager::openMetatileFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty())  inputbytes.replace(labelnum,bytesin);
+		if(!bytesin.isEmpty() && bytesin.size()==(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H))
+			inputbytes.replace(labelnum,bytesin);
 	}
-	if(!labelname.isEmpty() && !bankbytes.isEmpty()) {
+	if(!labelname.isEmpty()) {
 		foreach(QByteArray test, inputbytes) {
 			if(!test.isEmpty()) {
-				this->importMetatileBinaryData(inputbytes,bankbytes);
+				this->importStageBinaryData(inputbytes);
 				file.close();
 				return;
 			}
 		}
 	}
 
-//    file.reset();
-//    QByteArray byteblob = file.readAll(), bytesin;
-//    QByteArray::iterator i = byteblob.begin();
-//    int loopcount = 0;
-//    while(i!=byteblob.end()) {
-//        bytesin.append(*i);
-//        if((i+((*i)*4))>=byteblob.end()) {
-//            QMessageBox::critical(this,tr(MSM_EOF_ERROR_TITLE),tr(MSM_EOF_ERROR_BODY),QMessageBox::NoButton);
-//            return;
-//        }
-//        for(int count=*(i++); count>0; count--) {
-//            for(int j=0; j<4; j++) {
-//                bytesin.append(*(i++));
-//            }
-//        }
-//        inputbytes.replace(loopcount++,bytesin);
-//    }
-//    QFileInfo fileinfo(filename);
-//    emit(this->setMetaspriteLabel(fileinfo.baseName()));
-
-//    this->importMetaspriteBinaryData(inputbytes);
-
 	file.close();
-	QMessageBox::critical(this,tr(SM_INVALID_SPRITES_TITLE),tr(SM_INVALID_SPRITES_BODY),QMessageBox::NoButton);
+	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
 }
 
-void StageManager::importMetatileBinaryData(QVector<QByteArray> bindata, QByteArray banks)
+void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 {
-//	int blankcounter = 0;
-//	for(int j=0; j<256; j++) {
-//		QByteArray bin = bindata.at(j);
-//		MetatileList mslist = this->vScreens.at(j);
-//		mslist.clear();
-//		QByteArray::iterator biniter = bin.begin();
-//		for(int count = *biniter; count>0; count--) {
-//			if((biniter+(count*4))>=bin.end()) {
-//				QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
-//				return;
-//			}
-//			int oamy = *(++biniter);
-//			quint8 oamindex = *(++biniter);
-//			quint8 oamattr = *(++biniter);
-//			int oamx = *(++biniter);
-//			MetatileItem *ms = new MetaspriteTileItem();
-//			ms->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
-//			ms->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
-//			ms->setScale(this->iScale);
-//			ms->setTallSprite(this->bTallSprites);
-//			ms->setRealX(oamx);
-//			ms->setRealY(oamy);
-//			ms->setTileIndex((oamindex&(this->bTallSprites?0xFE:0xFF))+(this->iBankDivider*banks[j-blankcounter]));
-//			ms->setPalette(oamattr&0x03);
-//			emit(this->getTileUpdate(ms));
-//			emit(this->getPaletteUpdate(ms));
-//			mslist.append(ms);
-//		}
-//		this->vScreens.replace(j,mslist);
-//		if(mslist.isEmpty()) blankcounter += 1;
-//	}
+	for(int s=0; s<(SM_SCREENS_W*SM_SCREENS_H); s++) {
+		if(bindata[s].size()!=(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H)) {
+			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+			return;
+		}
+		for(int x=0; x<SM_SCREEN_TILES_W; x++) {
+			for(int y=0; y<SM_SCREEN_TILES_H; y++) {
+				this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]->setMetatileIndex(bindata[s].at((x*SM_SCREEN_TILES_H)+y));
+			}
+		}
+	}
 
-//	QList<MetatileItem*> store = this->vScreens.at(this->iMetaspriteStage);
-//	this->gsMetatiles->clear();
-//	this->drawGridLines();
-//	foreach(MetatileItem *ms, store) {
-//		this->gsMetatiles->addItem(ms);
-//	}
-
-//	this->sendTileUpdates();
+	this->updateScreen();
 }
 
 
 
+void StageManager::refreshScreen()
+{
+	this->viewport()->update();
+}
 void StageManager::updateScreen()
 {
 	this->groupMetatiles->setScale(this->iScale);
