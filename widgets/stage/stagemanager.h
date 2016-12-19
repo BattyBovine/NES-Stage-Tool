@@ -70,17 +70,15 @@ signals:
 	void requestNewGlobalPalette();
 	void requestPaletteUpdates(quint8);
 
-	void setMetaspriteLabel(QString);
+	void setStageLabel(QString);
 	void bankDividerChanged(quint16);
 
-	void updateList(GraphicsItemList,GraphicsItemList);
 	void updateAnimationFrame();
 	void updateSpriteBank(quint16);
 
 public slots:
 	void setScale(qreal s){this->iScale=s;}
 
-	void setNewGlobalPalette(PaletteVector);
 	void deleteSelectedTiles();
 
 	void toggleShowScreenGrid(bool);

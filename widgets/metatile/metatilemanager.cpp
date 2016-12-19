@@ -194,21 +194,21 @@ void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool s)
 
 	QList<QGraphicsItem*> items = this->gsMetatiles->items(Qt::AscendingOrder);
 	foreach(QGraphicsItem *ms, items) {
-		if(ms->type()!=MetaspriteTileItem::Type)   continue;
-		quint8 currentpal = qgraphicsitem_cast<MetaspriteTileItem*>(ms)->palette();
-		qgraphicsitem_cast<MetaspriteTileItem*>(ms)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*currentpal)+1),
-																   c.at((PM_PALETTE_COLOURS_MAX*currentpal)+2),
-																   c.at((PM_PALETTE_COLOURS_MAX*currentpal)+3),
-																   currentpal);
+		if(ms->type()!=MetatileItem::Type)   continue;
+		quint8 currentpal = qgraphicsitem_cast<MetatileItem*>(ms)->palette();
+		qgraphicsitem_cast<MetatileItem*>(ms)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*currentpal)+1),
+															 c.at((PM_PALETTE_COLOURS_MAX*currentpal)+2),
+															 c.at((PM_PALETTE_COLOURS_MAX*currentpal)+3),
+															 currentpal);
 	}
 
 	if(s) {
 		items = this->gsMetatiles->selectedItems();
 		foreach(QGraphicsItem *i, items) {
-			((MetaspriteTileItem*)i)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*p)+1),
-													c.at((PM_PALETTE_COLOURS_MAX*p)+2),
-													c.at((PM_PALETTE_COLOURS_MAX*p)+3),
-													p);
+			((MetatileItem*)i)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*p)+1),
+											  c.at((PM_PALETTE_COLOURS_MAX*p)+2),
+											  c.at((PM_PALETTE_COLOURS_MAX*p)+3),
+											  p);
 		}
 	}
 
@@ -446,7 +446,7 @@ void MetatileManager::sendTileUpdates(MetatileItem *t)
 	}
 }
 
-void MetatileManager::getUpdatedMetatile(MetatileItem *t)
+void MetatileManager::getUpdatedMetatile(MetatileItem*)
 {
 //	MetatileItem *newtile = this->mtlMetatiles[t->metatileIndex()];
 //	if(t->palette() != newtile->palette()) {

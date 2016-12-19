@@ -227,13 +227,6 @@ void StageManager::getUpdatedPalette(MetatileItem *mtnew)
 	}
 }
 
-void StageManager::setNewGlobalPalette(PaletteVector c)
-{
-//	for(int colourindex=0; colourindex<c.size(); colourindex++)
-//		this->imgScreenCanvas.setColor(colourindex,c.at(colourindex));
-//	this->gpiScreenCanvas->setPixmap(QPixmap::fromImage(this->imgScreenCanvas));
-}
-
 void StageManager::replaceScreenTile(QPointF p)
 {
 	if(p.x()<0 || p.y()<0)	return;
@@ -319,6 +312,7 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
 	QVector<QByteArray> bindata = QVector<QByteArray>(numscreens);
 	for(int s=0; s<numscreens; s++) {
+		// Create metatile data (vertical columns)
 		QByteArray bin;
 		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth++) {
 			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight++) {
@@ -326,6 +320,23 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 			}
 		}
 		bindata.replace(s,bin);
+
+		// Create attribute data (vertical columns)
+		quint8 attributecolumn[qFloor(SM_SCREEN_TILES_H/2)];
+		bin.clear();
+		for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) attributecolumn[i] = 0;
+		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth+=2) {
+			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight+=2) {
+				quint8 attr0 = (this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr1 = (this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr2 = (this->vScreens[s][((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr3 = (this->vScreens[s][((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+				attributecolumn[qFloor(tileheight/qFloor(SM_SCREEN_TILES_H/2))%8] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
+			}
+			for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) {
+				bin.append(attributecolumn[i]);
+			}
+		}
 	}
 	return bindata;
 }
@@ -335,6 +346,7 @@ QString StageManager::createStageASMData(QString labelprefix)
 	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
 	asmlabel += "_metatiles";
 	QString databytes;
+	QString attrbytes;
 
 	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
 	for(int s=0; s<numscreens; s++) {
@@ -350,6 +362,35 @@ QString StageManager::createStageASMData(QString labelprefix)
 		}
 		screenbytes = screenbytes.left(screenbytes.length()-1);
 		databytes.append(screenbytes).append("\n");
+
+		// Create attribute data (vertical columns)
+//		QString attrcountedlabel = labelprefix+QString("_attributes")+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
+//		attrbytes = attrcountedlabel+":\n\t.byte ";
+//		quint8 attributecolumn[qFloor(SM_SCREEN_TILES_H/2)];
+//		for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) attributecolumn[i] = 0;
+//		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth+=2) {
+//			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight+=2) {
+//				quint8 attr0index = (tileheight*SM_SCREEN_TILES_W)+tilewidth;
+//				quint8 attr1index = (tileheight*SM_SCREEN_TILES_W)+tilewidth+1;
+//				quint8 attr2index = ((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth;
+//				quint8 attr3index = ((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth+1;
+
+//				quint8 attr0 = (this->vScreens[s][attr0index]->palette()%PM_SUBPALETTES_MAX);
+//				quint8 attr1 = (this->vScreens[s][attr1index]->palette()%PM_SUBPALETTES_MAX);
+//				quint8 attr2 = (this->vScreens[s][attr2index]->palette()%PM_SUBPALETTES_MAX);
+//				quint8 attr3 = (this->vScreens[s][attr3index]->palette()%PM_SUBPALETTES_MAX);
+//				quint8 attrindex = qFloor(tileheight/2)%qFloor(SM_SCREEN_TILES_H/2);
+//				attributecolumn[attrindex] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
+//			}
+//			attrbytes += QString("$%1").arg(attributecolumn[0],2,16,QChar('0')).toUpper().append(",");
+//			attrbytes += QString("$%1").arg(attributecolumn[4],2,16,QChar('0')).toUpper().append(",");
+//			attrbytes += QString("$%1").arg(attributecolumn[1],2,16,QChar('0')).toUpper().append(",");
+//			attrbytes += QString("$%1").arg(attributecolumn[5],2,16,QChar('0')).toUpper().append(",");
+//			attrbytes += QString("$%1").arg(attributecolumn[2],2,16,QChar('0')).toUpper().append(",");
+//			attrbytes += QString("$%1").arg(attributecolumn[3],2,16,QChar('0')).toUpper().append(",");
+//		}
+//		attrbytes = attrbytes.left(attrbytes.length()-1);
+//		databytes.append(attrbytes).append("\n");
 	}
 
 	databytes += asmlabel+"_end:\n";
@@ -390,17 +431,17 @@ void StageManager::openStageFile(QString filename)
 		if(!bytesin.isEmpty() && bytesin.size()==(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H))
 			inputbytes.replace(labelnum,bytesin);
 	}
+	file.close();
 	if(!labelname.isEmpty()) {
+		emit(setStageLabel(labelname));
 		foreach(QByteArray test, inputbytes) {
 			if(!test.isEmpty()) {
 				this->importStageBinaryData(inputbytes);
-				file.close();
 				return;
 			}
 		}
 	}
 
-	file.close();
 	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
 }
 

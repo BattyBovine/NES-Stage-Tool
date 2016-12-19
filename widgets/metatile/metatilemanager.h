@@ -77,7 +77,9 @@ signals:
 	void setMetaspriteLabel(QString);
 	void bankDividerChanged(quint16);
 
+#ifdef METASPRITETILEITEM_H
 	void updateList(GraphicsItemList,GraphicsItemList);
+#endif
 
 public slots:
 	void setScale(qreal s){this->iScale=s;}

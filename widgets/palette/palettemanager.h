@@ -9,7 +9,7 @@
 
 #include <QtMath>
 
-#include "metaspritetileitem.h"
+//#include "metaspritetileitem.h"
 #include "metatileitem.h"
 #include "spritepaletteview.h"
 
@@ -55,7 +55,9 @@ public slots:
 	QVector<QRgb> createPaletteColours();
 	void generateNewSpritePalettes(bool changeselected = false);
 	void generateNewGlobalPalette();
+#ifdef METASPRITETILEITEM_H
 	void setNewSpritePalette(MetaspriteTileItem*);
+#endif
 	void setNewMetatilePalette(MetatileItem*);
 	void sendRequestedPaletteUpdate(quint8);
 

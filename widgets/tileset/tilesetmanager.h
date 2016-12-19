@@ -20,7 +20,7 @@
 #include <QtMath>
 
 #include "palettemanager.h"
-#include "metaspritetileitem.h"
+//#include "metaspritetileitem.h"
 #include "metatileitem.h"
 #include "chrthread.h"
 

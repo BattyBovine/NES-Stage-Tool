@@ -227,6 +227,7 @@ void PaletteManager::generateNewGlobalPalette()
 	emit(newGlobalPalette(this->createPaletteColours()));
 }
 
+#ifdef METASPRITETILEITEM_H
 void PaletteManager::setNewSpritePalette(MetaspriteTileItem *t)
 {
 	quint8 p = t->palette();
@@ -236,6 +237,7 @@ void PaletteManager::setNewSpritePalette(MetaspriteTileItem *t)
 					 c.at((p*PM_PALETTE_COLOURS_MAX)+3),
 					 p);
 }
+#endif
 
 void PaletteManager::setNewMetatilePalette(MetatileItem *t)
 {

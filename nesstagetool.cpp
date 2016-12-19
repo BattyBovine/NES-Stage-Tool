@@ -380,6 +380,11 @@ void NESStageTool::saveASMAnimation(QString path)
 
 
 
+void NESStageTool::setStageLabelPrefix(QString label)
+{
+	ui->lineASMLabel->setText(label);
+}
+
 void NESStageTool::setNewPaletteFile(QString pal)
 {
 	ui->gvPaletteManager->drawFullPaletteColours(pal);

@@ -70,6 +70,7 @@ private slots:
 
 	void saveASMAnimation(QString path="");
 
+	void setStageLabelPrefix(QString);
 	void setNewPaletteFile(QString);
 
 protected:

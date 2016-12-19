@@ -1093,28 +1093,13 @@
     <addaction name="actionNewProject"/>
     <addaction name="actionOpenProject"/>
     <addaction name="actionSaveProject"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
-   </widget>
-   <widget class="QMenu" name="menuMetasprites">
-    <property name="title">
-     <string>&amp;Stage</string>
-    </property>
     <addaction name="actionOpenStageFile"/>
     <addaction name="actionSaveStageFileASM"/>
-    <addaction name="actionSaveStageFileBinary"/>
     <addaction name="separator"/>
     <addaction name="actionOpenCHR"/>
-    <addaction name="separator"/>
     <addaction name="actionOpenPalette"/>
-   </widget>
-   <widget class="QMenu" name="menuAnimation">
-    <property name="title">
-     <string>&amp;Metatiles</string>
-    </property>
-    <addaction name="actionOpenAnimation"/>
-    <addaction name="actionSaveAnimationASM"/>
-    <addaction name="actionSaveAnimationBinary"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1125,8 +1110,6 @@
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuMetasprites"/>
-   <addaction name="menuAnimation"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionSavePalette">
@@ -1332,6 +1315,7 @@
     <signal>getPaletteUpdate(MetatileItem*)</signal>
     <signal>requestSelectedMetatile(MetatileItem*)</signal>
     <signal>requestNewGlobalPalette()</signal>
+    <signal>setStageLabel(QString)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>getUpdatedMetatile(MetatileItem*,MetatileItem*)</slot>
@@ -1756,22 +1740,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvPaletteManager</sender>
-   <signal>newGlobalPalette(PaletteVector)</signal>
-   <receiver>gvStage</receiver>
-   <slot>setNewGlobalPalette(PaletteVector)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>308</x>
-     <y>325</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvStage</sender>
    <signal>requestNewGlobalPalette()</signal>
    <receiver>gvPaletteManager</receiver>
@@ -2091,6 +2059,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>setStageLabel(QString)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>setStageLabelPrefix(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>328</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2104,7 +2088,7 @@
   <slot>saveBinaryStage()</slot>
   <slot>openStage()</slot>
   <slot>newProject()</slot>
-  <slot>setAnimationLabelPrefix(QString)</slot>
+  <slot>setStageLabelPrefix(QString)</slot>
   <slot>setPlayButtonText()</slot>
   <slot>setPauseButtonText()</slot>
   <slot>saveASMAnimation()</slot>
