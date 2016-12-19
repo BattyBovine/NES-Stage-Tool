@@ -20,7 +20,7 @@ MetatileItem::MetatileItem(QGraphicsItem *parent) : QGraphicsItem(parent)
 	this->imgTile.setColor(1,qRgb(0x00,0x00,0x00));
 	this->imgTile.setColor(2,qRgb(0x00,0x00,0x00));
 	this->imgTile.setColor(3,qRgb(0x00,0x00,0x00));
-	this->setZValue(-999999999999999999);
+	this->setZValue(-100);
 }
 
 MetatileItem::MetatileItem(QImage img, QGraphicsItem *parent) : QGraphicsItem(parent)
@@ -39,8 +39,6 @@ MetatileItem::MetatileItem(MetatileItem *i, QGraphicsItem *parent) : QGraphicsIt
 
 void MetatileItem::paint(QPainter *p, const QStyleOptionGraphicsItem*, QWidget*)
 {
-//	if(QPixmapCache::find(QString(MTI_PIXMAP_KEY_FORMAT).arg(this->iMetatile),&this->pixPixmap))
-//	p->drawPixmap(0,0,this->pixPixmap);
 	p->drawPixmap(0,0,MetatileDictionary::find(QString(MTI_PIXMAP_KEY_FORMAT).arg(this->iMetatile)));
 }
 

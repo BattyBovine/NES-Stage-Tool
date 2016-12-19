@@ -87,6 +87,7 @@ public slots:
 	void toggleShowTileGrid(bool);
 
 	void getUpdatedTile(MetatileItem*,quint8);
+	void getUpdatedPalette(MetatileItem*);
 
 	void openStageFile(QString);
 	void importStageBinaryData(QVector<QByteArray>);

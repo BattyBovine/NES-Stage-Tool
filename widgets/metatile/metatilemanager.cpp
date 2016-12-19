@@ -7,16 +7,14 @@ MetatileManager::MetatileManager(QWidget *parent) : QGraphicsView(parent)
 	this->iScale = MTM_DEFAULT_ZOOM;
 	this->bSelectionMode = false;
 	this->griSelection[0] = this->griSelection[1] = NULL;
-	this->iSelectedTile = 0;
+	this->iSelectedTile = this->iSelectedPalette = 0;
 	this->bShowGrid8 = true;
 	this->bShowGrid16 = true;
 
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
-	this->setSceneRect(0, 0,
-					   MTM_CANVAS_SIZE,
-					   MTM_CANVAS_SIZE);
+	this->setSceneRect(0, 0, MTM_CANVAS_SIZE, MTM_CANVAS_SIZE);
 
 	this->populateBlankTiles();
 	this->drawGridLines();
@@ -36,10 +34,7 @@ void MetatileManager::resizeEvent(QResizeEvent*)
 	QRectF viewrect = this->mapToScene(this->rect()).boundingRect();
 	this->iScale = qFloor(viewrect.width()/(MTI_TILEWIDTH*MTM_METATILES_W));
 	this->groupMetatiles->setScale(this->iScale);
-	this->setSceneRect(0,0,
-					   MTI_TILEWIDTH*MTM_METATILES_W*this->iScale,
-					   MTI_TILEWIDTH*MTM_METATILES_H*this->iScale
-					   );
+	this->setSceneRect(0,0, MTI_TILEWIDTH*MTM_METATILES_W*this->iScale, MTI_TILEWIDTH*MTM_METATILES_H*this->iScale);
 	this->drawGridLines();
 	this->drawSelectionBox();
 }
@@ -62,11 +57,18 @@ void MetatileManager::mousePressEvent(QMouseEvent *e)
 		break;
 	case Qt::LeftButton:
 		this->pSelection = p;
-		if(this->bSelectionMode) this->drawSelectionBox();
+		if(this->bSelectionMode)
+			this->drawSelectionBox();
+		else
+			this->applySelectedPalette(p);
 		break;
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
+}
+void MetatileManager::mouseDoubleClickEvent(QMouseEvent *e)
+{
+	this->mousePressEvent(e);
 }
 
 void MetatileManager::mouseMoveEvent(QMouseEvent *e)
@@ -80,30 +82,25 @@ void MetatileManager::mouseMoveEvent(QMouseEvent *e)
 	}
 }
 
-void MetatileManager::keyPressEvent(QKeyEvent *e)
-{
-	switch(e->key()) {
-	case Qt::Key_Left:
-	case Qt::Key_Right:
-	case Qt::Key_Up:
-	case Qt::Key_Down:
-		break;
-//	case Qt::Key_PageUp:
-//		this->moveSelectedUp();
+//void MetatileManager::keyPressEvent(QKeyEvent *e)
+//{
+//	switch(e->key()) {
+//	case Qt::Key_1:
+//		this->setTilePalette(p,0);
 //		break;
-//	case Qt::Key_PageDown:
-//		this->moveSelectedDown();
+//	case Qt::Key_2:
+//		this->setTilePalette(p,1);
 //		break;
-//	case Qt::Key_H:
-//		this->flipHorizontal();
+//	case Qt::Key_3:
+//		this->setTilePalette(p,2);
 //		break;
-//	case Qt::Key_V:
-//		this->flipVertical();
+//	case Qt::Key_4:
+//		this->setTilePalette(p,3);
 //		break;
-	default:
-		QGraphicsView::keyPressEvent(e);
-	}
-}
+//	default:
+//		QGraphicsView::keyPressEvent(e);
+//	}
+//}
 
 
 
@@ -214,6 +211,9 @@ void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool s)
 													p);
 		}
 	}
+
+	this->iSelectedPalette = p;
+
 	this->sendTileUpdates();
 }
 
@@ -228,8 +228,21 @@ void MetatileManager::addNewSubtile(QPointF p) {
 	int subtiley = qFloor((qFloor(p.y()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
 	quint8 subtileindex = subtiley*(MTI_TILEWIDTH/MTI_SUBTILEWIDTH)+subtilex;
 
-	emit(this->requestNewSubtile(subtileindex, this->mtlMetatiles[index]));
-	emit(this->getPaletteUpdate(this->mtlMetatiles[index]));
+	emit(requestNewSubtile(subtileindex, this->mtlMetatiles[index]));
+	emit(getPaletteUpdate(this->mtlMetatiles[index]));
+}
+
+void MetatileManager::applySelectedPalette(QPointF p) {
+	if(p.x()<0 || p.y()<0 || p.x()>=(MTM_CANVAS_SIZE*this->iScale) || p.y()>=(MTM_CANVAS_SIZE*this->iScale))
+		return;
+
+	int tilex = roundToMult(qFloor(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tiley = roundToMult(qFloor(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int index = (tiley*MTM_METATILES_W)+tilex;
+
+	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette%PM_SUBPALETTES_MAX);
+	emit(getPaletteUpdate(this->mtlMetatiles[index]));
+	emit(metatilePaletteUpdated(this->mtlMetatiles[index]));
 }
 
 
@@ -283,12 +296,16 @@ QVector<QByteArray> MetatileManager::createMetatileBinaryData()
 {
 	this->updateMetatileStage();
 
-	QVector<QByteArray> bindata = QVector<QByteArray>(4);
+	QVector<QByteArray> bindata = QVector<QByteArray>(5);
+	quint8 palettecompressed[4] = {0,0,0,0};
 	for(int i=0; i<this->mtlMetatiles.size(); i++) {
 		bindata[0].append(this->mtlMetatiles[i]->tileIndex(0));
 		bindata[1].append(this->mtlMetatiles[i]->tileIndex(1));
 		bindata[2].append(this->mtlMetatiles[i]->tileIndex(2));
 		bindata[3].append(this->mtlMetatiles[i]->tileIndex(3));
+		palettecompressed[i%4] = (this->mtlMetatiles[i]->palette()&0x03)<<((i%4)*2);
+		if((i%4)==3)
+			bindata[4].append(palettecompressed[0] | palettecompressed[1] | palettecompressed[2] | palettecompressed[3]);
 	}
 	return bindata;
 }
@@ -301,25 +318,32 @@ QString MetatileManager::createMetatileASMData(QString labelprefix)
 	QString databytes_tr = asmlabel+"_tr:\n\t.byte ";
 	QString databytes_bl = asmlabel+"_bl:\n\t.byte ";
 	QString databytes_br = asmlabel+"_br:\n\t.byte ";
+	QString databytes_p  = asmlabel+"_p:\n\t.byte ";
 
+	quint8 palettecompressed[4] = {0,0,0,0};
 	for(int i=0; i<this->mtlMetatiles.size(); i++) {
 		databytes_tl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(0),2,16,QChar('0')).append(",").toUpper();
 		databytes_bl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(2),2,16,QChar('0')).append(",").toUpper();
 		databytes_tr += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(1),2,16,QChar('0')).append(",").toUpper();
 		databytes_br += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(3),2,16,QChar('0')).append(",").toUpper();
+		palettecompressed[i%4] = (this->mtlMetatiles[i]->palette()&0x03)<<((i%4)*2);
+		if((i%4)==3)
+			databytes_p += QString("$%1").arg((palettecompressed[0] | palettecompressed[1] | palettecompressed[2] | palettecompressed[3]),2,16,QChar('0')).append(",").toUpper();
 	}
 
 	databytes_tl = databytes_tl.left(databytes_tl.length()-1);
 	databytes_bl = databytes_bl.left(databytes_bl.length()-1);
 	databytes_tr = databytes_tr.left(databytes_tr.length()-1);
 	databytes_br = databytes_br.left(databytes_br.length()-1);
+	databytes_p = databytes_p.left(databytes_p.length()-1);
 
 	databytes_tl += "\n";
 	databytes_bl += "\n";
 	databytes_tr += "\n";
 	databytes_br += "\n";
+	databytes_p += "\n";
 
-	return databytes_tl+databytes_bl+databytes_tr+databytes_br;
+	return databytes_tl+databytes_bl+databytes_tr+databytes_br+databytes_p;
 }
 
 
@@ -332,7 +356,7 @@ void MetatileManager::openMetatileFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-	QVector<QByteArray> inputbytes(4);
+	QVector<QByteArray> inputbytes(5);
 	while(!file.atEnd()) {
 		QString line = file.readLine();
 
@@ -343,28 +367,29 @@ void MetatileManager::openMetatileFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty() && bytesin.size()==(MTM_METATILES_W*MTM_METATILES_H)) {
+		if(!bytesin.isEmpty() && (bytesin.size()==(MTM_METATILES_W*MTM_METATILES_H) || bytesin.size()==qFloor((MTM_METATILES_W*MTM_METATILES_H)/4))) {
 			inputbytes.replace(labelnum,bytesin);
 			labelnum++;
 		}
 	}
+
+	file.close();
 	if(!inputbytes.isEmpty()) {
 		this->importMetatileBinaryData(inputbytes);
-		file.close();
 		return;
 	}
 
-	file.close();
 	QMessageBox::critical(this,tr(MTM_INVALID_SPRITES_TITLE),tr(MTM_INVALID_SPRITES_BODY),QMessageBox::NoButton);
 }
 
 void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 {
-	if(bindata.size()!=4 ||
+	if(bindata.size()!=5 ||
 			bindata[0].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
 			bindata[1].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
 			bindata[2].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
-			bindata[3].size()!=(MTM_METATILES_W*MTM_METATILES_H)) {
+			bindata[3].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
+			bindata[4].size()!=qFloor((MTM_METATILES_W*MTM_METATILES_H)/4)) {
 		QMessageBox::critical(this,tr(MTM_COUNT_ERROR_TITLE),tr(MTM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 		return;
 	}
@@ -373,6 +398,8 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 		this->mtlMetatiles[count]->setTileIndex(2,bindata[1].at(count));
 		this->mtlMetatiles[count]->setTileIndex(1,bindata[2].at(count));
 		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
+		this->mtlMetatiles[count]->setPalette(((bindata[4].at(qFloor(count/4)))&(0x03<<((count%4)*2)))>>((count%4)*2));
+		emit(metatilePaletteUpdated(this->mtlMetatiles[count]));
 	}
 
 	this->sendTileUpdates();
@@ -403,9 +430,7 @@ void MetatileManager::setSelectionMode(bool s)
 	this->bSelectionMode=s;
 	this->toggleShowGrid8(!s);
 	this->toggleShowGrid16(!s);
-	this->setSceneRect(0, 0,
-					   MTM_CANVAS_SIZE*this->iScale,
-					   MTM_CANVAS_SIZE*this->iScale);
+	this->setSceneRect(0, 0, MTM_CANVAS_SIZE*this->iScale, MTM_CANVAS_SIZE*this->iScale);
 }
 
 void MetatileManager::sendTileUpdates(MetatileItem *t)
@@ -421,7 +446,12 @@ void MetatileManager::sendTileUpdates(MetatileItem *t)
 	}
 }
 
-void MetatileManager::getUpdatedMetatile(MetatileItem*)
+void MetatileManager::getUpdatedMetatile(MetatileItem *t)
 {
+//	MetatileItem *newtile = this->mtlMetatiles[t->metatileIndex()];
+//	if(t->palette() != newtile->palette()) {
+//		newtile->setPalette(t->palette());
+//		emit(metatilePaletteUpdated(newtile));
+//	}
 	this->viewport()->update();
 }

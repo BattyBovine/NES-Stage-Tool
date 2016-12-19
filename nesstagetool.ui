@@ -1304,6 +1304,7 @@
     <signal>stageMetatileReady(MetatileItem*,MetatileItem*)</signal>
     <signal>metatileUpdated(MetatileItem*)</signal>
     <signal>selectedStageTileReady(MetatileItem*,quint8)</signal>
+    <signal>metatilePaletteUpdated(MetatileItem*)</signal>
     <slot>updateMetatile(quint8,MetatileItem*)</slot>
     <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
     <slot>deleteSelectedTiles()</slot>
@@ -1337,6 +1338,7 @@
     <slot>setNewGlobalPalette(PaletteVector)</slot>
     <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
     <slot>refreshScreen()</slot>
+    <slot>getUpdatedPalette(MetatileItem*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2070,6 +2072,22 @@
     <hint type="destinationlabel">
      <x>470</x>
      <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>metatilePaletteUpdated(MetatileItem*)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getUpdatedPalette(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>328</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>

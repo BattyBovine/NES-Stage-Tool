@@ -66,6 +66,7 @@ signals:
 	void getPaletteUpdate(MetatileItem*);
 	void requestPaletteUpdates(quint8);
 	void metatileUpdated(MetatileItem*);
+	void metatilePaletteUpdated(MetatileItem*);
 	void sendMetatile(MetatileItem*);
 	void sendSelectedMetatile(MetatileItem*);
 	void sendMetatileEditorChange(MetatileList);
@@ -107,12 +108,14 @@ protected:
 	void dropEvent(QDropEvent*);
 	void dragLeaveEvent(QDragLeaveEvent*e){e->accept();}
 	void mousePressEvent(QMouseEvent*);
+	void mouseDoubleClickEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
-	void keyPressEvent(QKeyEvent*);
+//	void keyPressEvent(QKeyEvent*);
 
 private:
 	void populateBlankTiles();
 	void addNewSubtile(QPointF);
+	void applySelectedPalette(QPointF);
 	bool drawSelectionBox();
 	void drawGridLines();
 	MetatileList createFrame(quint8, qreal s=0);
@@ -124,6 +127,7 @@ private:
 	QPointF pSelection;
 	QGraphicsRectItem *griSelection[2];
 	quint8 iSelectedTile;
+	quint8 iSelectedPalette;
 
 	bool bShowGrid8, bShowGrid16;
 	quint16 iBankDivider;

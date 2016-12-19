@@ -73,9 +73,7 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 	switch(e->button()) {
 	case Qt::MiddleButton:
 		this->iScale = SM_DEFAULT_ZOOM;
-		this->setSceneRect(0, 0,
-						   SM_CANVAS_WIDTH*this->iScale,
-						   SM_CANVAS_HEIGHT*this->iScale);
+		this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
 		this->updateScreen();
 		break;
 	case Qt::RightButton:
@@ -218,6 +216,15 @@ void StageManager::getUpdatedTile(MetatileItem *mtold, quint8 i)
 	quint8 index = this->vScreens[mtold->screen()].indexOf(mtold);
 	this->vScreens[mtold->screen()][index]->setMetatileIndex(i);
 	this->updateScreen();
+}
+void StageManager::getUpdatedPalette(MetatileItem *mtnew)
+{
+	foreach(MetatileList l, this->vScreens) {
+		foreach(MetatileItem *i, l) {
+			if(i->metatileIndex()==mtnew->metatileIndex())
+				i->setPalette(mtnew->palette());
+		}
+	}
 }
 
 void StageManager::setNewGlobalPalette(PaletteVector c)
@@ -423,9 +430,7 @@ void StageManager::refreshScreen()
 void StageManager::updateScreen()
 {
 	this->groupMetatiles->setScale(this->iScale);
-	this->setSceneRect(0, 0,
-					   SM_CANVAS_WIDTH*this->iScale,
-					   SM_CANVAS_HEIGHT*this->iScale);
+	this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
 	this->drawGridLines();
 	this->viewport()->update();
 }
