@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>942</width>
+    <width>924</width>
     <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>942</width>
+    <width>924</width>
     <height>600</height>
    </size>
   </property>
@@ -23,7 +23,7 @@
    <string>NES Stage Tool</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_9">
+   <layout class="QHBoxLayout" name="horizontalLayout_12">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -265,7 +265,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_11">
+         <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QGroupBox" name="groupBox_3">
             <property name="title">
@@ -314,307 +314,49 @@
             <property name="title">
              <string>Palettes</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_7">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_14">
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="0" column="0">
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="text">
-                  <string>Global Palette:</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
                  </property>
-                </widget>
+                </spacer>
                </item>
-               <item>
-                <widget class="QComboBox" name="comboGlobalPalettes">
+               <item row="0" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <item>
-                  <property name="text">
-                   <string>0</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>1</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>2</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>3</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>4</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>5</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>6</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>7</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
-                <layout class="QGridLayout" name="gridLayout">
-                 <item row="0" column="0">
-                  <spacer name="horizontalSpacer_9">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                  <widget class="QLabel" name="label_4">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
+                   <property name="text">
+                    <string>0:</string>
                    </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="1">
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <item>
-                    <widget class="QLabel" name="label_4">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>0:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="SpritePaletteView" name="gvPalette0">
-                     <property name="minimumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="acceptDrops">
-                      <bool>true</bool>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="verticalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                     <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="0" column="2">
-                  <layout class="QHBoxLayout" name="horizontalLayout_5">
-                   <item>
-                    <widget class="QLabel" name="label_5">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>1:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="SpritePaletteView" name="gvPalette1">
-                     <property name="minimumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="acceptDrops">
-                      <bool>true</bool>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="verticalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                     <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="0" column="3">
-                  <spacer name="horizontalSpacer_10">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="1">
-                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <item>
-                    <widget class="QLabel" name="label_6">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>2:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="SpritePaletteView" name="gvPalette2">
-                     <property name="minimumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="acceptDrops">
-                      <bool>true</bool>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="verticalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                     <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="2">
-                  <layout class="QHBoxLayout" name="horizontalLayout_7">
-                   <item>
-                    <widget class="QLabel" name="label_7">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>3:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="SpritePaletteView" name="gvPalette3">
-                     <property name="minimumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>66</width>
-                       <height>18</height>
-                      </size>
-                     </property>
-                     <property name="acceptDrops">
-                      <bool>true</bool>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="verticalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                     <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_10">
-                 <item>
-                  <spacer name="horizontalSpacer_14">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  </widget>
                  </item>
                  <item>
-                  <widget class="PaletteManager" name="gvPaletteManager">
+                  <widget class="SpritePaletteView" name="gvPalette0">
                    <property name="minimumSize">
                     <size>
-                     <width>226</width>
-                     <height>66</height>
+                     <width>66</width>
+                     <height>18</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>226</width>
-                     <height>66</height>
+                     <width>66</width>
+                     <height>18</height>
                     </size>
                    </property>
                    <property name="acceptDrops">
@@ -629,50 +371,243 @@
                    <property name="horizontalScrollBarPolicy">
                     <enum>Qt::ScrollBarAlwaysOff</enum>
                    </property>
-                   <property name="sceneRect">
-                    <rectf>
-                     <x>0.000000000000000</x>
-                     <y>0.000000000000000</y>
-                     <width>224.000000000000000</width>
-                     <height>64.000000000000000</height>
-                    </rectf>
-                   </property>
                   </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_13">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item row="0" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
                  <item>
-                  <widget class="QLabel" name="label_2">
+                  <widget class="QLabel" name="label_5">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Style:</string>
+                    <string>1:</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="comboPalettes"/>
+                  <widget class="SpritePaletteView" name="gvPalette1">
+                   <property name="minimumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="acceptDrops">
+                    <bool>true</bool>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
+               </item>
+               <item row="0" column="3">
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>2:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="SpritePaletteView" name="gvPalette2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="acceptDrops">
+                    <bool>true</bool>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <item>
+                  <widget class="QLabel" name="label_7">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>3:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="SpritePaletteView" name="gvPalette3">
+                   <property name="minimumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>66</width>
+                     <height>18</height>
+                    </size>
+                   </property>
+                   <property name="acceptDrops">
+                    <bool>true</bool>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <spacer name="horizontalSpacer_14">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="PaletteManager" name="gvPaletteManager">
+                 <property name="minimumSize">
+                  <size>
+                   <width>226</width>
+                   <height>66</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>226</width>
+                   <height>66</height>
+                  </size>
+                 </property>
+                 <property name="acceptDrops">
+                  <bool>true</bool>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="sceneRect">
+                  <rectf>
+                   <x>0.000000000000000</x>
+                   <y>0.000000000000000</y>
+                   <width>224.000000000000000</width>
+                   <height>64.000000000000000</height>
+                  </rectf>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Style:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboPalettes"/>
                </item>
               </layout>
              </item>
@@ -729,21 +664,8 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
-             <item>
-              <widget class="QLabel" name="labelBankSize">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Bank size:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="1">
               <widget class="QComboBox" name="comboBankSize">
                <item>
                 <property name="text">
@@ -765,6 +687,70 @@
                  <string>512B</string>
                 </property>
                </item>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboGlobalTileset">
+               <item>
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>1</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>2</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>7</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="labelBankSize">
+               <property name="text">
+                <string>Bank size:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>Tileset:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
               </widget>
              </item>
             </layout>
@@ -826,9 +812,6 @@
                <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value">
-                <number>1</number>
-               </property>
               </widget>
              </item>
             </layout>
@@ -858,9 +841,6 @@
                </property>
                <property name="maximum">
                 <number>255</number>
-               </property>
-               <property name="value">
-                <number>2</number>
                </property>
               </widget>
              </item>
@@ -892,9 +872,6 @@
                <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value">
-                <number>3</number>
-               </property>
               </widget>
              </item>
             </layout>
@@ -924,9 +901,6 @@
                </property>
                <property name="maximum">
                 <number>255</number>
-               </property>
-               <property name="value">
-                <number>4</number>
                </property>
               </widget>
              </item>
@@ -958,9 +932,6 @@
                <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value">
-                <number>5</number>
-               </property>
               </widget>
              </item>
             </layout>
@@ -991,9 +962,6 @@
                <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value">
-                <number>6</number>
-               </property>
               </widget>
              </item>
             </layout>
@@ -1023,9 +991,6 @@
                </property>
                <property name="maximum">
                 <number>255</number>
-               </property>
-               <property name="value">
-                <number>7</number>
                </property>
               </widget>
              </item>
@@ -1082,7 +1047,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>942</width>
+     <width>924</width>
      <height>21</height>
     </rect>
    </property>
@@ -1229,6 +1194,7 @@
     <slot>sendRequestedPaletteUpdate(quint8)</slot>
     <slot>setNewMetatilePalette(MetatileItem*)</slot>
     <slot>generateNewGlobalPalette()</slot>
+    <slot>setNewGlobalPalette(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1253,6 +1219,7 @@
     <signal>checkTilesBank(quint16,quint16)</signal>
     <signal>sendNewMetatile(MetatileItem*)</signal>
     <signal>metatileUpdated(MetatileItem*)</signal>
+    <signal>tilesetChangedDelta(int)</signal>
     <slot>loadCHRData(QString)</slot>
     <slot>setNewSpriteColours(QVector,quint8)</slot>
     <slot>getNewTile(QPointF)</slot>
@@ -1264,6 +1231,7 @@
     <slot>updateMetatile(MetatileItem*)</slot>
     <slot>getNewSubtile(quint8,MetatileItem*)</slot>
     <slot>getNewCHRData(QImage)</slot>
+    <slot>getGlobalTileset(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1288,6 +1256,7 @@
     <signal>metatileUpdated(MetatileItem*)</signal>
     <signal>selectedStageTileReady(MetatileItem*,quint8)</signal>
     <signal>metatilePaletteUpdated(MetatileItem*)</signal>
+    <signal>tilesetChangedDelta(int)</signal>
     <slot>updateMetatile(quint8,MetatileItem*)</slot>
     <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
     <slot>deleteSelectedTiles()</slot>
@@ -1304,6 +1273,7 @@
     <slot>getUpdatedMetatile(MetatileItem*)</slot>
     <slot>getStageMetatile(MetatileItem*)</slot>
     <slot>getSelectedStageTile(MetatileItem*)</slot>
+    <slot>getGlobalTileset(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1331,9 +1301,13 @@
    <header>globaltilesetmanager.h</header>
    <slots>
     <signal>tilesetChanged(QImage)</signal>
+    <signal>banksChanged(int,int,int,int,int,int,int,int)</signal>
+    <signal>setGlobalTilesetSelectedIndex(int)</signal>
     <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
     <slot>getBankSize(int)</slot>
     <slot>getBankSelections(int,int,int,int,int,int,int,int)</slot>
+    <slot>getGlobalTileset(int)</slot>
+    <slot>getGlobalTilesetDelta(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -1346,8 +1320,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>906</x>
-     <y>564</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1362,12 +1336,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>743</x>
-     <y>435</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1378,12 +1352,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>833</x>
-     <y>435</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1394,12 +1368,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>743</x>
-     <y>461</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1410,12 +1384,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>833</x>
-     <y>461</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1426,12 +1400,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>743</x>
-     <y>435</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1442,12 +1416,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>833</x>
-     <y>435</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1458,12 +1432,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>743</x>
-     <y>461</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1474,12 +1448,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>833</x>
-     <y>461</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1490,12 +1464,12 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>908</x>
-     <y>289</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1506,12 +1480,12 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>159</x>
-     <y>213</y>
+     <x>170</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1522,12 +1496,12 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>888</x>
-     <y>289</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1538,12 +1512,12 @@
    <slot>getNewTile(QPointF)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>593</x>
-     <y>290</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1554,12 +1528,12 @@
    <slot>sendTileUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>289</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1570,12 +1544,12 @@
    <slot>updateMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>908</x>
-     <y>289</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1586,12 +1560,12 @@
    <slot>setNewMetatilePalette(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1602,12 +1576,12 @@
    <slot>toggleShowGrid8(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>237</x>
-     <y>276</y>
+     <x>248</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1618,12 +1592,12 @@
    <slot>toggleShowGrid16(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>558</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>267</x>
-     <y>272</y>
+     <x>278</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1634,12 +1608,12 @@
    <slot>getNewSubtile(quint8,MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>908</x>
-     <y>289</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1650,12 +1624,12 @@
    <slot>getMetatileEditorChange(quint8,MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>888</x>
-     <y>272</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1666,12 +1640,12 @@
    <slot>toggleShowTileGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>559</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>499</x>
-     <y>497</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1682,12 +1656,12 @@
    <slot>toggleShowScreenGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>626</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>532</x>
-     <y>494</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1698,12 +1672,12 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>288</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>751</x>
-     <y>203</y>
+     <x>319</x>
+     <y>255</y>
     </hint>
    </hints>
   </connection>
@@ -1714,12 +1688,12 @@
    <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>751</x>
-     <y>203</y>
+     <x>319</x>
+     <y>255</y>
     </hint>
     <hint type="destinationlabel">
-     <x>308</x>
-     <y>325</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1730,12 +1704,12 @@
    <slot>getSelectedStageTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>308</x>
-     <y>325</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>751</x>
-     <y>203</y>
+     <x>319</x>
+     <y>255</y>
     </hint>
    </hints>
   </connection>
@@ -1746,12 +1720,12 @@
    <slot>generateNewGlobalPalette()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>308</x>
-     <y>325</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>860</x>
-     <y>536</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1762,12 +1736,12 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>288</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>166</x>
-     <y>196</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1778,28 +1752,12 @@
    <slot>getUpdatedMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>288</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>166</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvPaletteManager</sender>
-   <signal>newSpriteColours(PaletteVector,quint8,bool)</signal>
-   <receiver>gvGlobalTileset</receiver>
-   <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>860</x>
-     <y>536</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>393</x>
-     <y>212</y>
+     <x>177</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1810,7 +1768,7 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
+     <x>890</x>
      <y>104</y>
     </hint>
     <hint type="destinationlabel">
@@ -1826,8 +1784,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>879</x>
-     <y>130</y>
+     <x>890</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1842,8 +1800,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>870</x>
-     <y>155</y>
+     <x>890</x>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1858,8 +1816,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>862</x>
-     <y>183</y>
+     <x>890</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1874,8 +1832,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>858</x>
-     <y>214</y>
+     <x>890</x>
+     <y>251</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1890,8 +1848,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>859</x>
-     <y>241</y>
+     <x>890</x>
+     <y>279</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1906,8 +1864,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>859</x>
-     <y>266</y>
+     <x>890</x>
+     <y>307</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1922,8 +1880,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>855</x>
-     <y>298</y>
+     <x>890</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1938,8 +1896,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>319</y>
+     <x>890</x>
+     <y>363</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1949,7 +1907,7 @@
   </connection>
   <connection>
    <sender>NESStageTool</sender>
-   <signal>sendBankUpdates(int,int,int,int,int,int,int,int)</signal>
+   <signal>banksUpdated(int,int,int,int,int,int,int,int)</signal>
    <receiver>gvGlobalTileset</receiver>
    <slot>getBankSelections(int,int,int,int,int,int,int,int)</slot>
    <hints>
@@ -1964,50 +1922,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvGlobalTileset</sender>
-   <signal>tilesetChanged(QImage)</signal>
-   <receiver>gvTileset</receiver>
-   <slot>getNewCHRData(QImage)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>393</x>
-     <y>325</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>908</x>
-     <y>288</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkAnimation</sender>
    <signal>toggled(bool)</signal>
    <receiver>NESStageTool</receiver>
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>853</x>
-     <y>356</y>
+     <x>890</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
      <y>347</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvGlobalTileset</sender>
-   <signal>tilesetChanged(QImage)</signal>
-   <receiver>gvStage</receiver>
-   <slot>refreshScreen()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>401</x>
-     <y>325</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>328</x>
-     <y>325</y>
     </hint>
    </hints>
   </connection>
@@ -2050,12 +1976,12 @@
    <slot>getUpdatedPalette(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>328</x>
-     <y>325</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2066,8 +1992,8 @@
    <slot>setStageLabelPrefix(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>328</x>
-     <y>325</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>470</x>
@@ -2075,11 +2001,171 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvGlobalTileset</receiver>
+   <slot>getGlobalTileset(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>862</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>755</x>
+     <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>banksChanged(int,int,int,int,int,int,int,int)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvPaletteManager</receiver>
+   <slot>setNewGlobalPalette(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>865</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>738</x>
+     <y>504</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvTileset</sender>
+   <signal>tilesetChangedDelta(int)</signal>
+   <receiver>gvGlobalTileset</receiver>
+   <slot>getGlobalTilesetDelta(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>738</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>setGlobalTilesetSelectedIndex(int)</signal>
+   <receiver>comboGlobalTileset</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>865</x>
+     <y>120</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvTileset</receiver>
+   <slot>getGlobalTileset(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>865</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>738</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getGlobalTileset(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>865</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileSelector</sender>
+   <signal>tilesetChangedDelta(int)</signal>
+   <receiver>gvGlobalTileset</receiver>
+   <slot>getGlobalTilesetDelta(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>tilesetChanged(QImage)</signal>
+   <receiver>gvTileset</receiver>
+   <slot>getNewCHRData(QImage)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>393</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>tilesetChanged(QImage)</signal>
+   <receiver>gvStage</receiver>
+   <slot>refreshScreen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>401</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>119</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
   <signal>metaspriteFileOpened(QString)</signal>
-  <signal>sendBankUpdates(int,int,int,int,int,int,int,int)</signal>
+  <signal>banksUpdated(int,int,int,int,int,int,int,int)</signal>
   <slot>savePalette()</slot>
   <slot>openPalette()</slot>
   <slot>openCHR()</slot>
@@ -2098,5 +2184,6 @@
   <slot>showWikiPage()</slot>
   <slot>sendBankUpdates()</slot>
   <slot>toggleAnimation(bool)</slot>
+  <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
  </slots>
 </ui>

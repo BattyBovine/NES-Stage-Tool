@@ -17,6 +17,8 @@ TilesetManager::TilesetManager(QWidget *parent) : QGraphicsView(parent)
 	this->gsTileset->addItem(this->gpiTileset);
 	this->griSelection[0] = this->griSelection[1] = NULL;
 	this->iScale = TSM_SCALE;
+
+	this->iGlobalTileset = 0;
 	this->iSelectedTile = 0;
 	this->iPalette = 0;
 	this->bTallSprite = false;
@@ -87,6 +89,7 @@ void TilesetManager::wheelEvent(QWheelEvent *e)
 
 	this->loadCHRBank();
 	emit(chrBankChanged(this->iSelectedBank));
+	emit(tilesetChangedDelta(steps));
 }
 
 void TilesetManager::setSelectedBank(quint16 bankno)
@@ -181,6 +184,7 @@ void TilesetManager::getNewTile(QPointF p)
 void TilesetManager::getNewSubtile(quint8 i, MetatileItem *t)
 {
 	quint8 selection = this->iSelectedTile+(this->iBankDivider*this->iSelectedBank);
+	t->setTileset(this->iGlobalTileset);
 	t->setTileIndex(i,selection);
 	t->setPalette(this->iPalette);
 	this->updateMetatile(t);
@@ -221,6 +225,11 @@ void TilesetManager::getBankDivider(quint16 bankdiv)
 	this->loadCHRBank();
 	emit(this->chrDataChanged(this->imgTileset));
 	this->drawSelectionBox();
+}
+
+void TilesetManager::getGlobalTileset(int t)
+{
+	this->iGlobalTileset = t;
 }
 
 

@@ -39,6 +39,7 @@ signals:
 	void sendNewTile(QPointF,QImage,quint32,quint8);
 	void sendNewMetatile(MetatileItem*);
 	void chrBankChanged(quint16);
+	void tilesetChangedDelta(int);
 	void chrDataChanged(QImage);
 	void checkTilesBank(quint16,quint16);
 	void metatileUpdated(MetatileItem*);
@@ -56,6 +57,7 @@ public slots:
 	void getNewCHRData(QImage);
 	void getCHRError(QString,QString);
 	void getBankDivider(quint16);
+	void getGlobalTileset(int);
 
 	void reloadCurrentTileset();
 
@@ -81,6 +83,7 @@ private:
 	QImage imgSelectedBank;
 	PaletteVector pvCurrentColours;
 	QGraphicsPixmapItem *gpiTileset;
+	quint8 iGlobalTileset;
 	quint8 iSelectedTile;
 	quint8 iPalette;
 	bool bTallSprite;

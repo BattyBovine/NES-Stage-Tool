@@ -45,11 +45,13 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 	switch(e->button()) {
 	case Qt::RightButton:
 		this->pRightMousePos = QPointF(-1,-1);
-		this->replaceScreenTile(this->mapToScene(e->pos()));
+		this->replaceStageTile(this->mapToScene(e->pos()));
 		break;
 	case Qt::MiddleButton:
 		this->pMouseTranslation = QPointF(e->x(),e->y());
 		break;
+	case Qt::LeftButton:
+		this->replaceScreenTileset(this->mapToScene(e->pos()));
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
@@ -64,7 +66,7 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 		this->translate((e->x()-this->pMouseTranslation.x()),(e->y()-this->pMouseTranslation.y()));
 		this->pMouseTranslation = QPointF(e->x(),e->y());
 	} else if(e->buttons()&Qt::RightButton) {
-		this->replaceScreenTile(this->mapToScene(e->pos()));
+		this->replaceStageTile(this->mapToScene(e->pos()));
 	}
 }
 
@@ -227,7 +229,7 @@ void StageManager::getUpdatedPalette(MetatileItem *mtnew)
 	}
 }
 
-void StageManager::replaceScreenTile(QPointF p)
+void StageManager::replaceStageTile(QPointF p)
 {
 	if(p.x()<0 || p.y()<0)	return;
 
@@ -244,6 +246,22 @@ void StageManager::replaceScreenTile(QPointF p)
 	this->pRightMousePos = QPointF(screen,tile);
 
 	emit(this->requestSelectedMetatile(this->vScreens[screen][tile]));
+}
+
+void StageManager::replaceScreenTileset(QPointF p)
+{
+	if(p.x()<0 || p.y()<0)	return;
+
+	int tilex = roundToMult(qRound(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tiley = roundToMult(qRound(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
+	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
+	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
+//	quint8 tile = ((tiley%SM_SCREEN_TILES_H)*SM_SCREEN_TILES_W)+(tilex%SM_SCREEN_TILES_W);
+
+	foreach(MetatileItem* t, this->vScreens[screen]) {
+		t->setTileset(1);
+	}
 }
 
 void StageManager::replaceAllScreenTiles(QPointF p)

@@ -23,8 +23,12 @@
 #include "palettemanager.h"
 #include "chrthread.h"
 
-#define GTSM_SCALE       1
-#define GTSM_TILEWIDTH   8
+#define GTSM_PIXMAP_KEY_FORMAT "Tileset%1:%2"
+
+#define GTSM_SCALE         1
+#define GTSM_TILEWIDTH	   8
+#define GTSM_TILESET_COUNT 8
+#define GTSM_BANKS_COUNT   8
 
 class GlobalTilesetManager : public QGraphicsView
 {
@@ -42,6 +46,9 @@ signals:
 	void checkTilesBank(quint16,quint16);
 	void metatileUpdated(MetatileItem*);
 
+	void banksChanged(int,int,int,int,int,int,int,int);
+	void setGlobalTilesetSelectedIndex(int);
+
 public slots:
 	void loadCHRData(QString);
 	void loadCHRBank();
@@ -54,6 +61,8 @@ public slots:
 	void getNewCHRData(QImage);
 	void getCHRError(QString,QString);
 	void getBankSize(int);
+	void getGlobalTileset(int);
+	void getGlobalTilesetDelta(int);
 	void getBankSelections(int,int,int,int,int,int,int,int);
 	void enableAnimation(bool);
 	void getAnimBank(int i){this->iAnimBank=i;}
@@ -88,7 +97,8 @@ private:
 	quint8 iPalette;
 	bool bTallSprite;
 	quint8 iBankDivider;
-	int iBankList[8];
+	quint8 iGlobalTileset;
+	int iBankLists[GTSM_TILESET_COUNT][GTSM_TILESET_COUNT];
 	quint16 iSelectedBank;
 
 	QTimer tAnimation;

@@ -37,7 +37,7 @@ public:
 signals:
 	void chrFileOpened(QString);
 	void metaspriteFileOpened(QString);
-	void sendBankUpdates(int,int,int,int,int,int,int,int);
+	void banksUpdated(int,int,int,int,int,int,int,int);
 
 private slots:
 	void newProject();
@@ -59,6 +59,7 @@ private slots:
 	void restoreSettings();
 
 	void sendBankUpdates();
+	void getBankUpdates(int,int,int,int,int,int,int,int);
 
 	void openStage();
 	void saveASMStage(QString path="");

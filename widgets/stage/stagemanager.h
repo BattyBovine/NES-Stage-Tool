@@ -110,7 +110,8 @@ protected:
 private:
 	void populateBlankTiles();
 	void drawGridLines();
-	void replaceScreenTile(QPointF);
+	void replaceStageTile(QPointF);
+	void replaceScreenTileset(QPointF);
 	void replaceAllScreenTiles(QPointF);
 	void placeUpdatedMetatile(int,int,MetatileItem*);
 

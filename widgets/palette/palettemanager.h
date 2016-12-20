@@ -17,9 +17,10 @@
 #define PM_FILE_OPEN_ERROR_TITLE    "Error opening palette file"
 #define PM_FILE_OPEN_ERROR_BODY     "Could not open palette file. Please make sure you have the necessary permissions to access files in this location."
 
-#define PM_SWATCH_SIZE         16
-#define PM_PALETTE_COLOURS_MAX 4
-#define PM_SUBPALETTES_MAX     4
+#define PM_GLOBAL_PALETTE_COUNT 8
+#define PM_SWATCH_SIZE          16
+#define PM_PALETTE_COLOURS_MAX  4
+#define PM_SUBPALETTES_MAX      4
 
 typedef QVector<QRgb> PaletteVector;
 
@@ -54,6 +55,7 @@ public slots:
 	void spritePaletteSelected(QString, quint8);
 	QVector<QRgb> createPaletteColours();
 	void generateNewSpritePalettes(bool changeselected = false);
+	void setNewGlobalPalette(int);
 	void generateNewGlobalPalette();
 #ifdef METASPRITETILEITEM_H
 	void setNewSpritePalette(MetaspriteTileItem*);
@@ -77,7 +79,8 @@ private:
 	QGraphicsRectItem *griSelectionBox[2];
 
 	QGraphicsScene *gsSpritePaletteScene[4];
-	quint8 iSpritePaletteIndices[4][4];
+	quint8 iGlobalPalette;
+	quint8 iSpritePaletteIndices[PM_GLOBAL_PALETTE_COUNT][PM_SUBPALETTES_MAX][PM_PALETTE_COLOURS_MAX];
 	quint8 iSpritePaletteSelected;
 	quint8 iSpritePaletteSelectedIndex;
 };

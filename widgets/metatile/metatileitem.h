@@ -18,7 +18,7 @@
 #define MTI_SUBTILEWIDTH 8
 #define MTI_TILEWIDTH    16
 
-#define MTI_PIXMAP_KEY_FORMAT "Metatile%1"
+#define MTI_PIXMAP_KEY_FORMAT "Metatile%1:%2"
 
 class MetatileItem : public QGraphicsItem
 {
@@ -59,7 +59,7 @@ public:
 	void setTileIndex(int i, quint8 t){if(i<0 || i>3) return; this->iTiles[i]=t;}
 	QRgb getPaletteColour(quint8 i){return this->imgTile.color(i);}
 
-	static void insertPixmap(quint8 i, QPixmap p){MetatileDictionary::insert(QString(MTI_PIXMAP_KEY_FORMAT).arg(i),p);}
+	static void insertPixmap(quint8 i, quint8 j, QPixmap p){MetatileDictionary::insert(QString(MTI_PIXMAP_KEY_FORMAT).arg(j).arg(i),p);}
 
 protected:
 	QRectF boundingRect() const {return QRectF(0,0,MTI_TILEWIDTH,MTI_TILEWIDTH);}

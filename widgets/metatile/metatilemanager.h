@@ -76,6 +76,7 @@ signals:
 
 	void setMetaspriteLabel(QString);
 	void bankDividerChanged(quint16);
+	void tilesetChangedDelta(int);
 
 #ifdef METASPRITETILEITEM_H
 	void updateList(GraphicsItemList,GraphicsItemList);
@@ -97,6 +98,7 @@ public slots:
 	void toggleShowGrid16(bool);
 	void setBankDivider(int);
 	void setSelectedBank(quint16);
+	void getGlobalTileset(int);
 
 	void openMetatileFile(QString);
 	void importMetatileBinaryData(QVector<QByteArray>);
@@ -112,6 +114,7 @@ protected:
 	void mousePressEvent(QMouseEvent*);
 	void mouseDoubleClickEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
+	void wheelEvent(QWheelEvent*);
 //	void keyPressEvent(QKeyEvent*);
 
 private:
@@ -133,6 +136,7 @@ private:
 
 	bool bShowGrid8, bShowGrid16;
 	quint16 iBankDivider;
+	quint8 iGlobalTileset;
 	quint16 iSelectedBank;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;

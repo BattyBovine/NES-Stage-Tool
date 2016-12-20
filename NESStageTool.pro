@@ -12,7 +12,7 @@ TARGET = NESStageTool
 TEMPLATE = app
 
 INCLUDEPATH += widgets/ui \
-	widgets/metasprite \
+#	widgets/metasprite \
 	widgets/metatile \
 	widgets/palette \
 	widgets/sprite \
@@ -53,7 +53,7 @@ HEADERS  += nesstagetool.h \
 	widgets/tileset/tilesetmanager.h \
 	widgets/tileset/globaltilesetmanager.h \
 #	widgets/metasprite/metaspritemanager.h \
-	widgets/metasprite/metaspritetileitem.h \
+#	widgets/metasprite/metaspritetileitem.h \
 	widgets/metatile/metatilemanager.h \
 	widgets/metatile/metatileitem.h \
 #	widgets/animation/animationmanager.h \

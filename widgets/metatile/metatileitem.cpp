@@ -39,7 +39,7 @@ MetatileItem::MetatileItem(MetatileItem *i, QGraphicsItem *parent) : QGraphicsIt
 
 void MetatileItem::paint(QPainter *p, const QStyleOptionGraphicsItem*, QWidget*)
 {
-	p->drawPixmap(0,0,MetatileDictionary::find(QString(MTI_PIXMAP_KEY_FORMAT).arg(this->iMetatile)));
+	p->drawPixmap(0,0,MetatileDictionary::find(QString(MTI_PIXMAP_KEY_FORMAT).arg(this->iTileset).arg(this->iMetatile)));
 }
 
 
@@ -67,15 +67,18 @@ void MetatileItem::copy(MetatileItem *i)
 
 void MetatileItem::setTile(quint8 i, QImage img)
 {
+	uchar *srcpixels = img.bits();
+	uchar *destpixels = this->imgTile.bits();
 	for(int y=0; y<img.height(); y++) {
 		for(int x=0; x<img.width(); x++) {
 			quint8 xtrans = x+(i&0x01?img.width():0);
 			quint8 ytrans = y+(i>=2?img.width():0);
-			uint pixel = img.pixelIndex(x,y);
-			this->imgTile.setPixel(xtrans,ytrans,pixel);
+			destpixels[(ytrans*this->imgTile.width())+xtrans] = srcpixels[(y*img.width())+x];
+//			uint pixel = img.pixelIndex(x,y);
+//			this->imgTile.setPixel(xtrans,ytrans,pixel);
 		}
 	}
-	MetatileItem::insertPixmap(this->iMetatile,QPixmap::fromImage(this->imgTile));
+	MetatileItem::insertPixmap(this->iMetatile,this->iTileset,QPixmap::fromImage(this->imgTile));
 	this->update(this->imgTile.rect());
 }
 
@@ -85,6 +88,6 @@ void MetatileItem::setNewColours(QRgb a, QRgb b, QRgb c, quint8 p)
 	this->imgTile.setColor(1,a);
 	this->imgTile.setColor(2,b);
 	this->imgTile.setColor(3,c);
-	MetatileItem::insertPixmap(this->iMetatile,QPixmap::fromImage(this->imgTile));
+	MetatileItem::insertPixmap(this->iMetatile,this->iTileset,QPixmap::fromImage(this->imgTile));
 	this->update(this->imgTile.rect());
 }

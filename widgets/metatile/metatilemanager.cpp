@@ -7,7 +7,7 @@ MetatileManager::MetatileManager(QWidget *parent) : QGraphicsView(parent)
 	this->iScale = MTM_DEFAULT_ZOOM;
 	this->bSelectionMode = false;
 	this->griSelection[0] = this->griSelection[1] = NULL;
-	this->iSelectedTile = this->iSelectedPalette = 0;
+	this->iGlobalTileset = this->iSelectedTile = this->iSelectedPalette = 0;
 	this->bShowGrid8 = true;
 	this->bShowGrid16 = true;
 
@@ -79,6 +79,18 @@ void MetatileManager::mouseMoveEvent(QMouseEvent *e)
 		this->setTransformationAnchor(QGraphicsView::NoAnchor);
 		this->translate(0,(e->y()-this->iMouseTranslateY));
 		this->iMouseTranslateY = e->y();
+	}
+}
+
+void MetatileManager::wheelEvent(QWheelEvent *e)
+{
+	if(this->bSelectionMode) {
+		qreal steps = -(((qreal)e->angleDelta().y()/8)/15);
+		this->iGlobalTileset = ((this->iGlobalTileset+steps)<0)?0:((this->iGlobalTileset+steps)>7)?7:(this->iGlobalTileset+steps);
+		foreach(MetatileItem *t, this->mtlMetatiles)
+			t->setTileset(this->iGlobalTileset);
+	} else {
+		QGraphicsView::wheelEvent(e);
 	}
 }
 
@@ -290,6 +302,14 @@ void MetatileManager::setSelectedBank(quint16 bankno)
 	this->iSelectedBank = bankno;
 }
 
+void MetatileManager::getGlobalTileset(int i)
+{
+	if(!this->bSelectionMode) {
+		foreach(MetatileItem *t, this->mtlMetatiles) t->setTileset(i);
+		this->sendTileUpdates();
+	}
+}
+
 
 
 QVector<QByteArray> MetatileManager::createMetatileBinaryData()
@@ -448,10 +468,5 @@ void MetatileManager::sendTileUpdates(MetatileItem *t)
 
 void MetatileManager::getUpdatedMetatile(MetatileItem*)
 {
-//	MetatileItem *newtile = this->mtlMetatiles[t->metatileIndex()];
-//	if(t->palette() != newtile->palette()) {
-//		newtile->setPalette(t->palette());
-//		emit(metatilePaletteUpdated(newtile));
-//	}
 	this->viewport()->update();
 }

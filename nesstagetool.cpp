@@ -256,11 +256,22 @@ void NESStageTool::restoreSettings()
 
 
 void NESStageTool::sendBankUpdates() {
-	emit(sendBankUpdates(ui->spinBank0->value(),ui->spinBank1->value(),
-						 ui->spinBank2->value(),ui->spinBank3->value(),
-						 ui->spinBank4->value(),ui->spinBank5->value(),
-						 ui->spinBank6->value(),ui->spinBank7->value()
-						 ));
+	emit(banksUpdated(ui->spinBank0->value(),ui->spinBank1->value(),
+					  ui->spinBank2->value(),ui->spinBank3->value(),
+					  ui->spinBank4->value(),ui->spinBank5->value(),
+					  ui->spinBank6->value(),ui->spinBank7->value() ));
+}
+
+void NESStageTool::getBankUpdates(int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
+{
+	ui->spinBank0->setValue(b0);
+	ui->spinBank1->setValue(b1);
+	ui->spinBank2->setValue(b2);
+	ui->spinBank3->setValue(b3);
+	ui->spinBank4->setValue(b4);
+	ui->spinBank5->setValue(b5);
+	ui->spinBank6->setValue(b6);
+	ui->spinBank7->setValue(b7);
 }
 
 
