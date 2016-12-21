@@ -250,13 +250,8 @@ void PaletteManager::setNewSpritePalette(MetaspriteTileItem *t)
 
 void PaletteManager::setNewMetatilePalette(MetatileItem *t)
 {
-	quint8 p = t->palette();
-	QVector<QRgb> c = this->createPaletteColours();
-	t->setNewColours(c.at((p*PM_PALETTE_COLOURS_MAX)+1),
-					 c.at((p*PM_PALETTE_COLOURS_MAX)+2),
-					 c.at((p*PM_PALETTE_COLOURS_MAX)+3),
-					 p);
-	emit(metatileUpdated(t));
+	t->setPalette(this->iSpritePaletteSelected);
+//	emit(metatileUpdated(t));
 }
 
 void PaletteManager::sendRequestedPaletteUpdate(quint8 p)

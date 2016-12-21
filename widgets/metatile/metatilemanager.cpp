@@ -7,7 +7,7 @@ MetatileManager::MetatileManager(QWidget *parent) : QGraphicsView(parent)
 	this->iScale = MTM_DEFAULT_ZOOM;
 	this->bSelectionMode = false;
 	this->griSelection[0] = this->griSelection[1] = NULL;
-	this->iGlobalTileset = this->iSelectedTile = this->iSelectedPalette = 0;
+	this->iGlobalTileset = this->iSelectedSubtile = this->iSelectedTile = this->iSelectedPalette = 0;
 	this->bShowGrid8 = true;
 	this->bShowGrid16 = true;
 
@@ -128,8 +128,6 @@ void MetatileManager::populateBlankTiles() {
 			this->groupMetatiles->addToGroup(i);
 		}
 	}
-
-	this->sendTileUpdates();
 }
 
 bool MetatileManager::drawSelectionBox()
@@ -200,33 +198,16 @@ void MetatileManager::drawGridLines()
 	}
 }
 
-void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool s)
+void MetatileManager::setSelectedSubtile(int s)
+{
+	this->iSelectedSubtile = s;
+}
+
+void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool/* s*/)
 {
 	this->gsMetatiles->setBackgroundBrush(QBrush(QColor(c.at(0))));
-
-	QList<QGraphicsItem*> items = this->gsMetatiles->items(Qt::AscendingOrder);
-	foreach(QGraphicsItem *ms, items) {
-		if(ms->type()!=MetatileItem::Type)   continue;
-		quint8 currentpal = qgraphicsitem_cast<MetatileItem*>(ms)->palette();
-		qgraphicsitem_cast<MetatileItem*>(ms)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*currentpal)+1),
-															 c.at((PM_PALETTE_COLOURS_MAX*currentpal)+2),
-															 c.at((PM_PALETTE_COLOURS_MAX*currentpal)+3),
-															 currentpal);
-	}
-
-	if(s) {
-		items = this->gsMetatiles->selectedItems();
-		foreach(QGraphicsItem *i, items) {
-			((MetatileItem*)i)->setNewColours(c.at((PM_PALETTE_COLOURS_MAX*p)+1),
-											  c.at((PM_PALETTE_COLOURS_MAX*p)+2),
-											  c.at((PM_PALETTE_COLOURS_MAX*p)+3),
-											  p);
-		}
-	}
-
 	this->iSelectedPalette = p;
-
-	this->sendTileUpdates();
+	this->viewport()->update();
 }
 
 void MetatileManager::addNewSubtile(QPointF p) {
@@ -240,8 +221,10 @@ void MetatileManager::addNewSubtile(QPointF p) {
 	int subtiley = qFloor((qFloor(p.y()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
 	quint8 subtileindex = subtiley*(MTI_TILEWIDTH/MTI_SUBTILEWIDTH)+subtilex;
 
-	emit(requestNewSubtile(subtileindex, this->mtlMetatiles[index]));
-	emit(getPaletteUpdate(this->mtlMetatiles[index]));
+	this->mtlMetatiles[index]->setTileIndex(subtileindex,this->iSelectedSubtile);
+	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette);
+
+	this->updateScreen();
 }
 
 void MetatileManager::applySelectedPalette(QPointF p) {
@@ -253,23 +236,8 @@ void MetatileManager::applySelectedPalette(QPointF p) {
 	int index = (tiley*MTM_METATILES_W)+tilex;
 
 	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette%PM_SUBPALETTES_MAX);
-	emit(getPaletteUpdate(this->mtlMetatiles[index]));
-	emit(metatilePaletteUpdated(this->mtlMetatiles[index]));
-}
 
-
-
-void MetatileManager::updateMetatileStage()
-{
-	this->drawGridLines();
-	this->drawSelectionBox();
-	this->viewport()->update();
-}
-
-void MetatileManager::getMetatileEditorChange(quint8 i, MetatileItem *t)
-{
-	MetatileItem *newtile = new MetatileItem(t);
-	this->mtlMetatiles.replace(i,newtile);
+	this->updateScreen();
 }
 
 void MetatileManager::getSelectedStageTile(MetatileItem *mtold)
@@ -291,22 +259,11 @@ void MetatileManager::toggleShowGrid16(bool showgrid)
 	this->drawGridLines();
 }
 
-void MetatileManager::setBankDivider(int banksizeindex)
+void MetatileManager::setGlobalTileset(int i)
 {
-	this->iBankDivider = (0x100/(1<<banksizeindex));
-//	emit(this->bankDividerChanged(this->iBankDivider));
-}
-
-void MetatileManager::setSelectedBank(quint16 bankno)
-{
-	this->iSelectedBank = bankno;
-}
-
-void MetatileManager::getGlobalTileset(int i)
-{
+	this->iGlobalTileset = i;
 	if(!this->bSelectionMode) {
 		foreach(MetatileItem *t, this->mtlMetatiles) t->setTileset(i);
-		this->sendTileUpdates();
 	}
 }
 
@@ -314,8 +271,6 @@ void MetatileManager::getGlobalTileset(int i)
 
 QVector<QByteArray> MetatileManager::createMetatileBinaryData()
 {
-	this->updateMetatileStage();
-
 	QVector<QByteArray> bindata = QVector<QByteArray>(5);
 	quint8 palettecompressed[4] = {0,0,0,0};
 	for(int i=0; i<this->mtlMetatiles.size(); i++) {
@@ -419,10 +374,8 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 		this->mtlMetatiles[count]->setTileIndex(1,bindata[2].at(count));
 		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
 		this->mtlMetatiles[count]->setPalette(((bindata[4].at(qFloor(count/4)))&(0x03<<((count%4)*2)))>>((count%4)*2));
-		emit(metatilePaletteUpdated(this->mtlMetatiles[count]));
 	}
-
-	this->sendTileUpdates();
+	this->updateScreen();
 }
 
 void MetatileManager::clearAllMetatileData()
@@ -438,7 +391,6 @@ void MetatileManager::clearAllMetatileData()
 		t->setPalette(0);
 	}
 
-	this->sendTileUpdates();
 	this->drawGridLines();
 	if(this->bSelectionMode) this->drawSelectionBox();
 }
@@ -453,20 +405,9 @@ void MetatileManager::setSelectionMode(bool s)
 	this->setSceneRect(0, 0, MTM_CANVAS_SIZE*this->iScale, MTM_CANVAS_SIZE*this->iScale);
 }
 
-void MetatileManager::sendTileUpdates(MetatileItem *t)
-{
-	if(t) {
-		emit(this->getMetatileUpdate(t));
-		emit(this->getPaletteUpdate(t));
-	} else {
-		foreach(MetatileItem *i, this->mtlMetatiles) {
-			emit(this->getMetatileUpdate(i));
-			emit(this->getPaletteUpdate(i));
-		}
-	}
-}
 
-void MetatileManager::getUpdatedMetatile(MetatileItem*)
+
+void MetatileManager::updateScreen()
 {
 	this->viewport()->update();
 }

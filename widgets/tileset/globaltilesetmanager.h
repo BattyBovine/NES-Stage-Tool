@@ -23,12 +23,12 @@
 #include "palettemanager.h"
 #include "chrthread.h"
 
-#define GTSM_PIXMAP_KEY_FORMAT "Tileset%1:%2"
-
 #define GTSM_SCALE         1
 #define GTSM_TILEWIDTH	   8
 #define GTSM_TILESET_COUNT 8
 #define GTSM_BANKS_COUNT   8
+#define GTSM_ANIM_FRAMES   4
+#define GTSM_ANIM_DELAY    10
 
 class GlobalTilesetManager : public QGraphicsView
 {
@@ -48,24 +48,21 @@ signals:
 
 	void banksChanged(int,int,int,int,int,int,int,int);
 	void setGlobalTilesetSelectedIndex(int);
+	void newAnimationFrame(int);
 
 public slots:
 	void loadCHRData(QString);
-	void loadCHRBank();
-	void setNewSpriteColours(PaletteVector,quint8);
-	void setSelectedBank(quint16);
+	void loadCHRBank(int set);
 
-	void getNewTile(QPointF);
-	void getNewSubtile(quint8,MetatileItem*);
-	void updateMetatile(MetatileItem*);
 	void getNewCHRData(QImage);
 	void getCHRError(QString,QString);
 	void getBankSize(int);
 	void getGlobalTileset(int);
 	void getGlobalTilesetDelta(int);
+	void getGlobalPalette(PaletteVector,quint8);
 	void getBankSelections(int,int,int,int,int,int,int,int);
 	void enableAnimation(bool);
-	void getAnimBank(int i){this->iAnimBank=i;}
+	void getAnimBank(int i){this->iAnimFrame=i;}
 	void switchToNextAnimBank();
 
 	void reloadCurrentTileset();
@@ -82,7 +79,6 @@ protected:
 private:
 	bool drawBankDivider();
 	bool drawSelectionBox();
-	QImage createNewTile(quint32);
 
 	QGraphicsScene *gsTileset;
 	QString sCurrentTilesetFile;
@@ -91,19 +87,19 @@ private:
 
 	QImage imgTileset;
 	QImage imgSelectedBank;
-	PaletteVector pvCurrentColours;
 	QGraphicsPixmapItem *gpiTileset;
 	quint32 iSelectedTile;
-	quint8 iPalette;
-	bool bTallSprite;
+	quint8 iSelectedPalette;
+//	quint16 iSelectedBank;
+//	quint8 iPalette;
 	quint8 iBankDivider;
 	quint8 iGlobalTileset;
-	int iBankLists[GTSM_TILESET_COUNT][GTSM_TILESET_COUNT];
-	quint16 iSelectedBank;
+	quint16 iBankLists[GTSM_TILESET_COUNT][GTSM_BANKS_COUNT];
+	PaletteVector vPaletteLists[GTSM_TILESET_COUNT][PM_SUBPALETTES_MAX];
 
 	QTimer tAnimation;
 	bool bAnimation;
-	int iAnimBank;
+	quint8 iAnimFrame;
 
 	QGraphicsRectItem *griSelection[2];
 	QPointF pSelection;

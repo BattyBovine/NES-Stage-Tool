@@ -1220,6 +1220,7 @@
     <signal>sendNewMetatile(MetatileItem*)</signal>
     <signal>metatileUpdated(MetatileItem*)</signal>
     <signal>tilesetChangedDelta(int)</signal>
+    <signal>selectedTileChanged(int)</signal>
     <slot>loadCHRData(QString)</slot>
     <slot>setNewSpriteColours(QVector,quint8)</slot>
     <slot>getNewTile(QPointF)</slot>
@@ -1230,8 +1231,9 @@
     <slot>setSelectedBank(quint16)</slot>
     <slot>updateMetatile(MetatileItem*)</slot>
     <slot>getNewSubtile(quint8,MetatileItem*)</slot>
-    <slot>getNewCHRData(QImage)</slot>
+    <slot>getNewCHRData()</slot>
     <slot>getGlobalTileset(int)</slot>
+    <slot>getNewAnimationFrame(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1270,10 +1272,11 @@
     <slot>retrieveSelectedMetatile(MetatileItem*)</slot>
     <slot>retrieveMetatile(MetatileItem*)</slot>
     <slot>getMetatileEditorChange(MetatileList)</slot>
-    <slot>getUpdatedMetatile(MetatileItem*)</slot>
+    <slot>updateScreen()</slot>
     <slot>getStageMetatile(MetatileItem*)</slot>
     <slot>getSelectedStageTile(MetatileItem*)</slot>
-    <slot>getGlobalTileset(int)</slot>
+    <slot>setGlobalTileset(int)</slot>
+    <slot>setSelectedSubtile(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1303,11 +1306,13 @@
     <signal>tilesetChanged(QImage)</signal>
     <signal>banksChanged(int,int,int,int,int,int,int,int)</signal>
     <signal>setGlobalTilesetSelectedIndex(int)</signal>
+    <signal>newAnimationFrame(int)</signal>
     <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
     <slot>getBankSize(int)</slot>
     <slot>getBankSelections(int,int,int,int,int,int,int,int)</slot>
     <slot>getGlobalTileset(int)</slot>
     <slot>getGlobalTilesetDelta(int)</slot>
+    <slot>getGlobalPalette(PaletteVector,quint8)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -1507,54 +1512,6 @@
   </connection>
   <connection>
    <sender>gvMetatileEditor</sender>
-   <signal>requestNewTile(QPointF)</signal>
-   <receiver>gvTileset</receiver>
-   <slot>getNewTile(QPointF)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvTileset</sender>
-   <signal>tilesetChanged(bool)</signal>
-   <receiver>gvMetatileEditor</receiver>
-   <slot>sendTileUpdates()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>getMetatileUpdate(MetatileItem*)</signal>
-   <receiver>gvTileset</receiver>
-   <slot>updateMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileEditor</sender>
    <signal>getPaletteUpdate(MetatileItem*)</signal>
    <receiver>gvPaletteManager</receiver>
    <slot>setNewMetatilePalette(MetatileItem*)</slot>
@@ -1602,38 +1559,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>requestNewSubtile(quint8,MetatileItem*)</signal>
-   <receiver>gvTileset</receiver>
-   <slot>getNewSubtile(quint8,MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>sendMetatileEditorChange(quint8,MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getMetatileEditorChange(quint8,MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkShowTileGrid</sender>
    <signal>toggled(bool)</signal>
    <receiver>gvStage</receiver>
@@ -1662,22 +1587,6 @@
     <hint type="destinationlabel">
      <x>119</x>
      <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvTileset</sender>
-   <signal>metatileUpdated(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getUpdatedMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>255</y>
     </hint>
    </hints>
   </connection>
@@ -1726,38 +1635,6 @@
     <hint type="destinationlabel">
      <x>289</x>
      <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvTileset</sender>
-   <signal>sendNewMetatile(MetatileItem*)</signal>
-   <receiver>gvMetatileEditor</receiver>
-   <slot>getUpdatedMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvTileset</sender>
-   <signal>metatileUpdated(MetatileItem*)</signal>
-   <receiver>gvMetatileEditor</receiver>
-   <slot>getUpdatedMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>319</x>
-     <y>316</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>177</x>
-     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2101,7 +1978,7 @@
    <sender>comboGlobalTileset</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>gvMetatileSelector</receiver>
-   <slot>getGlobalTileset(int)</slot>
+   <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>865</x>
@@ -2133,7 +2010,7 @@
    <sender>gvGlobalTileset</sender>
    <signal>tilesetChanged(QImage)</signal>
    <receiver>gvTileset</receiver>
-   <slot>getNewCHRData(QImage)</slot>
+   <slot>getNewCHRData()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>393</x>
@@ -2146,18 +2023,82 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvGlobalTileset</sender>
-   <signal>tilesetChanged(QImage)</signal>
-   <receiver>gvStage</receiver>
-   <slot>refreshScreen()</slot>
+   <sender>gvPaletteManager</sender>
+   <signal>newSpriteColours(PaletteVector,quint8,bool)</signal>
+   <receiver>gvGlobalTileset</receiver>
+   <slot>getGlobalPalette(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>401</x>
+     <x>738</x>
+     <y>504</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvTileset</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
      <y>325</y>
     </hint>
     <hint type="destinationlabel">
-     <x>119</x>
-     <y>90</y>
+     <x>738</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvMetatileEditor</receiver>
+   <slot>setGlobalTileset(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>865</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>tilesetChanged(QImage)</signal>
+   <receiver>gvMetatileEditor</receiver>
+   <slot>updateScreen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>147</x>
+     <y>188</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvTileset</sender>
+   <signal>selectedTileChanged(int)</signal>
+   <receiver>gvMetatileEditor</receiver>
+   <slot>setSelectedSubtile(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>738</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>311</y>
     </hint>
    </hints>
   </connection>

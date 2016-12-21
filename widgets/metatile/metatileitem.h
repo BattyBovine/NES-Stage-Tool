@@ -13,12 +13,10 @@
 
 #include <QtMath>
 
-#include "metatiledictionary.h"
+#include "tilesetcache.h"
 
 #define MTI_SUBTILEWIDTH 8
 #define MTI_TILEWIDTH    16
-
-#define MTI_PIXMAP_KEY_FORMAT "Metatile%1:%2"
 
 class MetatileItem : public QGraphicsItem
 {
@@ -53,13 +51,11 @@ public:
 	void setPalette(quint8 p){this->iPalette=p;}
 	quint8 tileset(){return this->iTileset;}
 	quint8* tileIndices(){return this->iTiles;}
-	quint8 tileIndex(int i){if(i<0||i>3)return 0;return this->iTiles[i];}
+	quint8 tileIndex(int i){return this->iTiles[i%4];}
 	void setTileset(quint8 t){this->iTileset=t;}
 	void setTileIndices(quint8 t[4]){for(int i=0;i<4;i++) this->iTiles[i]=t[i];}
-	void setTileIndex(int i, quint8 t){if(i<0 || i>3) return; this->iTiles[i]=t;}
+	void setTileIndex(int i, quint8 t){this->iTiles[i%4]=t;}
 	QRgb getPaletteColour(quint8 i){return this->imgTile.color(i);}
-
-	static void insertPixmap(quint8 i, quint8 j, QPixmap p){MetatileDictionary::insert(QString(MTI_PIXMAP_KEY_FORMAT).arg(j).arg(i),p);}
 
 protected:
 	QRectF boundingRect() const {return QRectF(0,0,MTI_TILEWIDTH,MTI_TILEWIDTH);}
@@ -68,7 +64,7 @@ protected:
 private:
 	QImage  imgTile;
 	QPixmap pixPixmap;
-	quint8  iScreen,iMetatile,iPalette,iTileset;
+	quint8  iScreen,iMetatile,iPalette,iTileset,iAnimFrame;
 	quint8  iTiles[4];
 	qreal   iX,iY,iW,iH,iScale;
 };

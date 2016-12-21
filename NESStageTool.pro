@@ -40,7 +40,7 @@ SOURCES += main.cpp \
 #	widgets/animation/animationframemanager.cpp \
 #	widgets/animation/animationframeitem.cpp \
 	widgets/tileset/chrthread.cpp \
-    widgets/metatile/metatiledictionary.cpp
+    widgets/tileset/tilesetcache.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -60,7 +60,7 @@ HEADERS  += nesstagetool.h \
 #	widgets/animation/animationframemanager.h \
 #	widgets/animation/animationframeitem.h \
 	widgets/tileset/chrthread.h \
-    widgets/metatile/metatiledictionary.h
+    widgets/tileset/tilesetcache.h
 
 FORMS    += nesstagetool.ui
 

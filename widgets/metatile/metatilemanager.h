@@ -16,6 +16,8 @@
 
 #include <QtMath>
 
+#include "globaltilesetmanager.h"
+#include "tilesetmanager.h"
 #include "palettemanager.h"
 //#include "metatileitem.h"
 #include "metatileitem.h"
@@ -69,8 +71,6 @@ signals:
 	void metatilePaletteUpdated(MetatileItem*);
 	void sendMetatile(MetatileItem*);
 	void sendSelectedMetatile(MetatileItem*);
-	void sendMetatileEditorChange(MetatileList);
-	void sendMetatileEditorChange(quint8,MetatileItem*);
 	void stageMetatileReady(MetatileItem*,MetatileItem*);
 	void selectedStageTileReady(MetatileItem*,quint8);
 
@@ -87,23 +87,19 @@ public slots:
 	void setSelectionMode(bool);
 
 	void setNewTileColours(PaletteVector,quint8,bool);
-
-	void updateMetatileStage();
-	void sendTileUpdates(MetatileItem *t=NULL);
-	void getUpdatedMetatile(MetatileItem*);
-	void getMetatileEditorChange(quint8,MetatileItem*);
 	void getSelectedStageTile(MetatileItem*);
 
 	void toggleShowGrid8(bool);
 	void toggleShowGrid16(bool);
-	void setBankDivider(int);
-	void setSelectedBank(quint16);
-	void getGlobalTileset(int);
+	void setGlobalTileset(int);
+	void setSelectedSubtile(int);
 
 	void openMetatileFile(QString);
 	void importMetatileBinaryData(QVector<QByteArray>);
 	QVector<QByteArray> createMetatileBinaryData();
 	QString createMetatileASMData(QString);
+
+	void updateScreen();
 
 protected:
 	void resizeEvent(QResizeEvent*);//{this->fitInView(this->gsMetatiles->itemsBoundingRect(),Qt::KeepAspectRatio);}
@@ -124,6 +120,8 @@ private:
 	bool drawSelectionBox();
 	void drawGridLines();
 	MetatileList createFrame(quint8, qreal s=0);
+//	void generatePaletteTileCache();
+//	void generateTileCache(int,int,int,int);
 
 	qreal iScale;
 	int iMouseTranslateY;
@@ -131,13 +129,13 @@ private:
 	bool bSelectionMode;
 	QPointF pSelection;
 	QGraphicsRectItem *griSelection[2];
-	quint8 iSelectedTile;
-	quint8 iSelectedPalette;
 
 	bool bShowGrid8, bShowGrid16;
 	quint16 iBankDivider;
 	quint8 iGlobalTileset;
-	quint16 iSelectedBank;
+	quint8 iSelectedTile;
+	quint8 iSelectedSubtile;
+	quint8 iSelectedPalette;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;

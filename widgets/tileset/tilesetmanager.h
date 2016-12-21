@@ -19,6 +19,7 @@
 
 #include <QtMath>
 
+#include "globaltilesetmanager.h"
 #include "palettemanager.h"
 //#include "metaspritetileitem.h"
 #include "metatileitem.h"
@@ -26,6 +27,7 @@
 
 #define TSM_SCALE       2
 #define TSM_TILEWIDTH   8
+#define TSM_TILES_W     16
 
 class TilesetManager : public QGraphicsView
 {
@@ -41,6 +43,7 @@ signals:
 	void chrBankChanged(quint16);
 	void tilesetChangedDelta(int);
 	void chrDataChanged(QImage);
+	void selectedTileChanged(int);
 	void checkTilesBank(quint16,quint16);
 	void metatileUpdated(MetatileItem*);
 
@@ -49,15 +52,11 @@ public slots:
 	void loadCHRBank();
 	void setNewSpriteColours(PaletteVector,quint8);
 	void setSprites(bool tall){this->bTallSprite=tall;this->drawSelectionBox();emit(this->tilesetChanged(this->bTallSprite));}
-	void setSelectedBank(quint16);
 
-	void getNewTile(QPointF);
-	void getNewSubtile(quint8,MetatileItem*);
-	void updateMetatile(MetatileItem*);
-	void getNewCHRData(QImage);
+	void getNewCHRData();
 	void getCHRError(QString,QString);
-	void getBankDivider(quint16);
 	void getGlobalTileset(int);
+	void getNewAnimationFrame(int);
 
 	void reloadCurrentTileset();
 
@@ -73,23 +72,20 @@ protected:
 private:
 	bool drawBankDivider();
 	bool drawSelectionBox();
-	QImage createNewTile(quint32);
 
 	QGraphicsScene *gsTileset;
 	QString sCurrentTilesetFile;
 	QFileSystemWatcher fswCHR;
 	CHRThread *threadCHR;
 	QImage imgTileset;
-	QImage imgSelectedBank;
 	PaletteVector pvCurrentColours;
 	QGraphicsPixmapItem *gpiTileset;
 	quint8 iGlobalTileset;
 	quint8 iSelectedTile;
-	quint8 iPalette;
+	quint8 iSelectedPalette;
+	quint8 iAnimFrame;
 	bool bTallSprite;
 	qreal iScale;
-	quint16 iBankDivider;
-	quint16 iSelectedBank;
 
 	QGraphicsRectItem *griSelection[2];
 	QPointF pSelection;

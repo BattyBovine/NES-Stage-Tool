@@ -1,4 +1,5 @@
 #include "metatileitem.h"
+#include "globaltilesetmanager.h"
 
 MetatileItem::MetatileItem(QGraphicsItem *parent) : QGraphicsItem(parent)
 {
@@ -10,6 +11,7 @@ MetatileItem::MetatileItem(QGraphicsItem *parent) : QGraphicsItem(parent)
 	this->iMetatile = 0x00;
 	this->iPalette = 0x00;
 	this->iTileset = 0x00;
+	this->iAnimFrame = 0x00;
 	this->iTiles[0] = 0x00;
 	this->iTiles[1] = 0x00;
 	this->iTiles[2] = 0x00;
@@ -39,7 +41,15 @@ MetatileItem::MetatileItem(MetatileItem *i, QGraphicsItem *parent) : QGraphicsIt
 
 void MetatileItem::paint(QPainter *p, const QStyleOptionGraphicsItem*, QWidget*)
 {
-	p->drawPixmap(0,0,MetatileDictionary::find(QString(MTI_PIXMAP_KEY_FORMAT).arg(this->iTileset).arg(this->iMetatile)));
+	QPixmap tileset = TilesetCache::find(this->iTileset,this->iPalette,this->iAnimFrame);
+	QRectF tile0 = QRect((this->iTiles[0]%16)*MTI_SUBTILEWIDTH,qFloor(this->iTiles[0]/16)*MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH);
+	QRectF tile1 = QRect((this->iTiles[1]%16)*MTI_SUBTILEWIDTH,qFloor(this->iTiles[1]/16)*MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH);
+	QRectF tile2 = QRect((this->iTiles[2]%16)*MTI_SUBTILEWIDTH,qFloor(this->iTiles[2]/16)*MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH);
+	QRectF tile3 = QRect((this->iTiles[3]%16)*MTI_SUBTILEWIDTH,qFloor(this->iTiles[3]/16)*MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH);
+	p->drawPixmap(QRectF(0,0,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH),tileset,tile0);
+	p->drawPixmap(QRectF(MTI_SUBTILEWIDTH,0,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH),tileset,tile1);
+	p->drawPixmap(QRectF(0,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH),tileset,tile2);
+	p->drawPixmap(QRectF(MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH,MTI_SUBTILEWIDTH),tileset,tile3);
 }
 
 
@@ -61,33 +71,4 @@ void MetatileItem::copy(MetatileItem *i)
 	this->iTiles[3] = i->tileIndex(3);
 	this->imgTile = i->img();
 	this->setZValue(i->zValue());
-}
-
-
-
-void MetatileItem::setTile(quint8 i, QImage img)
-{
-	uchar *srcpixels = img.bits();
-	uchar *destpixels = this->imgTile.bits();
-	for(int y=0; y<img.height(); y++) {
-		for(int x=0; x<img.width(); x++) {
-			quint8 xtrans = x+(i&0x01?img.width():0);
-			quint8 ytrans = y+(i>=2?img.width():0);
-			destpixels[(ytrans*this->imgTile.width())+xtrans] = srcpixels[(y*img.width())+x];
-//			uint pixel = img.pixelIndex(x,y);
-//			this->imgTile.setPixel(xtrans,ytrans,pixel);
-		}
-	}
-	MetatileItem::insertPixmap(this->iMetatile,this->iTileset,QPixmap::fromImage(this->imgTile));
-	this->update(this->imgTile.rect());
-}
-
-void MetatileItem::setNewColours(QRgb a, QRgb b, QRgb c, quint8 p)
-{
-	this->iPalette = p;
-	this->imgTile.setColor(1,a);
-	this->imgTile.setColor(2,b);
-	this->imgTile.setColor(3,c);
-	MetatileItem::insertPixmap(this->iMetatile,this->iTileset,QPixmap::fromImage(this->imgTile));
-	this->update(this->imgTile.rect());
 }
