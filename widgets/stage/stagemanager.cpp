@@ -17,12 +17,13 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
-	this->pMouseTranslation = QPointF(0,0);
+	this->pMouseTranslation = QPointF(-1,-1);
 	this->pRightMousePos = QPointF(-1,-1);
-	this->pSceneTranslation = QPointF(0,0);
+	this->pSceneTranslation = QPointF(-1,-1);
 
 	this->populateBlankTiles();
 
+	this->drawGridLines();
 	this->updateScreen();
 }
 
@@ -304,7 +305,6 @@ void StageManager::clearAllMetatileData()
 			i->setMetatileIndex(0);
 		}
 	}
-	this->updateScreen();
 }
 
 
@@ -312,13 +312,13 @@ void StageManager::clearAllMetatileData()
 void StageManager::toggleShowScreenGrid(bool showgrid)
 {
 	this->bShowScreenGrid = showgrid;
-	this->updateScreen();
+	this->drawGridLines();
 }
 
 void StageManager::toggleShowTileGrid(bool showgrid)
 {
 	this->bShowTileGrid = showgrid;
-	this->updateScreen();
+	this->drawGridLines();
 }
 
 
@@ -364,7 +364,7 @@ QString StageManager::createStageASMData(QString labelprefix)
 	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
 	asmlabel += "_metatiles";
 	QString databytes;
-	QString attrbytes;
+//	QString attrbytes;
 
 	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
 	for(int s=0; s<numscreens; s++) {
@@ -490,6 +490,5 @@ void StageManager::updateScreen()
 {
 	this->groupMetatiles->setScale(this->iScale);
 	this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
-	this->drawGridLines();
 	this->viewport()->update();
 }

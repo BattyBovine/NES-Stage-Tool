@@ -55,6 +55,8 @@ public:
 	void setTileset(quint8 t){this->iTileset=t;}
 	void setTileIndices(quint8 t[4]){for(int i=0;i<4;i++) this->iTiles[i]=t[i];}
 	void setTileIndex(int i, quint8 t){this->iTiles[i%4]=t;}
+	quint8 animFrame(){return this->iAnimFrame;}
+	void setAnimFrame(int i){this->iAnimFrame=i;}
 	QRgb getPaletteColour(quint8 i){return this->imgTile.color(i);}
 
 protected:

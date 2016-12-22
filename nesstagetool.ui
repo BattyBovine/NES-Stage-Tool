@@ -1252,8 +1252,7 @@
     <signal>requestPaletteUpdates(quint8)</signal>
     <signal>bankDividerChanged(quint16)</signal>
     <signal>requestNewSubtile(quint8,MetatileItem*)</signal>
-    <signal>sendMetatileEditorChange(quint8,MetatileItem*)</signal>
-    <signal>sendMetatileEditorChange(MetatileList)</signal>
+    <signal>sendMetatileToSelector(MetatileItem*)</signal>
     <signal>stageMetatileReady(MetatileItem*,MetatileItem*)</signal>
     <signal>metatileUpdated(MetatileItem*)</signal>
     <signal>selectedStageTileReady(MetatileItem*,quint8)</signal>
@@ -1270,13 +1269,14 @@
     <slot>toggleShowGrid16(bool)</slot>
     <slot>getMetatileEditorChange(quint8,MetatileItem*)</slot>
     <slot>retrieveSelectedMetatile(MetatileItem*)</slot>
-    <slot>retrieveMetatile(MetatileItem*)</slot>
+    <slot>getEditorMetatile(MetatileItem*)</slot>
     <slot>getMetatileEditorChange(MetatileList)</slot>
     <slot>updateScreen()</slot>
     <slot>getStageMetatile(MetatileItem*)</slot>
     <slot>getSelectedStageTile(MetatileItem*)</slot>
     <slot>setGlobalTileset(int)</slot>
     <slot>setSelectedSubtile(int)</slot>
+    <slot>getNewAnimationFrame(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2095,6 +2095,54 @@
     <hint type="sourcelabel">
      <x>738</x>
      <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>sendMetatileToSelector(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getEditorMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvMetatileEditor</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
     </hint>
     <hint type="destinationlabel">
      <x>294</x>

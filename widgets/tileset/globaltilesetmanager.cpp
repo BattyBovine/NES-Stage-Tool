@@ -256,3 +256,86 @@ void GlobalTilesetManager::switchToNextAnimBank()
 	this->gpiTileset->setPixmap(TilesetCache::find(this->iGlobalTileset,this->iSelectedPalette,this->iAnimFrame));
 	emit(newAnimationFrame(this->iAnimFrame));
 }
+
+
+
+bool GlobalTilesetManager::openTilesetFile(QString filename)
+{
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		QMessageBox::warning(this,tr(GTSM_FILE_OPEN_ERROR_TITLE),tr(GTSM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+		return false;
+	}
+	QVector<QByteArray> inputbytes;
+	while(!file.atEnd()) {
+		QString line = file.readLine();
+
+		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
+		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
+		QByteArray bytesin;
+		while(bytesiter.hasNext()) {
+			QRegularExpressionMatch bytesmatch = bytesiter.next();
+			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
+		}
+		if(!bytesin.isEmpty() && bytesin.size()==this->iBankDivider) {
+			inputbytes.append(bytesin);
+		}
+	}
+
+	file.close();
+	if(inputbytes.isEmpty()) {
+		if(!file.open(QIODevice::ReadOnly)) {
+			QMessageBox::warning(this,tr(GTSM_FILE_OPEN_ERROR_TITLE),tr(GTSM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+			return false;
+		}
+		while(!file.atEnd()) {
+			inputbytes.append(file.read(this->iBankDivider));
+		}
+	}
+
+	this->importTilesetBinaryData(inputbytes);
+	return true;
+}
+
+bool GlobalTilesetManager::importTilesetBinaryData(QVector<QByteArray> inputbytes)
+{
+	for(int ts=0; ts<GTSM_TILESET_COUNT && ts<inputbytes.size(); ts++) {
+		if(inputbytes[ts].size()!=this->iBankDivider) {
+			QMessageBox::critical(this,tr(GTSM_FILE_OPEN_ERROR_TITLE),tr("The file is too ")+((inputbytes[ts].size()<this->iBankDivider)?tr("short"):tr("long"))+tr(" to be tileset data."),QMessageBox::NoButton);
+			return false;
+		}
+		for(int j=0; j<this->iBankDivider; j++) {
+			this->iBankLists[ts][j] = inputbytes[ts][j];
+		}
+	}
+	this->getGlobalTileset(this->iGlobalTileset);
+	return true;
+}
+
+QString GlobalTilesetManager::createTilesetASMData(QString labelprefix)
+{
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	asmlabel += "_tileset";
+	QString databytes;
+
+	for(int ts=0; ts<GTSM_TILESET_COUNT; ts++) {
+		QString countedlabel = asmlabel+QString("_%1").arg(ts,2,16,QChar('0')).toUpper();
+		databytes += countedlabel+":\n\t.byte ";
+		for(int bank=0; bank<this->iBankDivider; bank++)
+			databytes += QString("$%1").arg(this->iBankLists[ts][bank],2,16,QChar('0')).append(",").toUpper();
+		databytes = databytes.left(databytes.length()-1);
+		databytes += "\n";
+	}
+
+	return databytes;
+}
+
+QByteArray GlobalTilesetManager::createTilesetBinaryData()
+{
+	QByteArray indices;
+	for(int ts=0; ts<GTSM_TILESET_COUNT; ts++) {
+		for(int bank=0; bank<this->iBankDivider; bank++)
+			indices.append(this->iBankLists[ts][bank]);
+	}
+	return indices;
+}

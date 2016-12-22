@@ -20,8 +20,13 @@
 
 #include <QtMath>
 
+#include "metatileitem.h"
 #include "palettemanager.h"
 #include "chrthread.h"
+
+
+#define GTSM_FILE_OPEN_ERROR_TITLE    "Error opening palette file"
+#define GTSM_FILE_OPEN_ERROR_BODY     "Could not open palette file. Please make sure you have the necessary permissions to access files in this location."
 
 #define GTSM_SCALE         1
 #define GTSM_TILEWIDTH	   8
@@ -30,12 +35,18 @@
 #define GTSM_ANIM_FRAMES   4
 #define GTSM_ANIM_DELAY    10
 
+
 class GlobalTilesetManager : public QGraphicsView
 {
 	Q_OBJECT
 public:
 	explicit GlobalTilesetManager(QWidget *parent = 0);
 	~GlobalTilesetManager();
+
+	bool openTilesetFile(QString);
+	bool importTilesetBinaryData(QVector<QByteArray>);
+	QString createTilesetASMData(QString);
+	QByteArray createTilesetBinaryData();
 
 signals:
 	void tilesetChanged(QImage);

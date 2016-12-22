@@ -69,7 +69,7 @@ signals:
 	void requestPaletteUpdates(quint8);
 	void metatileUpdated(MetatileItem*);
 	void metatilePaletteUpdated(MetatileItem*);
-	void sendMetatile(MetatileItem*);
+	void sendMetatileToSelector(MetatileItem*);
 	void sendSelectedMetatile(MetatileItem*);
 	void stageMetatileReady(MetatileItem*,MetatileItem*);
 	void selectedStageTileReady(MetatileItem*,quint8);
@@ -87,7 +87,9 @@ public slots:
 	void setSelectionMode(bool);
 
 	void setNewTileColours(PaletteVector,quint8,bool);
+	void getEditorMetatile(MetatileItem*);
 	void getSelectedStageTile(MetatileItem*);
+	void getNewAnimationFrame(int);
 
 	void toggleShowGrid8(bool);
 	void toggleShowGrid16(bool);

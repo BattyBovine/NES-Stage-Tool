@@ -282,6 +282,8 @@ void NESStageTool::openStage()
 	if(filename.isEmpty())  return;
 	ui->gvStage->openStageFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
+	ui->gvGlobalTileset->openTilesetFile(filename);
+	ui->gvPaletteManager->openPaletteFile(filename);
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -303,6 +305,11 @@ void NESStageTool::saveASMStage(QString path)
 	file.write(ui->gvStage->createStageASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
 	file.write(ui->gvMetatileEditor->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write("\n");
+	for(int tileset=0; tileset<GTSM_TILESET_COUNT; tileset++)
+		file.write(ui->gvPaletteManager->createPaletteASMData(ui->lineASMLabel->text(),tileset).toUtf8());
+	file.write("\n");
+	file.write(ui->gvGlobalTileset->createTilesetASMData(ui->lineASMLabel->text()).toUtf8());
 
 	file.close();
 }
@@ -324,9 +331,8 @@ void NESStageTool::saveBinaryStage(QString path)
 	}
 
 	QVector<QByteArray> bindata = ui->gvStage->createStageBinaryData();
-	foreach(QByteArray bin, bindata) {
+	foreach(QByteArray bin, bindata)
 		if(!bin.isEmpty())  file.write(bin);
-	}
 	file.close();
 }
 
@@ -343,7 +349,7 @@ void NESStageTool::openPalette()
 {
 	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenPalette->text(), "", tr("Palette data (*.pal);;All files (*.*)"));
 	if(filename.isEmpty())  return;
-	ui->gvPaletteManager->setPaletteData(filename);
+	ui->gvPaletteManager->openPaletteFile(filename);
 }
 
 void NESStageTool::savePalette(QString path)
@@ -361,7 +367,9 @@ void NESStageTool::savePalette(QString path)
 		QMessageBox::warning(this,tr(FILE_SAVE_ERROR_TITLE),tr(FILE_SAVE_ERROR_BODY),QMessageBox::NoButton);
 		return;
 	}
-	QByteArray pal = ui->gvPaletteManager->paletteData();
+	QByteArray pal;
+	for(int tileset=0; tileset<GTSM_TILESET_COUNT; tileset++)
+		pal.append(ui->gvPaletteManager->createPaletteBinaryData(tileset));
 	file.write(pal);
 	file.close();
 }

@@ -35,8 +35,10 @@ public:
 	bool drawFullPaletteColours(QString);
 
 	bool drawSelectionBox(QGraphicsScene*, quint8);
-	bool setPaletteData(QString);
-	QByteArray paletteData();
+	bool openPaletteFile(QString);
+	bool importPaletteBinaryData(QVector<QByteArray>);
+	QString createPaletteASMData(QString,int tileset=0);
+	QByteArray createPaletteBinaryData(int tileset=0);
 
 signals:
 	void paletteSelected(quint8);

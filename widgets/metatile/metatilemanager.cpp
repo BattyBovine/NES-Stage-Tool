@@ -87,8 +87,7 @@ void MetatileManager::wheelEvent(QWheelEvent *e)
 	if(this->bSelectionMode) {
 		qreal steps = -(((qreal)e->angleDelta().y()/8)/15);
 		this->iGlobalTileset = ((this->iGlobalTileset+steps)<0)?0:((this->iGlobalTileset+steps)>7)?7:(this->iGlobalTileset+steps);
-		foreach(MetatileItem *t, this->mtlMetatiles)
-			t->setTileset(this->iGlobalTileset);
+		foreach(MetatileItem *t, this->mtlMetatiles) t->setTileset(this->iGlobalTileset);
 	} else {
 		QGraphicsView::wheelEvent(e);
 	}
@@ -240,9 +239,22 @@ void MetatileManager::applySelectedPalette(QPointF p) {
 	this->updateScreen();
 }
 
+void MetatileManager::getEditorMetatile(MetatileItem *t)
+{
+	this->mtlMetatiles[t->metatileIndex()]->setTileIndices(t->tileIndices());
+	this->mtlMetatiles[t->metatileIndex()]->setPalette(t->palette());
+}
+
 void MetatileManager::getSelectedStageTile(MetatileItem *mtold)
 {
 	emit(this->selectedStageTileReady(mtold,this->iSelectedTile));
+}
+
+void MetatileManager::getNewAnimationFrame(int animframe)
+{
+	foreach(MetatileItem *t, this->mtlMetatiles)
+		t->setAnimFrame(animframe);
+	this->viewport()->update();
 }
 
 
@@ -374,6 +386,7 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 		this->mtlMetatiles[count]->setTileIndex(1,bindata[2].at(count));
 		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
 		this->mtlMetatiles[count]->setPalette(((bindata[4].at(qFloor(count/4)))&(0x03<<((count%4)*2)))>>((count%4)*2));
+		this->sendMetatileToSelector(this->mtlMetatiles[count]);
 	}
 	this->updateScreen();
 }
