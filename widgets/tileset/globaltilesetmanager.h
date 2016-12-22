@@ -85,7 +85,7 @@ protected:
 	void dropEvent(QDropEvent*);
 	void dragLeaveEvent(QDragLeaveEvent *e){e->accept();}
 	void mousePressEvent(QMouseEvent*);
-//	void wheelEvent(QWheelEvent*);
+	void wheelEvent(QWheelEvent*);
 
 private:
 	bool drawBankDivider();
@@ -97,12 +97,9 @@ private:
 	CHRThread *threadCHR;
 
 	QImage imgTileset;
-	QImage imgSelectedBank;
 	QGraphicsPixmapItem *gpiTileset;
 	quint32 iSelectedTile;
 	quint8 iSelectedPalette;
-//	quint16 iSelectedBank;
-//	quint8 iPalette;
 	quint8 iBankDivider;
 	quint8 iGlobalTileset;
 	quint16 iBankLists[GTSM_TILESET_COUNT][GTSM_BANKS_COUNT];

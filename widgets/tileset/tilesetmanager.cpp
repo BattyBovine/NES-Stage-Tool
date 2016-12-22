@@ -76,7 +76,7 @@ void TilesetManager::mousePressEvent(QMouseEvent *e)
 
 void TilesetManager::wheelEvent(QWheelEvent *e)
 {
-	qreal steps = -(((qreal)e->angleDelta().y()/8)/15);
+	int steps = -qFloor(((qreal)e->angleDelta().y()/8)/15);
 
 	this->iGlobalTileset = ((this->iGlobalTileset+steps)<0)?0:((this->iGlobalTileset+steps)>7)?7:(this->iGlobalTileset+steps);
 

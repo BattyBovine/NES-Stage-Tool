@@ -98,9 +98,11 @@ void PaletteManager::spritePaletteSelected(QString s, quint8 i)
 QVector<QRgb> PaletteManager::createPaletteColours()
 {
 	QVector<QRgb> p;
-	for(int i=0; i<PM_SUBPALETTES_MAX; i++) {
-		for(int j=0; j<PM_PALETTE_COLOURS_MAX; j++) {
-			p.append(this->vPaletteColours.at(this->iSpritePaletteIndices[this->iGlobalPalette][i][j]).rgb());
+	for(int ts=0; ts<PM_GLOBAL_PALETTE_COUNT; ts++) {
+		for(int sp=0; sp<PM_SUBPALETTES_MAX; sp++) {
+			for(int c=0; c<PM_PALETTE_COLOURS_MAX; c++) {
+				p.append(this->vPaletteColours.at(this->iSpritePaletteIndices[ts][sp][c]).rgb());
+			}
 		}
 	}
 	return p;

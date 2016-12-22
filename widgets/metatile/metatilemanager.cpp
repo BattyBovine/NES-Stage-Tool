@@ -85,7 +85,7 @@ void MetatileManager::mouseMoveEvent(QMouseEvent *e)
 void MetatileManager::wheelEvent(QWheelEvent *e)
 {
 	if(this->bSelectionMode) {
-		qreal steps = -(((qreal)e->angleDelta().y()/8)/15);
+		int steps = -qFloor(((qreal)e->angleDelta().y()/8)/15);
 		this->iGlobalTileset = ((this->iGlobalTileset+steps)<0)?0:((this->iGlobalTileset+steps)>7)?7:(this->iGlobalTileset+steps);
 		foreach(MetatileItem *t, this->mtlMetatiles) t->setTileset(this->iGlobalTileset);
 	} else {
@@ -204,7 +204,7 @@ void MetatileManager::setSelectedSubtile(int s)
 
 void MetatileManager::setNewTileColours(PaletteVector c, quint8 p, bool/* s*/)
 {
-	this->gsMetatiles->setBackgroundBrush(QBrush(QColor(c.at(0))));
+	this->gsMetatiles->setBackgroundBrush(QBrush(QColor(c[this->iGlobalTileset*(PM_SUBPALETTES_MAX*PM_PALETTE_COLOURS_MAX)])));
 	this->iSelectedPalette = p;
 	this->viewport()->update();
 }

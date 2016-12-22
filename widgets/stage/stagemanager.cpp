@@ -204,6 +204,7 @@ void StageManager::populateBlankTiles()
 					i->setRealX((x*MTI_TILEWIDTH)+(sx*SM_SCREEN_TILES_W*MTI_TILEWIDTH));
 					i->setRealY((y*MTI_TILEWIDTH)+(sy*SM_SCREEN_TILES_H*MTI_TILEWIDTH));
 					i->setScreen(screen);
+					i->setMetatileIndex(0x10);
 					this->vScreens[screen].append(i);
 					this->groupMetatiles->addToGroup(i);
 				}

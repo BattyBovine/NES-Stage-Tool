@@ -81,18 +81,10 @@ void GlobalTilesetManager::mousePressEvent(QMouseEvent *e)
 	this->pSelection = this->mapToScene(e->pos());
 }
 
-//void GlobalTilesetManager::wheelEvent(QWheelEvent *e)
-//{
-//	qreal steps = -(((qreal)e->angleDelta().y()/8)/15);
-
-//	if(((this->iSelectedBank+steps)>=1) && ((this->iSelectedBank+steps)<=((this->imgTileset.height()/(this->iBankDivider>>1))-1)))
-//		this->iSelectedBank += steps;
-//	else
-//		this->iSelectedBank = ((steps<0)?0:((this->imgTileset.height()/(this->iBankDivider>>1))-1));
-
-//	this->loadCHRBank();
-//	emit(chrBankChanged(this->iSelectedBank));
-//}
+void GlobalTilesetManager::wheelEvent(QWheelEvent *e)
+{
+	this->getGlobalTilesetDelta(-qFloor(((qreal)e->angleDelta().y()/8)/15));
+}
 
 
 
@@ -142,24 +134,24 @@ void GlobalTilesetManager::loadCHRBank(int set)
 	for(int pal=0; pal<PM_SUBPALETTES_MAX; pal++) {
 		for(int anim=0; anim<GTSM_ANIM_FRAMES; anim++) {
 			QImage destimg = QImage(128, 128, QImage::Format_Indexed8);
-			uchar *dest = destimg.bits();
-			for(int i=0; i<this->iBankDivider; i++) {
-//				int yoffset = bankheight*this->iBankList[i];
-				int bankval = this->iBankLists[set][i]+(i==(this->iBankDivider-1)?anim:0);
-				for(int j=0; j<128*bankheight; j++)
-					dest[(128*bankheight*i)+j] = src[(128*bankheight*(bankval%(this->imgTileset.height()/bankheight)))+j];
-			}
-//			this->setFixedSize(256,this->iBankDivider);
-//			this->setSceneRect(0,0,256,this->iBankDivider);
+			destimg.fill(0);
 			for(int col=0; col<PM_PALETTE_COLOURS_MAX; col++)
 				destimg.setColor(col,vPaletteLists[set][pal][col]);
-//			this->gpiTileset->setPixmap(QPixmap::fromImage(this->imgSelectedBank));
+			uchar *dest = destimg.bits();
+			for(int i=0; i<this->iBankDivider; i++) {
+				int bankval = this->iBankLists[set][i]+(i==(this->iBankDivider-1)?anim:0);
+				for(int j=0; j<128*bankheight; j++) {
+					int destpixely = (128*bankheight*i);
+					int srcpixely = (128*bankheight*(bankval%(this->imgTileset.height()/bankheight)));
+					dest[destpixely+j] = src[srcpixely+j];
+				}
+			}
 			TilesetCache::insert(set,pal,anim,QPixmap::fromImage(destimg));
 		}
 	}
 	this->iAnimFrame = 0;
 	this->gpiTileset->setPixmap(TilesetCache::find(this->iGlobalTileset,this->iSelectedPalette,this->iAnimFrame));
-	emit(tilesetChanged(this->imgSelectedBank));
+	emit(tilesetChanged(this->imgTileset));
 
 	this->resizeEvent(NULL);
 }
@@ -168,9 +160,9 @@ void GlobalTilesetManager::loadCHRBank(int set)
 
 void GlobalTilesetManager::getNewCHRData(QImage img)
 {
-	img.setColor(1,this->imgTileset.color(1));
-	img.setColor(2,this->imgTileset.color(2));
-	img.setColor(3,this->imgTileset.color(3));
+//	img.setColor(1,this->imgTileset.color(1));
+//	img.setColor(2,this->imgTileset.color(2));
+//	img.setColor(3,this->imgTileset.color(3));
 	this->imgTileset = img;
 
 	for(int sets=0; sets<GTSM_TILESET_COUNT; sets++) this->loadCHRBank(sets);
@@ -213,9 +205,11 @@ void GlobalTilesetManager::getGlobalTilesetDelta(int d)
 void GlobalTilesetManager::getGlobalPalette(PaletteVector pal, quint8 s)
 {
 	this->iSelectedPalette = s;
-	for(int p=0; p<PM_SUBPALETTES_MAX; p++) {
-		for(int c=0; c<PM_PALETTE_COLOURS_MAX; c++)
-			this->vPaletteLists[this->iGlobalTileset][p].replace(c,pal.at((p*PM_PALETTE_COLOURS_MAX)+c));
+	for(int ts=0; ts<GTSM_TILESET_COUNT; ts++) {
+		for(int p=0; p<PM_SUBPALETTES_MAX; p++) {
+			for(int c=0; c<PM_PALETTE_COLOURS_MAX; c++)
+				this->vPaletteLists[ts][p].replace(c,pal[ts*(PM_SUBPALETTES_MAX*PM_PALETTE_COLOURS_MAX)+(p*PM_PALETTE_COLOURS_MAX)+c]);
+		}
 	}
 	this->loadCHRBank(this->iGlobalTileset);
 }
