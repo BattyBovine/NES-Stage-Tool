@@ -98,6 +98,7 @@ private:
 
 	QImage imgTileset;
 	QGraphicsPixmapItem *gpiTileset;
+	QPixmap pixLocalCache[GTSM_ANIM_FRAMES];
 	quint32 iSelectedTile;
 	quint8 iSelectedPalette;
 	quint8 iBankDivider;

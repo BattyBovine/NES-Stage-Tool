@@ -6,12 +6,6 @@ GlobalTilesetManager::GlobalTilesetManager(QWidget *parent) : QGraphicsView(pare
 	this->setScene(this->gsTileset);
 
 	this->imgTileset = QImage(128, 128, QImage::Format_Indexed8);
-	this->imgTileset.fill(0);
-	this->imgTileset.setColor(0,qRgb(0x00,0x00,0x00));
-	this->imgTileset.setColor(1,qRgb(0x55,0x55,0x55));
-	this->imgTileset.setColor(2,qRgb(0xAA,0xAA,0xAA));
-	this->imgTileset.setColor(3,qRgb(0xFF,0xFF,0xFF));
-//	this->imgSelectedBank = QImage(this->imgTileset);
 
 	this->gpiTileset = new QGraphicsPixmapItem();
 	this->gsTileset->addItem(this->gpiTileset);
@@ -135,8 +129,6 @@ void GlobalTilesetManager::loadCHRBank(int set)
 		for(int anim=0; anim<GTSM_ANIM_FRAMES; anim++) {
 			QImage destimg = QImage(128, 128, QImage::Format_Indexed8);
 			destimg.fill(0);
-			for(int col=0; col<PM_PALETTE_COLOURS_MAX; col++)
-				destimg.setColor(col,vPaletteLists[set][pal][col]);
 			uchar *dest = destimg.bits();
 			for(int i=0; i<this->iBankDivider; i++) {
 				int bankval = this->iBankLists[set][i]+(i==(this->iBankDivider-1)?anim:0);
@@ -146,11 +138,20 @@ void GlobalTilesetManager::loadCHRBank(int set)
 					dest[destpixely+j] = src[srcpixely+j];
 				}
 			}
+			if(set==this->iGlobalTileset) {
+				destimg.setColor(0,qRgb(0x00,0x00,0x00));
+				destimg.setColor(1,qRgb(0x55,0x55,0x55));
+				destimg.setColor(2,qRgb(0xAA,0xAA,0xAA));
+				destimg.setColor(3,qRgb(0xFF,0xFF,0xFF));
+				this->pixLocalCache[anim] = QPixmap::fromImage(destimg);
+			}
+			for(int col=0; col<PM_PALETTE_COLOURS_MAX; col++)
+				destimg.setColor(col,vPaletteLists[set][pal][col]);
 			TilesetCache::insert(set,pal,anim,QPixmap::fromImage(destimg));
 		}
 	}
 	this->iAnimFrame = 0;
-	this->gpiTileset->setPixmap(TilesetCache::find(this->iGlobalTileset,this->iSelectedPalette,this->iAnimFrame));
+	this->gpiTileset->setPixmap(this->pixLocalCache[this->iAnimFrame]);
 	emit(tilesetChanged(this->imgTileset));
 
 	this->resizeEvent(NULL);
@@ -160,11 +161,7 @@ void GlobalTilesetManager::loadCHRBank(int set)
 
 void GlobalTilesetManager::getNewCHRData(QImage img)
 {
-//	img.setColor(1,this->imgTileset.color(1));
-//	img.setColor(2,this->imgTileset.color(2));
-//	img.setColor(3,this->imgTileset.color(3));
 	this->imgTileset = img;
-
 	for(int sets=0; sets<GTSM_TILESET_COUNT; sets++) this->loadCHRBank(sets);
 }
 
@@ -238,7 +235,7 @@ void GlobalTilesetManager::enableAnimation(bool b)
 		this->tAnimation.start(GTSM_ANIM_DELAY);
 	else
 		this->tAnimation.stop();
-	this->gpiTileset->setPixmap(TilesetCache::find(this->iGlobalTileset,this->iSelectedPalette,this->iAnimFrame));
+	this->gpiTileset->setPixmap(this->pixLocalCache[this->iAnimFrame]);
 	emit(newAnimationFrame(this->iAnimFrame));
 }
 
@@ -247,7 +244,7 @@ void GlobalTilesetManager::switchToNextAnimBank()
 	this->iAnimFrame++;
 	if(this->iAnimFrame>=4) this->iAnimFrame = 0;
 	this->tAnimation.start(GTSM_ANIM_DELAY);
-	this->gpiTileset->setPixmap(TilesetCache::find(this->iGlobalTileset,this->iSelectedPalette,this->iAnimFrame));
+	this->gpiTileset->setPixmap(this->pixLocalCache[this->iAnimFrame]);
 	emit(newAnimationFrame(this->iAnimFrame));
 }
 
