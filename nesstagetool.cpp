@@ -47,9 +47,6 @@ NESStageTool::~NESStageTool()
 
 void NESStageTool::keyPressEvent(QKeyEvent *e)
 {
-	if(e->key()==Qt::Key_F5) {
-		ui->gvStage->updateScreen();
-	}
 //	if(ui->tabWidget->currentWidget()==ui->tabStage) {
 //		if(e->modifiers()&Qt::ControlModifier) {
 //			switch(e->key()) {
@@ -280,10 +277,10 @@ void NESStageTool::openStage()
 {
 	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text(), "", tr("All files (*.*)"));
 	if(filename.isEmpty())  return;
-	ui->gvStage->openStageFile(filename);
-	ui->gvMetatileEditor->openMetatileFile(filename);
-	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvPaletteManager->openPaletteFile(filename);
+	ui->gvGlobalTileset->openTilesetFile(filename);
+	ui->gvMetatileEditor->openMetatileFile(filename);
+	ui->gvStage->openStageFile(filename);
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -342,7 +339,7 @@ void NESStageTool::openCHR()
 {
 	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenCHR->text(), "", tr("CHR-ROM data (*.chr);;All files (*.*)"));
 	if(filename.isEmpty()) return;
-	emit chrFileOpened(filename);
+	ui->gvGlobalTileset->loadCHRData(filename);
 }
 
 void NESStageTool::openPalette()

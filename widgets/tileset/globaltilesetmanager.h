@@ -25,15 +25,15 @@
 #include "chrthread.h"
 
 
-#define GTSM_FILE_OPEN_ERROR_TITLE    "Error opening palette file"
-#define GTSM_FILE_OPEN_ERROR_BODY     "Could not open palette file. Please make sure you have the necessary permissions to access files in this location."
+#define GTSM_FILE_OPEN_ERROR_TITLE    "Error opening tileset file"
+#define GTSM_FILE_OPEN_ERROR_BODY     "Could not open tileset file. Please make sure you have the necessary permissions to access files in this location."
 
 #define GTSM_SCALE         1
 #define GTSM_TILEWIDTH	   8
 #define GTSM_TILESET_COUNT 8
 #define GTSM_BANKS_COUNT   8
 #define GTSM_ANIM_FRAMES   4
-#define GTSM_ANIM_DELAY    10
+#define GTSM_ANIM_DELAY    67
 
 
 class GlobalTilesetManager : public QGraphicsView
@@ -64,6 +64,7 @@ signals:
 public slots:
 	void loadCHRData(QString);
 	void loadCHRBank(int set);
+	void loadCHRBank();
 
 	void getNewCHRData(QImage);
 	void getCHRError(QString,QString);

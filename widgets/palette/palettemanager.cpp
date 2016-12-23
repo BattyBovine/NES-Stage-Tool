@@ -264,14 +264,26 @@ bool PaletteManager::openPaletteFile(QString filename)
 
 bool PaletteManager::importPaletteBinaryData(QVector<QByteArray> inputbytes)
 {
-	for(int ts=0; ts<PM_GLOBAL_PALETTE_COUNT&&ts<inputbytes.size(); ts++) {
-		if(inputbytes[ts].size()!=(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX)) {
-			QMessageBox::critical(this,tr(PM_FILE_OPEN_ERROR_TITLE),tr("The file is too ")+((inputbytes[ts].size()<(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX))?tr("short"):tr("long"))+tr(" to be palette data."),QMessageBox::NoButton);
+	if(inputbytes.size()==1) {
+		if(inputbytes[0].size()!=(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX)) {
+			QMessageBox::critical(this,tr(PM_FILE_OPEN_ERROR_TITLE),tr("The file is too ")+((inputbytes[0].size()<(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX))?tr("short"):tr("long"))+tr(" to be palette data."),QMessageBox::NoButton);
 			return false;
 		}
 		for(int i=0; i<PM_SUBPALETTES_MAX; i++) {
 			for(int j=0; j<PM_PALETTE_COLOURS_MAX; j++) {
-				this->iSpritePaletteIndices[ts][i][j] = (inputbytes[ts][j+(PM_PALETTE_COLOURS_MAX*i)]&0x3F);
+				this->iSpritePaletteIndices[this->iGlobalPalette][i][j] = (inputbytes[0][j+(PM_PALETTE_COLOURS_MAX*i)]&0x3F);
+			}
+		}
+	} else {
+		for(int ts=0; ts<PM_GLOBAL_PALETTE_COUNT&&ts<inputbytes.size(); ts++) {
+			if(inputbytes[ts].size()!=(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX)) {
+				QMessageBox::critical(this,tr(PM_FILE_OPEN_ERROR_TITLE),tr("The file is too ")+((inputbytes[ts].size()<(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX))?tr("short"):tr("long"))+tr(" to be palette data."),QMessageBox::NoButton);
+				return false;
+			}
+			for(int i=0; i<PM_SUBPALETTES_MAX; i++) {
+				for(int j=0; j<PM_PALETTE_COLOURS_MAX; j++) {
+					this->iSpritePaletteIndices[ts][i][j] = (inputbytes[ts][j+(PM_PALETTE_COLOURS_MAX*i)]&0x3F);
+				}
 			}
 		}
 	}

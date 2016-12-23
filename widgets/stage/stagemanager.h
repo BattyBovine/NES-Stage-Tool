@@ -65,10 +65,7 @@ public:
 
 signals:
 	void requestSelectedMetatile(MetatileItem*);
-	void getMetatileUpdate(MetatileItem*);
-	void getPaletteUpdate(MetatileItem*);
-	void requestNewGlobalPalette();
-	void requestPaletteUpdates(quint8);
+	void requestTileUpdate(MetatileItem*);
 
 	void setStageLabel(QString);
 	void bankDividerChanged(quint16);
@@ -84,16 +81,17 @@ public slots:
 	void toggleShowScreenGrid(bool);
 	void toggleShowTileGrid(bool);
 
-	void getUpdatedTile(MetatileItem*,quint8);
-	void getUpdatedPalette(MetatileItem*);
+	void getNewTile(MetatileItem*, MetatileItem*);
+	void getUpdatedTile(MetatileItem*);
+	void getSelectedTileset(quint8);
+	void getNewAnimationFrame(int);
 
 	void openStageFile(QString);
 	void importStageBinaryData(QVector<QByteArray>);
 	QVector<QByteArray> createStageBinaryData();
 	QString createStageASMData(QString);
 
-	void refreshScreen();
-	void updateScreen();
+	void updateStageView();
 
 protected:
 	void dragMoveEvent(QDragMoveEvent*e){e->accept();}
@@ -113,18 +111,17 @@ private:
 	void replaceStageTile(QPointF);
 	void replaceScreenTileset(QPointF);
 	void replaceAllScreenTiles(QPointF);
-	void placeUpdatedMetatile(int,int,MetatileItem*);
 
 	qreal iScale;
 	QPointF pMouseTranslation;
 	QPointF pRightMousePos;
 	QPointF pSceneTranslation;
-	int iTileQueue;
 
 	bool bShowScreenGrid, bShowTileGrid;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;
+	quint8 iSelectedTileset;
 	ScreenList vScreens;
 };
 

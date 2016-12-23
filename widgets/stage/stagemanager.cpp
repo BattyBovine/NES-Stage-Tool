@@ -9,7 +9,7 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->setScene(this->gsMetatiles);
 	this->iScale = SM_DEFAULT_ZOOM;
 	this->bShowScreenGrid = this->bShowTileGrid = true;
-	this->iTileQueue = 0;
+	this->iSelectedTileset = 0;
 	this->setBackgroundBrush(QBrush(Qt::black));
 
 	this->vScreens = ScreenList(SM_SCREENS_W*SM_SCREENS_H);
@@ -23,8 +23,7 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 
 	this->populateBlankTiles();
 
-	this->drawGridLines();
-	this->updateScreen();
+	this->updateStageView();
 }
 
 StageManager::~StageManager()
@@ -77,11 +76,11 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 	case Qt::MiddleButton:
 		this->iScale = SM_DEFAULT_ZOOM;
 		this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
-		this->updateScreen();
+		this->updateStageView();
 		break;
-	case Qt::RightButton:
-		this->replaceAllScreenTiles(this->mapToScene(e->pos()));
-		break;
+//	case Qt::RightButton:
+//		this->replaceAllScreenTiles(this->mapToScene(e->pos()));
+//		break;
 	default:
 		QGraphicsView::mouseDoubleClickEvent(e);
 	}
@@ -98,7 +97,7 @@ void StageManager::wheelEvent(QWheelEvent *e)
 	else
 		this->iScale = ((steps<0)?1:SM_MAX_ZOOM);
 
-	this->updateScreen();
+	this->updateStageView();
 }
 
 void StageManager::mouseReleaseEvent(QMouseEvent *e)
@@ -132,13 +131,6 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 	default:
 		QGraphicsView::keyPressEvent(e);
 	}
-}
-
-
-
-void StageManager::changePalette(int p)
-{
-	emit(requestPaletteUpdates(p));
 }
 
 
@@ -204,29 +196,10 @@ void StageManager::populateBlankTiles()
 					i->setRealX((x*MTI_TILEWIDTH)+(sx*SM_SCREEN_TILES_W*MTI_TILEWIDTH));
 					i->setRealY((y*MTI_TILEWIDTH)+(sy*SM_SCREEN_TILES_H*MTI_TILEWIDTH));
 					i->setScreen(screen);
-					i->setMetatileIndex(0x10);
 					this->vScreens[screen].append(i);
 					this->groupMetatiles->addToGroup(i);
 				}
 			}
-		}
-	}
-
-	emit(this->requestNewGlobalPalette());
-}
-
-void StageManager::getUpdatedTile(MetatileItem *mtold, quint8 i)
-{
-	quint8 index = this->vScreens[mtold->screen()].indexOf(mtold);
-	this->vScreens[mtold->screen()][index]->setMetatileIndex(i);
-	this->updateScreen();
-}
-void StageManager::getUpdatedPalette(MetatileItem *mtnew)
-{
-	foreach(MetatileList l, this->vScreens) {
-		foreach(MetatileItem *i, l) {
-			if(i->metatileIndex()==mtnew->metatileIndex())
-				i->setPalette(mtnew->palette());
 		}
 	}
 }
@@ -248,6 +221,7 @@ void StageManager::replaceStageTile(QPointF p)
 	this->pRightMousePos = QPointF(screen,tile);
 
 	emit(this->requestSelectedMetatile(this->vScreens[screen][tile]));
+	this->updateStageView();
 }
 
 void StageManager::replaceScreenTileset(QPointF p)
@@ -262,8 +236,9 @@ void StageManager::replaceScreenTileset(QPointF p)
 //	quint8 tile = ((tiley%SM_SCREEN_TILES_H)*SM_SCREEN_TILES_W)+(tilex%SM_SCREEN_TILES_W);
 
 	foreach(MetatileItem* t, this->vScreens[screen]) {
-		t->setTileset(1);
+		t->setTileset(this->iSelectedTileset);
 	}
+	this->updateStageView();
 }
 
 void StageManager::replaceAllScreenTiles(QPointF p)
@@ -279,7 +254,7 @@ void StageManager::replaceAllScreenTiles(QPointF p)
 
 	foreach(MetatileItem *i, this->vScreens[screen])
 		i->setMetatileIndex(this->vScreens[screen][tile]->metatileIndex());
-	this->updateScreen();
+	this->updateStageView();
 }
 
 void StageManager::deleteSelectedTiles()
@@ -296,6 +271,7 @@ void StageManager::deleteSelectedTiles()
 		MetatileItem *ms = qgraphicsitem_cast<MetatileItem*>(i);
 		store.append(ms);
 	}
+	this->updateStageView();
 }
 
 void StageManager::clearAllMetatileData()
@@ -306,9 +282,42 @@ void StageManager::clearAllMetatileData()
 			i->setMetatileIndex(0);
 		}
 	}
+	this->updateStageView();
 }
 
 
+
+void StageManager::getNewTile(MetatileItem *mtold, MetatileItem *mtnew)
+{
+	this->vScreens[mtold->screen()][mtold->metatileIndex()]->setPalette(mtnew->palette());
+	this->vScreens[mtold->screen()][mtold->metatileIndex()]->setTileIndices(mtnew->tileIndices());
+}
+
+void StageManager::getUpdatedTile(MetatileItem *mtnew)
+{
+	foreach(MetatileList l, this->vScreens) {
+		foreach(MetatileItem *t, l) {
+			if(t->metatileIndex() == mtnew->metatileIndex()) {
+				t->setPalette(mtnew->palette());
+				t->setTileIndices(mtnew->tileIndices());
+			}
+		}
+	}
+}
+
+void StageManager::getSelectedTileset(quint8 ts)
+{
+	this->iSelectedTileset = ts;
+}
+
+void StageManager::getNewAnimationFrame(int animframe)
+{
+	foreach(MetatileList l, this->vScreens) {
+		foreach(MetatileItem *t, l)
+			t->setAnimFrame(animframe);
+	}
+	this->viewport()->update();
+}
 
 void StageManager::toggleShowScreenGrid(bool showgrid)
 {
@@ -326,8 +335,6 @@ void StageManager::toggleShowTileGrid(bool showgrid)
 
 QVector<QByteArray> StageManager::createStageBinaryData()
 {
-	this->updateScreen();
-
 	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
 	QVector<QByteArray> bindata = QVector<QByteArray>(numscreens);
 	for(int s=0; s<numscreens; s++) {
@@ -474,22 +481,18 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 		for(int x=0; x<SM_SCREEN_TILES_W; x++) {
 			for(int y=0; y<SM_SCREEN_TILES_H; y++) {
 				this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]->setMetatileIndex(bindata[s].at((x*SM_SCREEN_TILES_H)+y));
+				emit(requestTileUpdate(this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]));
 			}
 		}
 	}
-
-	this->updateScreen();
 }
 
 
 
-void StageManager::refreshScreen()
-{
-	this->viewport()->update();
-}
-void StageManager::updateScreen()
+void StageManager::updateStageView()
 {
 	this->groupMetatiles->setScale(this->iScale);
 	this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
+	this->drawGridLines();
 	this->viewport()->update();
 }

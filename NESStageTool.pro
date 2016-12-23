@@ -25,7 +25,7 @@ SOURCES += main.cpp \
 	nesstagetool.cpp \
 	widgets/ui/lineeditasm.cpp \
 	widgets/ui/graphicsviewslider.cpp \
-	widgets/ui/spritelistwidget.cpp \
+#	widgets/ui/spritelistwidget.cpp \
 #	widgets/ui/framelistwidget.cpp \
 	widgets/stage/stagemanager.cpp \
 	widgets/palette/palettemanager.cpp \
@@ -45,7 +45,7 @@ SOURCES += main.cpp \
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
 	widgets/ui/graphicsviewslider.h \
-	widgets/ui/spritelistwidget.h \
+#	widgets/ui/spritelistwidget.h \
 #	widgets/ui/framelistwidget.h \
 	widgets/stage/stagemanager.h \
 	widgets/palette/palettemanager.h \
