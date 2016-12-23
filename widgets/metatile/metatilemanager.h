@@ -67,12 +67,10 @@ signals:
 	void getMetatileUpdate(MetatileItem*);
 	void getPaletteUpdate(MetatileItem*);
 	void requestPaletteUpdates(quint8);
+	void metatileUpdated(MetatileItem*,MetatileItem*);
 	void metatileUpdated(MetatileItem*);
-	void metatilePaletteUpdated(MetatileItem*);
 	void sendMetatileToSelector(MetatileItem*);
-	void sendSelectedMetatile(MetatileItem*);
-	void stageMetatileReady(MetatileItem*,MetatileItem*);
-	void selectedStageTileReady(MetatileItem*,quint8);
+	void sendSelectedTileset(quint8);
 
 	void setMetaspriteLabel(QString);
 	void bankDividerChanged(quint16);
@@ -89,6 +87,7 @@ public slots:
 	void setNewTileColours(PaletteVector,quint8,bool);
 	void getEditorMetatile(MetatileItem*);
 	void getSelectedStageTile(MetatileItem*);
+	void updateStageMetatile(MetatileItem*);
 	void getNewAnimationFrame(int);
 
 	void toggleShowGrid8(bool);

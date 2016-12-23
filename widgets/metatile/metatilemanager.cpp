@@ -88,6 +88,8 @@ void MetatileManager::wheelEvent(QWheelEvent *e)
 		int steps = -qFloor(((qreal)e->angleDelta().y()/8)/15);
 		this->iGlobalTileset = ((this->iGlobalTileset+steps)<0)?0:((this->iGlobalTileset+steps)>7)?7:(this->iGlobalTileset+steps);
 		foreach(MetatileItem *t, this->mtlMetatiles) t->setTileset(this->iGlobalTileset);
+		emit(sendSelectedTileset(this->iGlobalTileset));
+		this->updateScreen();
 	} else {
 		QGraphicsView::wheelEvent(e);
 	}
@@ -223,6 +225,8 @@ void MetatileManager::addNewSubtile(QPointF p) {
 	this->mtlMetatiles[index]->setTileIndex(subtileindex,this->iSelectedSubtile);
 	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette);
 
+	emit(sendMetatileToSelector(this->mtlMetatiles[index]));
+	emit(metatileUpdated(this->mtlMetatiles[index]));
 	this->updateScreen();
 }
 
@@ -236,25 +240,43 @@ void MetatileManager::applySelectedPalette(QPointF p) {
 
 	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette%PM_SUBPALETTES_MAX);
 
+	emit(sendMetatileToSelector(this->mtlMetatiles[index]));
+	emit(metatileUpdated(this->mtlMetatiles[index]));
 	this->updateScreen();
 }
 
 void MetatileManager::getEditorMetatile(MetatileItem *t)
 {
-	this->mtlMetatiles[t->metatileIndex()]->setTileIndices(t->tileIndices());
 	this->mtlMetatiles[t->metatileIndex()]->setPalette(t->palette());
+	this->mtlMetatiles[t->metatileIndex()]->setTileIndices(t->tileIndices());
+	this->mtlMetatiles[t->metatileIndex()]->setAnimFrame(t->animFrame());
+	this->updateScreen();
 }
 
 void MetatileManager::getSelectedStageTile(MetatileItem *mtold)
 {
-	emit(this->selectedStageTileReady(mtold,this->iSelectedTile));
+	MetatileItem *copyfrom = this->mtlMetatiles[this->iSelectedTile];
+	mtold->setMetatileIndex(copyfrom->metatileIndex());
+	mtold->setPalette(copyfrom->palette());
+	mtold->setTileIndices(copyfrom->tileIndices());
+	this->updateScreen();
+}
+
+void MetatileManager::updateStageMetatile(MetatileItem *mtold)
+{
+	MetatileItem *copyfrom = this->mtlMetatiles[mtold->metatileIndex()];
+	mtold->setPalette(copyfrom->palette());
+	mtold->setTileIndices(copyfrom->tileIndices());
+	this->updateScreen();
 }
 
 void MetatileManager::getNewAnimationFrame(int animframe)
 {
-	foreach(MetatileItem *t, this->mtlMetatiles)
+	foreach(MetatileItem *t, this->mtlMetatiles) {
 		t->setAnimFrame(animframe);
-	this->viewport()->update();
+		emit(sendMetatileToSelector(t));
+	}
+	this->updateScreen();
 }
 
 
@@ -386,7 +408,7 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 		this->mtlMetatiles[count]->setTileIndex(1,bindata[2].at(count));
 		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
 		this->mtlMetatiles[count]->setPalette(((bindata[4].at(qFloor(count/4)))&(0x03<<((count%4)*2)))>>((count%4)*2));
-		this->sendMetatileToSelector(this->mtlMetatiles[count]);
+		emit(sendMetatileToSelector(this->mtlMetatiles[count]));
 	}
 	this->updateScreen();
 }

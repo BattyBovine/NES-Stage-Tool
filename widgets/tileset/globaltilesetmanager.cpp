@@ -153,8 +153,16 @@ void GlobalTilesetManager::loadCHRBank(int set)
 	this->iAnimFrame = 0;
 	this->gpiTileset->setPixmap(this->pixLocalCache[this->iAnimFrame]);
 	emit(tilesetChanged(this->imgTileset));
+	emit(newAnimationFrame(this->iAnimFrame));
 
 	this->resizeEvent(NULL);
+}
+
+void GlobalTilesetManager::loadCHRBank()
+{
+	for(int ts=0; ts<GTSM_TILESET_COUNT; ts++) {
+		this->loadCHRBank(ts);
+	}
 }
 
 
@@ -285,6 +293,7 @@ bool GlobalTilesetManager::openTilesetFile(QString filename)
 	}
 
 	this->importTilesetBinaryData(inputbytes);
+	this->loadCHRBank();
 	return true;
 }
 

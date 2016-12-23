@@ -33,7 +33,7 @@
 #define GTSM_TILESET_COUNT 8
 #define GTSM_BANKS_COUNT   8
 #define GTSM_ANIM_FRAMES   4
-#define GTSM_ANIM_DELAY    10
+#define GTSM_ANIM_DELAY    67
 
 
 class GlobalTilesetManager : public QGraphicsView
@@ -64,6 +64,7 @@ signals:
 public slots:
 	void loadCHRData(QString);
 	void loadCHRBank(int set);
+	void loadCHRBank();
 
 	void getNewCHRData(QImage);
 	void getCHRError(QString,QString);

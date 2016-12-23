@@ -7,6 +7,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QPen>
+#include <QTimer>
 #include <QGraphicsSceneMouseEvent>
 
 #include <QMessageBox>
@@ -38,8 +39,7 @@ public:
 	qreal width(){return this->iW;}
 	qreal height(){return this->iH;}
 
-	void setTile(quint8,QImage);
-	void setNewColours(QRgb,QRgb,QRgb,quint8);
+	void enableAnimation(bool);
 
 	QImage img(){return this->imgTile;}
 	void setImg(QImage i){this->imgTile=i;}

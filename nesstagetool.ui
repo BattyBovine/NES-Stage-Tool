@@ -1253,12 +1253,11 @@
     <signal>bankDividerChanged(quint16)</signal>
     <signal>requestNewSubtile(quint8,MetatileItem*)</signal>
     <signal>sendMetatileToSelector(MetatileItem*)</signal>
-    <signal>stageMetatileReady(MetatileItem*,MetatileItem*)</signal>
     <signal>metatileUpdated(MetatileItem*)</signal>
-    <signal>selectedStageTileReady(MetatileItem*,quint8)</signal>
-    <signal>metatilePaletteUpdated(MetatileItem*)</signal>
     <signal>tilesetChangedDelta(int)</signal>
-    <slot>updateMetatile(quint8,MetatileItem*)</slot>
+    <signal>metatileUpdated(MetatileItem*,MetatileItem*)</signal>
+    <signal>sendSelectedTileset(quint8)</signal>
+    <slot>updateStageMetatile(MetatileItem*)</slot>
     <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
     <slot>deleteSelectedTiles()</slot>
     <slot>sendTileUpdates()</slot>
@@ -1267,7 +1266,6 @@
     <slot>checkTilesBank(quint16,quint16)</slot>
     <slot>toggleShowGrid8(bool)</slot>
     <slot>toggleShowGrid16(bool)</slot>
-    <slot>getMetatileEditorChange(quint8,MetatileItem*)</slot>
     <slot>retrieveSelectedMetatile(MetatileItem*)</slot>
     <slot>getEditorMetatile(MetatileItem*)</slot>
     <slot>getMetatileEditorChange(MetatileList)</slot>
@@ -1284,18 +1282,17 @@
    <extends>QGraphicsView</extends>
    <header>stagemanager.h</header>
    <slots>
-    <signal>getMetatileUpdate(MetatileItem*)</signal>
-    <signal>getPaletteUpdate(MetatileItem*)</signal>
     <signal>requestSelectedMetatile(MetatileItem*)</signal>
-    <signal>requestNewGlobalPalette()</signal>
+    <signal>requestTileUpdate(MetatileItem*)</signal>
     <signal>setStageLabel(QString)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
-    <slot>getUpdatedMetatile(MetatileItem*,MetatileItem*)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
-    <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
     <slot>refreshScreen()</slot>
-    <slot>getUpdatedPalette(MetatileItem*)</slot>
+    <slot>getUpdatedTile(MetatileItem*)</slot>
+    <slot>getNewAnimationFrame(int)</slot>
+    <slot>getNewTile(MetatileItem*,MetatileItem*)</slot>
+    <slot>getSelectedTileset(quint8)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1313,6 +1310,7 @@
     <slot>getGlobalTileset(int)</slot>
     <slot>getGlobalTilesetDelta(int)</slot>
     <slot>getGlobalPalette(PaletteVector,quint8)</slot>
+    <slot>loadCHRData(QString)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -1511,22 +1509,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>getPaletteUpdate(MetatileItem*)</signal>
-   <receiver>gvPaletteManager</receiver>
-   <slot>setNewMetatilePalette(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkShowGrid8</sender>
    <signal>toggled(bool)</signal>
    <receiver>gvMetatileEditor</receiver>
@@ -1591,22 +1573,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvMetatileSelector</sender>
-   <signal>selectedStageTileReady(MetatileItem*,quint8)</signal>
-   <receiver>gvStage</receiver>
-   <slot>getUpdatedTile(MetatileItem*,quint8)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>319</x>
-     <y>255</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>119</x>
-     <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvStage</sender>
    <signal>requestSelectedMetatile(MetatileItem*)</signal>
    <receiver>gvMetatileSelector</receiver>
@@ -1619,22 +1585,6 @@
     <hint type="destinationlabel">
      <x>319</x>
      <y>255</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvStage</sender>
-   <signal>requestNewGlobalPalette()</signal>
-   <receiver>gvPaletteManager</receiver>
-   <slot>generateNewGlobalPalette()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1843,22 +1793,6 @@
     <hint type="destinationlabel">
      <x>470</x>
      <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>metatilePaletteUpdated(MetatileItem*)</signal>
-   <receiver>gvStage</receiver>
-   <slot>getUpdatedPalette(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>305</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>119</x>
-     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2103,6 +2037,102 @@
    </hints>
   </connection>
   <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvMetatileEditor</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>requestTileUpdate(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>updateStageMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenCHR</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>openCHR()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenPalette</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>openPalette()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>metatileUpdated(MetatileItem*)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getUpdatedTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>gvMetatileEditor</sender>
    <signal>sendMetatileToSelector(MetatileItem*)</signal>
    <receiver>gvMetatileSelector</receiver>
@@ -2119,34 +2149,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvGlobalTileset</sender>
-   <signal>newAnimationFrame(int)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getNewAnimationFrame(int)</slot>
+   <sender>gvMetatileSelector</sender>
+   <signal>sendSelectedTileset(quint8)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getSelectedTileset(quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>763</x>
      <y>211</y>
     </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvGlobalTileset</sender>
-   <signal>newAnimationFrame(int)</signal>
-   <receiver>gvMetatileEditor</receiver>
-   <slot>getNewAnimationFrame(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
-    </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>311</y>
+     <x>319</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>
