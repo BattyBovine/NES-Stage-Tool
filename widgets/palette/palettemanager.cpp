@@ -232,6 +232,7 @@ bool PaletteManager::openPaletteFile(QString filename)
 		return false;
 	}
 	QVector<QByteArray> inputbytes;
+	bool palettesfound = false;
 	while(!file.atEnd()) {
 		QString line = file.readLine();
 
@@ -242,7 +243,14 @@ bool PaletteManager::openPaletteFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty() && bytesin.size()==(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX)) {
+
+		QRegularExpression tilesetlabel("^(.*?)_palette(.*?)");
+		QRegularExpressionMatch tilesetlabelmatch = tilesetlabel.match(line);
+		if(tilesetlabelmatch.hasMatch()) {
+			palettesfound = true;
+		}
+
+		if(!bytesin.isEmpty() && palettesfound && bytesin.size()==(PM_SUBPALETTES_MAX*PM_SUBPALETTES_MAX)) {
 			inputbytes.append(bytesin);
 		}
 	}

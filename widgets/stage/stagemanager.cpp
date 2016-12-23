@@ -373,6 +373,8 @@ QString StageManager::createStageASMData(QString labelprefix)
 	asmlabel += "_metatiles";
 	QString databytes;
 //	QString attrbytes;
+	QString tilesetbytes = labelprefix+QString("_tilesets:\n\t.byte ");
+	quint8 tilesetbyte = 0x00;
 
 	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
 	for(int s=0; s<numscreens; s++) {
@@ -388,6 +390,12 @@ QString StageManager::createStageASMData(QString labelprefix)
 		}
 		screenbytes = screenbytes.left(screenbytes.length()-1);
 		databytes.append(screenbytes).append("\n");
+
+		tilesetbyte |= (this->vScreens[s][0]->tileset()&0x0F)<<(4*(s&0x01));
+		if((s&0x01)) {
+			tilesetbytes += QString("$%1").arg(tilesetbyte,2,16,QChar('0')).toUpper().append(",");
+			tilesetbyte = 0x00;
+		}
 
 		// Create attribute data (vertical columns)
 //		QString attrcountedlabel = labelprefix+QString("_attributes")+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
@@ -421,7 +429,9 @@ QString StageManager::createStageASMData(QString labelprefix)
 
 	databytes += asmlabel+"_end:\n";
 
-	return databytes;
+	tilesetbytes = tilesetbytes.left(tilesetbytes.length()-1) + QString("\n");
+
+	return databytes+tilesetbytes;
 }
 
 
@@ -434,8 +444,10 @@ void StageManager::openStageFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-	QVector<QByteArray> inputbytes(SM_SCREENS_W*SM_SCREENS_H);
+	QVector<QByteArray> inputbytes(SM_SCREENS_W*SM_SCREENS_H+1);
 	QString labelname;
+	bool tilesetsfound = false;
+
 	while(!file.atEnd()) {
 		QString line = file.readLine();
 
@@ -454,8 +466,19 @@ void StageManager::openStageFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty() && bytesin.size()==(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H))
+
+		if(!bytesin.isEmpty() && bytesin.size()==(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H)) {
 			inputbytes.replace(labelnum,bytesin);
+		} else if(!bytesin.isEmpty() && tilesetsfound && bytesin.size()==qFloor((SM_SCREENS_W*SM_SCREENS_H)/2)) {
+			inputbytes.append(bytesin);
+			tilesetsfound = false;
+		}
+
+		QRegularExpression tilesetlabel("^(.*?)_tilesets:$");
+		QRegularExpressionMatch tilesetlabelmatch = tilesetlabel.match(line);
+		if(tilesetlabelmatch.hasMatch()) {
+			tilesetsfound = true;
+		}
 	}
 	file.close();
 	if(!labelname.isEmpty()) {
@@ -484,6 +507,16 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 				emit(requestTileUpdate(this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]));
 			}
 		}
+	}
+
+	for(int s=0; s<(SM_SCREENS_W*SM_SCREENS_H); s++) {
+		if(bindata.last().size()!=qFloor((SM_SCREENS_W*SM_SCREENS_H)/2)) {
+			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+			return;
+		}
+		quint8 tileset = ((bindata.last().at((s>>1))>>(4*(s&0x01)))&0x0F);
+		foreach(MetatileItem *t, this->vScreens[s])
+			t->setTileset(tileset);
 	}
 }
 
