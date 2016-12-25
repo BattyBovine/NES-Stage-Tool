@@ -12,19 +12,12 @@ PaletteManager::PaletteManager(QWidget *parent) : QGraphicsView(parent)
 		this->gsSpritePaletteScene[i]->setSceneRect(0,0,64,16);
 	}
 
-	this->iGlobalPalette = 0;
-	for(int p=0; p<PM_GLOBAL_PALETTE_COUNT; p++) {
-		for(int i=0; i<PM_SUBPALETTES_MAX; i++) {
-			this->iSpritePaletteIndices[p][i][0] = 0x0F;
-			this->iSpritePaletteIndices[p][i][1] = 0x00;
-			this->iSpritePaletteIndices[p][i][2] = 0x10;
-			this->iSpritePaletteIndices[p][i][3] = 0x30;
-		}
-	}
 	this->iSpritePaletteSelected = this->iSpritePaletteSelectedIndex = 0;
 	this->griSelectionBox[0] = this->griSelectionBox[1] = 0;
 
 	this->setScene(this->gsFullPaletteScene);
+
+	this->clearAllPaletteData();
 }
 
 PaletteManager::~PaletteManager()
@@ -223,6 +216,21 @@ bool PaletteManager::drawSelectionBox(QGraphicsScene *s, quint8 i)
 
 	return true;
 }
+
+void PaletteManager::clearAllPaletteData()
+{
+	this->iGlobalPalette = 0;
+	for(int p=0; p<PM_GLOBAL_PALETTE_COUNT; p++) {
+		for(int i=0; i<PM_SUBPALETTES_MAX; i++) {
+			this->iSpritePaletteIndices[p][i][0] = 0x0F;
+			this->iSpritePaletteIndices[p][i][1] = 0x00;
+			this->iSpritePaletteIndices[p][i][2] = 0x10;
+			this->iSpritePaletteIndices[p][i][3] = 0x30;
+		}
+	}
+}
+
+
 
 bool PaletteManager::openPaletteFile(QString filename)
 {

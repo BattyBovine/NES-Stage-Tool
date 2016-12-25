@@ -200,6 +200,9 @@
                <height>0</height>
               </size>
              </property>
+             <property name="acceptDrops">
+              <bool>false</bool>
+             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -636,6 +639,9 @@
                <width>256</width>
                <height>256</height>
               </size>
+             </property>
+             <property name="acceptDrops">
+              <bool>true</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1285,6 +1291,8 @@
     <signal>requestSelectedMetatile(MetatileItem*)</signal>
     <signal>requestTileUpdate(MetatileItem*)</signal>
     <signal>setStageLabel(QString)</signal>
+    <signal>stageFileDropped(QString)</signal>
+    <signal>clearAllMetatileData()</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1323,8 +1331,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>732</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1339,12 +1347,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1355,12 +1363,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1371,12 +1379,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1387,12 +1395,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1403,12 +1411,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1419,12 +1427,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1435,12 +1443,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>462</y>
     </hint>
    </hints>
   </connection>
@@ -1451,12 +1459,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>462</y>
     </hint>
    </hints>
   </connection>
@@ -1467,12 +1475,12 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>853</x>
+     <y>377</y>
     </hint>
    </hints>
   </connection>
@@ -1483,8 +1491,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -1499,12 +1507,12 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>891</x>
+     <y>339</y>
     </hint>
    </hints>
   </connection>
@@ -1515,8 +1523,8 @@
    <slot>toggleShowGrid8(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>499</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
@@ -1531,8 +1539,8 @@
    <slot>toggleShowGrid16(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>558</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>278</x>
@@ -1547,12 +1555,12 @@
    <slot>toggleShowTileGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>541</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
-     <x>119</x>
-     <y>90</y>
+     <x>140</x>
+     <y>193</y>
     </hint>
    </hints>
   </connection>
@@ -1563,12 +1571,12 @@
    <slot>toggleShowScreenGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>608</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
-     <x>119</x>
-     <y>90</y>
+     <x>140</x>
+     <y>193</y>
     </hint>
    </hints>
   </connection>
@@ -1579,12 +1587,12 @@
    <slot>getSelectedStageTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>140</x>
+     <y>193</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>255</y>
+     <x>891</x>
+     <y>330</y>
     </hint>
    </hints>
   </connection>
@@ -1803,8 +1811,8 @@
    <slot>setStageLabelPrefix(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>140</x>
+     <y>193</y>
     </hint>
     <hint type="destinationlabel">
      <x>470</x>
@@ -1951,8 +1959,8 @@
      <y>325</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>853</x>
+     <y>377</y>
     </hint>
    </hints>
   </connection>
@@ -2164,6 +2172,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>stageFileDropped(QString)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>openStage(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNewProject</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>newProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2175,7 +2215,7 @@
   <slot>setNewPaletteFile(QString)</slot>
   <slot>saveASMStage()</slot>
   <slot>saveBinaryStage()</slot>
-  <slot>openStage()</slot>
+  <slot>openStage(QString)</slot>
   <slot>newProject()</slot>
   <slot>setStageLabelPrefix(QString)</slot>
   <slot>setPlayButtonText()</slot>

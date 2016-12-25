@@ -52,7 +52,6 @@ public:
 	~MetatileManager();
 
 	qreal scale(){return this->iScale;}
-	void clearAllMetatileData();
 
 	void selectAllSprites();
 	void deselectAllSprites();
@@ -83,6 +82,7 @@ signals:
 public slots:
 	void setScale(qreal s){this->iScale=s;}
 	void setSelectionMode(bool);
+	void clearAllMetatileData();
 
 	void setNewTileColours(PaletteVector,quint8,bool);
 	void getEditorMetatile(MetatileItem*);
@@ -121,14 +121,12 @@ private:
 	bool drawSelectionBox();
 	void drawGridLines();
 	MetatileList createFrame(quint8, qreal s=0);
-//	void generatePaletteTileCache();
-//	void generateTileCache(int,int,int,int);
 
 	qreal iScale;
-	int iMouseTranslateY;
 
 	bool bSelectionMode;
 	QPointF pSelection;
+	QPoint pMouseTranslation;
 	QGraphicsRectItem *griSelection[2];
 
 	bool bShowGrid8, bShowGrid16;

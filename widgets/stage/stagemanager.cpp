@@ -17,9 +17,9 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
-	this->pMouseTranslation = QPointF(-1,-1);
-	this->pRightMousePos = QPointF(-1,-1);
-	this->pSceneTranslation = QPointF(-1,-1);
+	this->pMouseTranslation = QPoint(-1,-1);
+	this->pRightMousePos = QPoint(-1,-1);
+	this->pSceneTranslation = QPoint(-1,-1);
 
 	this->populateBlankTiles();
 
@@ -37,7 +37,8 @@ StageManager::~StageManager()
 void StageManager::dropEvent(QDropEvent *e)
 {
 	e->acceptProposedAction();
-	this->openStageFile(e->mimeData()->urls()[0].toLocalFile());
+	emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
+//	this->openStageFile(e->mimeData()->urls()[0].toLocalFile());
 }
 
 void StageManager::mousePressEvent(QMouseEvent *e)
@@ -257,29 +258,15 @@ void StageManager::replaceAllScreenTiles(QPointF p)
 	this->updateStageView();
 }
 
-void StageManager::deleteSelectedTiles()
-{
-	QList<QGraphicsItem*> sel = this->gsMetatiles->selectedItems();
-	foreach(QGraphicsItem *s, sel) {
-		this->gsMetatiles->removeItem(s);
-	}
-
-	QList<QGraphicsItem*> items = this->gsMetatiles->items(Qt::AscendingOrder);
-	MetatileList store;
-	foreach(QGraphicsItem *i, items) {
-		if(i->type()!=MetatileItem::Type)   continue;
-		MetatileItem *ms = qgraphicsitem_cast<MetatileItem*>(i);
-		store.append(ms);
-	}
-	this->updateStageView();
-}
-
 void StageManager::clearAllMetatileData()
 {
-	this->gsMetatiles->clear();
+	quint8 tileindices[4] = {0,0,0,0};
 	foreach(MetatileList l, this->vScreens) {
 		foreach(MetatileItem *i, l) {
+			i->setTileset(0);
+			i->setTileIndices(tileindices);
 			i->setMetatileIndex(0);
+			i->setPalette(0);
 		}
 	}
 	this->updateStageView();

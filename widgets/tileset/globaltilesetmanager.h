@@ -76,6 +76,7 @@ public slots:
 	void enableAnimation(bool);
 	void getAnimBank(int i){this->iAnimFrame=i;}
 	void switchToNextAnimBank();
+	void clearAllTilesetData();
 
 	void reloadCurrentTileset();
 

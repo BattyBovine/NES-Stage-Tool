@@ -53,7 +53,7 @@ void MetatileManager::mousePressEvent(QMouseEvent *e)
 		if(!this->bSelectionMode) this->addNewSubtile(p);
 		break;
 	case Qt::MiddleButton:
-		this->iMouseTranslateY = e->y();
+		this->pMouseTranslation = QPoint(e->x(),e->y());
 		break;
 	case Qt::LeftButton:
 		this->pSelection = p;
@@ -77,8 +77,8 @@ void MetatileManager::mouseMoveEvent(QMouseEvent *e)
 
 	if(e->buttons()&Qt::MiddleButton) {
 		this->setTransformationAnchor(QGraphicsView::NoAnchor);
-		this->translate(0,(e->y()-this->iMouseTranslateY));
-		this->iMouseTranslateY = e->y();
+		this->translate(0,(e->y()-this->pMouseTranslation.y()));
+		this->pMouseTranslation = QPoint(e->x(),e->y());
 	}
 }
 
@@ -415,15 +415,14 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 
 void MetatileManager::clearAllMetatileData()
 {
-	this->gsMetatiles->clear();
+	this->pSelection = QPoint(0,0);
 	this->griSelection[0] = NULL;
 	this->griSelection[1] = NULL;
 
+	quint8 tileindices[4] = {0,0,0,0};
 	foreach(MetatileItem *t, this->mtlMetatiles) {
-		quint8 indices[4] = {0,0,0,0};
-		t->setTileIndices(indices);
-		t->setMetatileIndex(0);
-		t->setPalette(0);
+		t->setTileset(0);
+		t->setTileIndices(tileindices);
 	}
 
 	this->drawGridLines();

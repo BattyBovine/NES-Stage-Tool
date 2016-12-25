@@ -61,7 +61,7 @@ private slots:
 	void sendBankUpdates();
 	void getBankUpdates(int,int,int,int,int,int,int,int);
 
-	void openStage();
+	void openStage(QString path="");
 	void saveASMStage(QString path="");
 	void saveBinaryStage(QString path="");
 

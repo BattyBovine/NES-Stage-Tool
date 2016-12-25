@@ -53,6 +53,7 @@ signals:
 public slots:
 	void setPaletteFile(QString);
 	void setSpritePaletteScene(QObject*);
+	void clearAllPaletteData();
 
 	void spritePaletteSelected(QString, quint8);
 	QVector<QRgb> createPaletteColours();

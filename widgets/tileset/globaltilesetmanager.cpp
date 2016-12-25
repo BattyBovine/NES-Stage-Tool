@@ -256,6 +256,21 @@ void GlobalTilesetManager::switchToNextAnimBank()
 	emit(newAnimationFrame(this->iAnimFrame));
 }
 
+void GlobalTilesetManager::clearAllTilesetData()
+{
+	this->iGlobalTileset = 0;
+	for(int t=0; t<GTSM_TILESET_COUNT; t++) {
+		for(int b=0; b<GTSM_BANKS_COUNT; b++) {
+			this->iBankLists[t][b] = 0;
+		}
+		for(int p=0; p<PM_SUBPALETTES_MAX; p++) {
+			for(int c=0; c<PM_PALETTE_COLOURS_MAX; c++)
+				this->vPaletteLists[t][p].append(qRgb(0x00,0x00,0x00));
+		}
+	}
+	this->iAnimFrame = 0;
+}
+
 
 
 bool GlobalTilesetManager::openTilesetFile(QString filename)

@@ -59,11 +59,12 @@ public:
 	~StageManager();
 
 	qreal scale(){return this->iScale;}
-	void clearAllMetatileData();
 
 	void changePalette(int);
 
 signals:
+	void stageFileDropped(QString);
+
 	void requestSelectedMetatile(MetatileItem*);
 	void requestTileUpdate(MetatileItem*);
 
@@ -76,7 +77,7 @@ signals:
 public slots:
 	void setScale(qreal s){this->iScale=s;}
 
-	void deleteSelectedTiles();
+	void clearAllMetatileData();
 
 	void toggleShowScreenGrid(bool);
 	void toggleShowTileGrid(bool);

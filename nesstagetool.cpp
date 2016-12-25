@@ -131,6 +131,17 @@ void NESStageTool::newProject()
 	switch(retval) {
 	case QMessageBox::Yes:
 		ui->gvStage->clearAllMetatileData();
+		ui->gvMetatileEditor->clearAllMetatileData();
+		ui->gvPaletteManager->clearAllPaletteData();
+		ui->gvGlobalTileset->clearAllTilesetData();
+		ui->spinBank0->setValue(0);
+		ui->spinBank1->setValue(0);
+		ui->spinBank2->setValue(0);
+		ui->spinBank3->setValue(0);
+		ui->spinBank4->setValue(0);
+		ui->spinBank5->setValue(0);
+		ui->spinBank6->setValue(0);
+		ui->spinBank7->setValue(0);
 		ui->lineASMLabel->setText("");
 		break;
 	}
@@ -273,9 +284,9 @@ void NESStageTool::getBankUpdates(int b0, int b1, int b2, int b3, int b4, int b5
 
 
 
-void NESStageTool::openStage()
+void NESStageTool::openStage(QString path)
 {
-	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text(), "", tr("All files (*.*)"));
+	QString filename = path.isEmpty()?QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text(), "", tr("All files (*.*)")):path;
 	if(filename.isEmpty())  return;
 	ui->gvPaletteManager->openPaletteFile(filename);
 	ui->gvGlobalTileset->openTilesetFile(filename);
