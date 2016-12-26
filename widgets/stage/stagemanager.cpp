@@ -38,7 +38,6 @@ void StageManager::dropEvent(QDropEvent *e)
 {
 	e->acceptProposedAction();
 	emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
-//	this->openStageFile(e->mimeData()->urls()[0].toLocalFile());
 }
 
 void StageManager::mousePressEvent(QMouseEvent *e)
@@ -64,7 +63,8 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 
 	if(e->buttons()&Qt::MiddleButton) {
 		this->setTransformationAnchor(QGraphicsView::NoAnchor);
-		this->translate((e->x()-this->pMouseTranslation.x()),(e->y()-this->pMouseTranslation.y()));
+		this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
+						(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
 		this->pMouseTranslation = QPointF(e->x(),e->y());
 	} else if(e->buttons()&Qt::RightButton) {
 		this->replaceStageTile(this->mapToScene(e->pos()));
@@ -97,6 +97,11 @@ void StageManager::wheelEvent(QWheelEvent *e)
 		this->iScale += steps;
 	else
 		this->iScale = ((steps<0)?1:SM_MAX_ZOOM);
+
+	this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	QMatrix matrix;
+	matrix.scale(this->iScale,this->iScale);
+	this->setMatrix(matrix);
 
 	this->updateStageView();
 }
@@ -143,42 +148,39 @@ void StageManager::drawGridLines()
 	this->lGrid.clear();
 
 	if(this->bShowScreenGrid || this->bShowTileGrid) {
-		QPen thicksolid(Qt::red,SM_THICK_GRID_LINES,Qt::SolidLine);
-//		QPen thickdashes(Qt::white,SM_THICK_GRID_LINES,Qt::DashLine);
-		QPen thinsolid(Qt::darkGray,SM_THIN_GRID_LINES,Qt::SolidLine);
-		QPen thindashes(Qt::lightGray,SM_THIN_GRID_LINES,Qt::DashLine);
+		QPen thicksolid(Qt::red,qFloor(SM_THICK_GRID_LINES/this->iScale),Qt::SolidLine);
+//		QPen thickdashes(Qt::white,qFloor(SM_THICK_GRID_LINES/this->iScale),Qt::DashLine);
+		QPen thinsolid(Qt::darkGray,qFloor(SM_THIN_GRID_LINES/this->iScale),Qt::SolidLine);
+		QPen thindashes(Qt::lightGray,qFloor(SM_THIN_GRID_LINES/this->iScale),Qt::DashLine);
 		QVector<qreal> dp, dplong;
 		dp << 1 << 1;
 		dplong << 4 << 4;
 //		thickdashes.setDashPattern(dplong);
 		thindashes.setDashPattern(dp);
 
-		qreal canvaswidth = SM_CANVAS_WIDTH*this->iScale;
-		qreal canvasheight = SM_CANVAS_HEIGHT*this->iScale;
-
 		if(this->bShowTileGrid) {
-			for(int i=0; i<=canvasheight; i+=MTI_TILEWIDTH*this->iScale) {
+			for(int i=0; i<=SM_CANVAS_HEIGHT; i+=MTI_TILEWIDTH) {
 				// Horizontal lines
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,canvaswidth,i,thinsolid));
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,canvaswidth,i,thindashes));
+				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thinsolid));
+				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thindashes));
 			}
-			for(int i=0; i<=canvaswidth; i+=MTI_TILEWIDTH*this->iScale) {
+			for(int i=0; i<=SM_CANVAS_WIDTH; i+=MTI_TILEWIDTH) {
 				// Vertical lines
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,canvasheight,thinsolid));
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,canvasheight,thindashes));
+				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thinsolid));
+				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thindashes));
 			}
 		}
 
 		if(this->bShowScreenGrid) {
-			for(int i=0; i<= canvasheight; i+=SM_SCREEN_HEIGHT*this->iScale) {
+			for(int i=0; i<= SM_CANVAS_HEIGHT; i+=SM_SCREEN_HEIGHT) {
 				// Horizontal lines
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,canvaswidth,i,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(0,i,canvaswidth,i,thickdashes));
+				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thickdashes));
 			}
-			for(int i=0; i<= canvaswidth; i+=SM_SCREEN_WIDTH*this->iScale) {
+			for(int i=0; i<= SM_CANVAS_WIDTH; i+=SM_SCREEN_WIDTH) {
 				// Vertical lines
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,canvasheight,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,canvasheight,thickdashes));
+				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thickdashes));
 			}
 		}
 	}
@@ -511,8 +513,8 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
-	this->groupMetatiles->setScale(this->iScale);
-	this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
+//	this->groupMetatiles->setScale(this->iScale);
+	this->setSceneRect(0, 0, SM_CANVAS_WIDTH, SM_CANVAS_HEIGHT);
 	this->drawGridLines();
 	this->viewport()->update();
 }
