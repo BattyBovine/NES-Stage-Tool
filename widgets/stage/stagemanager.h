@@ -21,9 +21,6 @@
 #include "metatileitem.h"
 
 
-#define roundToMult(x,f)      (f*qCeil(x/f))
-#define getMultDiff(x,f)      (roundToMult(x,f)-x)
-
 #define SM_SCREEN_TILES_W     16
 #define SM_SCREEN_TILES_H     12
 #define SM_SCREEN_WIDTH       MTI_TILEWIDTH*SM_SCREEN_TILES_W
