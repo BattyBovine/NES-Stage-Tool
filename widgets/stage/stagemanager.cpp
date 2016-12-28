@@ -42,13 +42,12 @@ void StageManager::dropEvent(QDropEvent *e)
 
 void StageManager::mousePressEvent(QMouseEvent *e)
 {
+	this->pMouseTranslation = QPointF(e->x(),e->y());
+
 	switch(e->button()) {
 	case Qt::RightButton:
 		this->pRightMousePos = QPointF(-1,-1);
 		this->replaceStageTile(this->mapToScene(e->pos()));
-		break;
-	case Qt::MiddleButton:
-		this->pMouseTranslation = QPointF(e->x(),e->y());
 		break;
 	case Qt::LeftButton:
 		this->replaceScreenTileset(this->mapToScene(e->pos()));
@@ -65,10 +64,12 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 		this->setTransformationAnchor(QGraphicsView::NoAnchor);
 		this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
 						(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
-		this->pMouseTranslation = QPointF(e->x(),e->y());
 	} else if(e->buttons()&Qt::RightButton) {
 		this->replaceStageTile(this->mapToScene(e->pos()));
 	}
+
+	this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	this->pMouseTranslation = QPointF(e->x(),e->y());
 }
 
 void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
@@ -76,7 +77,6 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 	switch(e->button()) {
 	case Qt::MiddleButton:
 		this->iScale = SM_DEFAULT_ZOOM;
-		this->setSceneRect(0, 0, SM_CANVAS_WIDTH*this->iScale, SM_CANVAS_HEIGHT*this->iScale);
 		this->updateStageView();
 		break;
 //	case Qt::RightButton:
@@ -89,9 +89,6 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 
 void StageManager::wheelEvent(QWheelEvent *e)
 {
-	this->pSceneTranslation.setX(qFloor(this->transform().dx()/this->iScale));
-	this->pSceneTranslation.setY(qFloor(this->transform().dy()/this->iScale));
-
 	qreal steps = (((qreal)e->angleDelta().y()/8)/15)/4;
 	if(((this->iScale+steps)>=1) && ((this->iScale+steps)<=SM_MAX_ZOOM))
 		this->iScale += steps;
@@ -209,10 +206,11 @@ void StageManager::populateBlankTiles()
 
 void StageManager::replaceStageTile(QPointF p)
 {
-	if(p.x()<0 || p.y()<0)	return;
+	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+		return;
 
-	int tilex = roundToMult(qRound(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-	int tiley = roundToMult(qRound(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
+	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
 	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
 	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
 	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
@@ -229,14 +227,14 @@ void StageManager::replaceStageTile(QPointF p)
 
 void StageManager::replaceScreenTileset(QPointF p)
 {
-	if(p.x()<0 || p.y()<0)	return;
+	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+		return;
 
-	int tilex = roundToMult(qRound(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-	int tiley = roundToMult(qRound(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
+	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
 	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
 	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
 	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
-//	quint8 tile = ((tiley%SM_SCREEN_TILES_H)*SM_SCREEN_TILES_W)+(tilex%SM_SCREEN_TILES_W);
 
 	foreach(MetatileItem* t, this->vScreens[screen]) {
 		t->setTileset(this->iSelectedTileset);
@@ -246,10 +244,11 @@ void StageManager::replaceScreenTileset(QPointF p)
 
 void StageManager::replaceAllScreenTiles(QPointF p)
 {
-	if(p.x()<0 || p.y()<0)	return;
+	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+		return;
 
-	int tilex = roundToMult(qRound(p.x()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
-	int tiley = roundToMult(qRound(p.y()/this->iScale),MTI_TILEWIDTH)/MTI_TILEWIDTH;
+	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
+	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
 	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
 	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
 	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
@@ -513,7 +512,6 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
-//	this->groupMetatiles->setScale(this->iScale);
 	this->setSceneRect(0, 0, SM_CANVAS_WIDTH, SM_CANVAS_HEIGHT);
 	this->drawGridLines();
 	this->viewport()->update();
