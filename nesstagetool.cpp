@@ -415,4 +415,5 @@ void NESStageTool::setStageLabelPrefix(QString label)
 void NESStageTool::setNewPaletteFile(QString pal)
 {
 	ui->gvPaletteManager->drawFullPaletteColours(pal);
+    ui->gvGlobalTileset->loadCHRData();
 }

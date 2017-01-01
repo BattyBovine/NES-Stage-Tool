@@ -115,10 +115,12 @@ void GlobalTilesetManager::reloadCurrentTileset()
 
 void GlobalTilesetManager::loadCHRData(QString filename)
 {
-	this->threadCHR->loadFile(filename);
-	if(!this->fswCHR.files().isEmpty()) this->fswCHR.removePath(this->sCurrentTilesetFile);
-	this->sCurrentTilesetFile = filename;
-	this->fswCHR.addPath(filename);
+    if(!filename.isEmpty()) {
+        if(!this->fswCHR.files().isEmpty()) this->fswCHR.removePath(this->sCurrentTilesetFile);
+        this->sCurrentTilesetFile = filename;
+        this->fswCHR.addPath(this->sCurrentTilesetFile);
+    }
+    this->threadCHR->loadFile(this->sCurrentTilesetFile);
 }
 
 void GlobalTilesetManager::loadCHRBank(int set)

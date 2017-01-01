@@ -186,7 +186,7 @@ bool PaletteManager::drawFullPaletteColours(QString palfile)
 
 	this->drawSelectionBox(this->gsFullPaletteScene, this->iFullPaletteIndex);
 
-	this->generateNewSpritePalettes(false);
+    this->generateNewSpritePalettes(false);
 
 	return true;
 }
