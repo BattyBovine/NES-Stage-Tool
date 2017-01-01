@@ -62,7 +62,7 @@ signals:
 	void newAnimationFrame(int);
 
 public slots:
-	void loadCHRData(QString);
+    void loadCHRData(QString filename="");
 	void loadCHRBank(int set);
 	void loadCHRBank();
 

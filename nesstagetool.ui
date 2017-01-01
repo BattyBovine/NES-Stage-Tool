@@ -1319,6 +1319,7 @@
     <slot>getGlobalTilesetDelta(int)</slot>
     <slot>getGlobalPalette(PaletteVector,quint8)</slot>
     <slot>loadCHRData(QString)</slot>
+    <slot>loadCHRBank()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -1331,8 +1332,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>732</x>
-     <y>565</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1347,12 +1348,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>734</x>
-     <y>436</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1363,12 +1364,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>824</x>
-     <y>436</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1379,12 +1380,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>734</x>
-     <y>462</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1395,12 +1396,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>824</x>
-     <y>462</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1411,12 +1412,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>734</x>
-     <y>436</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1427,12 +1428,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>824</x>
-     <y>436</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1443,12 +1444,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>734</x>
-     <y>462</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1459,12 +1460,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>824</x>
-     <y>462</y>
+     <x>129</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
@@ -1475,12 +1476,12 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>377</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1491,8 +1492,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -1507,8 +1508,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>891</x>
@@ -1523,8 +1524,8 @@
    <slot>toggleShowGrid8(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
@@ -1539,8 +1540,8 @@
    <slot>toggleShowGrid16(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>558</x>
-     <y>564</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>278</x>
@@ -1603,12 +1604,12 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>104</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>698</x>
-     <y>94</y>
+     <x>275</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -1619,8 +1620,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>167</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1635,8 +1636,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>195</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1651,8 +1652,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>223</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1667,8 +1668,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>251</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1683,8 +1684,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>279</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1699,8 +1700,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>307</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1715,8 +1716,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>335</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1731,8 +1732,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>363</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1751,8 +1752,8 @@
      <y>299</y>
     </hint>
     <hint type="destinationlabel">
-     <x>393</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1763,8 +1764,8 @@
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>389</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
@@ -1827,12 +1828,12 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>862</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>755</x>
-     <y>197</y>
+     <x>275</x>
+     <y>249</y>
     </hint>
    </hints>
   </connection>
@@ -1843,8 +1844,8 @@
    <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
      <x>461</x>
@@ -1859,12 +1860,12 @@
    <slot>setNewGlobalPalette(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>865</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>738</x>
-     <y>504</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
    </hints>
   </connection>
@@ -1875,12 +1876,12 @@
    <slot>getGlobalTilesetDelta(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>738</x>
-     <y>231</y>
+     <x>319</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1891,12 +1892,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>865</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -1907,12 +1908,12 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>865</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>738</x>
-     <y>231</y>
+     <x>319</x>
+     <y>283</y>
     </hint>
    </hints>
   </connection>
@@ -1923,8 +1924,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>865</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>763</x>
@@ -1943,8 +1944,8 @@
      <y>211</y>
     </hint>
     <hint type="destinationlabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1955,12 +1956,12 @@
    <slot>getNewCHRData()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>393</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>377</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1971,12 +1972,12 @@
    <slot>getGlobalPalette(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>738</x>
-     <y>504</y>
+     <x>289</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -1987,12 +1988,12 @@
    <slot>getNewAnimationFrame(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>738</x>
-     <y>231</y>
+     <x>319</x>
+     <y>283</y>
     </hint>
    </hints>
   </connection>
@@ -2003,12 +2004,12 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>865</x>
-     <y>120</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2023,8 +2024,8 @@
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2035,12 +2036,12 @@
    <slot>setSelectedSubtile(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>738</x>
-     <y>231</y>
+     <x>319</x>
+     <y>283</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2051,12 +2052,12 @@
    <slot>getNewAnimationFrame(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2083,8 +2084,8 @@
    <slot>getNewAnimationFrame(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
@@ -2131,8 +2132,8 @@
    <slot>getUpdatedTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
@@ -2147,8 +2148,8 @@
    <slot>getEditorMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>763</x>
@@ -2195,8 +2196,8 @@
    <slot>newProject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>461</x>
-     <y>299</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>461</x>
