@@ -1,0 +1,13 @@
+NES Stage Tool allows homebrew NES developers to create stage layouts for their games using 16x16 pixel metatiles on 8x4 screens. Eventually it may be expanded to support more options, such as larger metatiles and differing screen layouts.
+
+
+
+=== USING THE SOFTWARE ===
+
+Tilesets can be loaded with the "File > Open CHR" option, or by dragging and dropping your CHR file onto the tileset window on the Tilesets tab. You can choose which banks to load by selecting the size of each bank and adjusting the bank numbers. Up to 7 tilesets are supported for each stage.
+
+Metatiles are defined on the Metatiles tab. Select a tileset on the right by using the scroll wheel, and select an 8x8 tile with the left mouse button. Palettes for the selected tileset can be defined below the tile selector. Place a tile in the metatile editor with the right mouse button, and apply the selected subpalette with the left mouse button. The selected subpalette is also automatically applied to a metatile while placing tiles.
+
+Once you've defined a set of metatiles, you can place them in the stage editor on the Stage tab. Use the scroll wheel on the metatile selector on the right to choose the tileset/palette you wish to use, then select a metatile with the left mouse button. Use the right mouse button on the stage editor to place a metatile in the stage, and the left mouse button to apply the current tileset to the selected screen. You can click and drag the right mouse button on the stage editor to paint a metatile continuously.
+
+You can save a stage file in ASM format using "File > Save Stage". You can later reload this file by using "File > Open Stage", or by dragging and dropping the saved file onto the stage editor canvas.
