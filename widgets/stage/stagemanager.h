@@ -23,12 +23,12 @@
 
 #define SM_SCREEN_TILES_W     16
 #define SM_SCREEN_TILES_H     12
-#define SM_SCREEN_WIDTH       MTI_TILEWIDTH*SM_SCREEN_TILES_W
-#define SM_SCREEN_HEIGHT      MTI_TILEWIDTH*SM_SCREEN_TILES_H
+#define SM_SCREEN_PIX_WIDTH   MTI_TILEWIDTH*SM_SCREEN_TILES_W
+#define SM_SCREEN_PIX_HEIGHT  MTI_TILEWIDTH*SM_SCREEN_TILES_H
 #define SM_SCREENS_W          8
 #define SM_SCREENS_H          4
-#define SM_CANVAS_WIDTH       SM_SCREEN_WIDTH*SM_SCREENS_W
-#define SM_CANVAS_HEIGHT      SM_SCREEN_HEIGHT*SM_SCREENS_H
+#define SM_CANVAS_PIX_WIDTH   SM_SCREEN_PIX_WIDTH*SM_SCREENS_W
+#define SM_CANVAS_PIX_HEIGHT  SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H
 #define SM_DEFAULT_ZOOM       1
 #define SM_MAX_ZOOM           8
 
@@ -44,8 +44,6 @@
 #define SM_EOF_ERROR_BODY          "Error reading metasprite data: Unexpected end of file."
 #define SM_COUNT_ERROR_TITLE       "Invalid data"
 #define SM_COUNT_ERROR_BODY        "Error reading metatile data: Tile counts do not match length of data."
-#define SM_SPRITELIMIT_ERROR_TITLE "Too many sprites"
-#define SM_SPRITELIMIT_ERROR_BODY  "You already have 64 sprites on the stage. This is as much as the NES can handle. Any more added sprites will not be visible unless custom flickering is used. Are you sure you wish to continue?"
 
 
 class StageManager : public QGraphicsView

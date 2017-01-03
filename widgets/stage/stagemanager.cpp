@@ -156,28 +156,28 @@ void StageManager::drawGridLines()
 		thindashes.setDashPattern(dp);
 
 		if(this->bShowTileGrid) {
-			for(int i=0; i<=SM_CANVAS_HEIGHT; i+=MTI_TILEWIDTH) {
+            for(int i=0; i<=SM_CANVAS_PIX_HEIGHT; i+=MTI_TILEWIDTH) {
 				// Horizontal lines
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thinsolid));
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thindashes));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thinsolid));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thindashes));
 			}
-			for(int i=0; i<=SM_CANVAS_WIDTH; i+=MTI_TILEWIDTH) {
+            for(int i=0; i<=SM_CANVAS_PIX_WIDTH; i+=MTI_TILEWIDTH) {
 				// Vertical lines
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thinsolid));
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thindashes));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thinsolid));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thindashes));
 			}
 		}
 
 		if(this->bShowScreenGrid) {
-			for(int i=0; i<= SM_CANVAS_HEIGHT; i+=SM_SCREEN_HEIGHT) {
+            for(int i=0; i<= SM_CANVAS_PIX_HEIGHT; i+=SM_SCREEN_PIX_HEIGHT) {
 				// Horizontal lines
-				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_WIDTH,i,thickdashes));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thickdashes));
 			}
-			for(int i=0; i<= SM_CANVAS_WIDTH; i+=SM_SCREEN_WIDTH) {
+            for(int i=0; i<= SM_CANVAS_PIX_WIDTH; i+=SM_SCREEN_PIX_WIDTH) {
 				// Vertical lines
-				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_HEIGHT,thickdashes));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thickdashes));
 			}
 		}
 	}
@@ -206,7 +206,7 @@ void StageManager::populateBlankTiles()
 
 void StageManager::replaceStageTile(QPointF p)
 {
-	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
@@ -227,7 +227,7 @@ void StageManager::replaceStageTile(QPointF p)
 
 void StageManager::replaceScreenTileset(QPointF p)
 {
-	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
@@ -244,7 +244,7 @@ void StageManager::replaceScreenTileset(QPointF p)
 
 void StageManager::replaceAllScreenTiles(QPointF p)
 {
-	if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
@@ -512,7 +512,7 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
-	this->setSceneRect(0, 0, SM_CANVAS_WIDTH, SM_CANVAS_HEIGHT);
+    this->setSceneRect(0, 0, SM_CANVAS_PIX_WIDTH, SM_CANVAS_PIX_HEIGHT);
 	this->drawGridLines();
 	this->viewport()->update();
 }
