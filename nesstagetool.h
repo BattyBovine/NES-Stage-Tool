@@ -14,7 +14,7 @@
 #include <QEvent>
 
 
-#define NESMT_WIKI_URL				"https://github.com/BattyBovine/NES-Stage-Tool/wiki"
+#define NESST_WIKI_URL				"https://github.com/BattyBovine/NES-Stage-Tool/wiki"
 
 #define FILE_OPEN_ERROR_TITLE       "Error opening file"
 #define FILE_OPEN_ERROR_BODY        "Could not open file. Please make sure you have the necessary permissions to access files in this location."

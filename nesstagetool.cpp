@@ -172,7 +172,7 @@ void NESStageTool::saveProjectToFolder(QString f)
 
 void NESStageTool::showWikiPage()
 {
-	QDesktopServices::openUrl(QUrl(NESMT_WIKI_URL));
+    QDesktopServices::openUrl(QUrl(NESST_WIKI_URL));
 }
 
 void NESStageTool::showAboutDialogue()

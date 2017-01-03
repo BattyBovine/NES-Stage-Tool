@@ -21,29 +21,25 @@
 #include "metatileitem.h"
 
 
-#define SM_SCREEN_TILES_W     16
-#define SM_SCREEN_TILES_H     12
-#define SM_SCREEN_PIX_WIDTH   MTI_TILEWIDTH*SM_SCREEN_TILES_W
-#define SM_SCREEN_PIX_HEIGHT  MTI_TILEWIDTH*SM_SCREEN_TILES_H
-#define SM_SCREENS_W          8
-#define SM_SCREENS_H          4
-#define SM_CANVAS_PIX_WIDTH   SM_SCREEN_PIX_WIDTH*SM_SCREENS_W
-#define SM_CANVAS_PIX_HEIGHT  SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H
-#define SM_DEFAULT_ZOOM       1
-#define SM_MAX_ZOOM           8
+#define SM_SCREEN_TILES_W_DEFAULT 16
+#define SM_SCREEN_TILES_H_DEFAULT 12
+#define SM_SCREENS_W_DEFAULT      8
+#define SM_SCREENS_H_DEFAULT      4
+#define SM_DEFAULT_ZOOM           1
+#define SM_MAX_ZOOM               8
 
 #define SM_GLOBAL_PALETTE_MAX 8
 #define SM_THICK_GRID_LINES   1.0
 #define SM_THIN_GRID_LINES    0.5
 
-#define SM_FILE_OPEN_ERROR_TITLE   "Error opening metasprite file"
-#define SM_FILE_OPEN_ERROR_BODY    "Could not open metasprite file. Please make sure you have the necessary permissions to access files in this location."
+#define SM_FILE_OPEN_ERROR_TITLE   "Error opening stage file"
+#define SM_FILE_OPEN_ERROR_BODY    "Could not open stage file. Please make sure you have the necessary permissions to access files in this location."
 #define SM_INVALID_STAGE_TITLE     "Invalid Data"
-#define SM_INVALID_STAGE_BODY      "Error reading metatile data: Data is not a valid ASM tile data file."
-#define SM_EOF_ERROR_TITLE         "Invalid data"
-#define SM_EOF_ERROR_BODY          "Error reading metasprite data: Unexpected end of file."
-#define SM_COUNT_ERROR_TITLE       "Invalid data"
-#define SM_COUNT_ERROR_BODY        "Error reading metatile data: Tile counts do not match length of data."
+#define SM_INVALID_STAGE_BODY      "Error reading stage data: Data is not a valid ASM tile data file."
+#define SM_EOF_ERROR_TITLE         SM_INVALID_STAGE_TITLE
+#define SM_EOF_ERROR_BODY          "Error reading stage data: Unexpected end of file."
+#define SM_COUNT_ERROR_TITLE       SM_INVALID_STAGE_TITLE
+#define SM_COUNT_ERROR_BODY        "Error reading stage data: Tile counts do not match length of data."
 
 
 class StageManager : public QGraphicsView
@@ -109,6 +105,8 @@ private:
 	void replaceAllScreenTiles(QPointF);
 
 	qreal iScale;
+    quint8 iScreensW, iScreensH;
+    quint8 iScreenTilesW, iScreenTilesH;
 	QPointF pMouseTranslation;
 	QPointF pRightMousePos;
 	QPointF pSceneTranslation;

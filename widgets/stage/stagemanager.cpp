@@ -8,11 +8,14 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 
 	this->setScene(this->gsMetatiles);
 	this->iScale = SM_DEFAULT_ZOOM;
+    this->iScreensW = SM_SCREENS_W_DEFAULT;
+    this->iScreensH = SM_SCREENS_H_DEFAULT;
+    this->iScreenTilesW = SM_SCREEN_TILES_W_DEFAULT;
+    this->iScreenTilesH = SM_SCREEN_TILES_H_DEFAULT;
+
 	this->bShowScreenGrid = this->bShowTileGrid = true;
 	this->iSelectedTileset = 0;
-	this->setBackgroundBrush(QBrush(Qt::black));
-
-	this->vScreens = ScreenList(SM_SCREENS_W*SM_SCREENS_H);
+    this->setBackgroundBrush(QBrush(Qt::black));
 
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
@@ -156,28 +159,28 @@ void StageManager::drawGridLines()
 		thindashes.setDashPattern(dp);
 
 		if(this->bShowTileGrid) {
-            for(int i=0; i<=SM_CANVAS_PIX_HEIGHT; i+=MTI_TILEWIDTH) {
+            for(int i=0; i<=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH); i+=MTI_TILEWIDTH) {
 				// Horizontal lines
-                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thinsolid));
-                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thindashes));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW),i,thinsolid));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW),i,thindashes));
 			}
-            for(int i=0; i<=SM_CANVAS_PIX_WIDTH; i+=MTI_TILEWIDTH) {
+            for(int i=0; i<=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW); i+=MTI_TILEWIDTH) {
 				// Vertical lines
-                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thinsolid));
-                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thindashes));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH),thinsolid));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH),thindashes));
 			}
 		}
 
 		if(this->bShowScreenGrid) {
-            for(int i=0; i<= SM_CANVAS_PIX_HEIGHT; i+=SM_SCREEN_PIX_HEIGHT) {
+            for(int i=0; i<= ((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH); i+=(MTI_TILEWIDTH*this->iScreenTilesH)) {
 				// Horizontal lines
-                this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(0,i,SM_CANVAS_PIX_WIDTH,i,thickdashes));
+                this->lGrid.append(this->gsMetatiles->addLine(0,i,((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW),i,thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(0,i,((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW),i,thickdashes));
 			}
-            for(int i=0; i<= SM_CANVAS_PIX_WIDTH; i+=SM_SCREEN_PIX_WIDTH) {
+            for(int i=0; i<= ((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW); i+=(MTI_TILEWIDTH*this->iScreenTilesW)) {
 				// Vertical lines
-                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thicksolid));
-//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,SM_CANVAS_PIX_HEIGHT,thickdashes));
+                this->lGrid.append(this->gsMetatiles->addLine(i,0,i,((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH),thicksolid));
+//				this->lGrid.append(this->gsMetatiles->addLine(i,0,i,((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH),thickdashes));
 			}
 		}
 	}
@@ -185,16 +188,23 @@ void StageManager::drawGridLines()
 
 void StageManager::populateBlankTiles()
 {
-	for(int sy=0; sy<SM_SCREENS_H; sy++) {
-		for(int sx=0; sx<SM_SCREENS_W; sx++) {
+    foreach(MetatileList l, this->vScreens) {
+        foreach(MetatileItem *i, l) {
+            this->groupMetatiles->removeFromGroup(i);
+        }
+    }
+
+    this->vScreens = ScreenList(this->iScreensW*this->iScreensH);
+    for(int sy=0; sy<this->iScreensH; sy++) {
+        for(int sx=0; sx<this->iScreensW; sx++) {
 			// Each screen gets its own tile list
-			int screen = sy*SM_SCREENS_W+sx;
+            int screen = sy*this->iScreensW+sx;
 			this->vScreens[screen].clear();
-			for(int y=0; y<SM_SCREEN_TILES_H; y++) {
-				for(int x=0; x<SM_SCREEN_TILES_W; x++) {
+            for(int y=0; y<this->iScreenTilesH; y++) {
+                for(int x=0; x<this->iScreenTilesW; x++) {
 					MetatileItem *i = new MetatileItem();
-					i->setRealX((x*MTI_TILEWIDTH)+(sx*SM_SCREEN_TILES_W*MTI_TILEWIDTH));
-					i->setRealY((y*MTI_TILEWIDTH)+(sy*SM_SCREEN_TILES_H*MTI_TILEWIDTH));
+                    i->setRealX((x*MTI_TILEWIDTH)+(sx*this->iScreenTilesW*MTI_TILEWIDTH));
+                    i->setRealY((y*MTI_TILEWIDTH)+(sy*this->iScreenTilesH*MTI_TILEWIDTH));
 					i->setScreen(screen);
 					this->vScreens[screen].append(i);
 					this->groupMetatiles->addToGroup(i);
@@ -206,17 +216,17 @@ void StageManager::populateBlankTiles()
 
 void StageManager::replaceStageTile(QPointF p)
 {
-    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
 	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
-	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
-	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
-	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
-	quint8 tile = ((tiley%SM_SCREEN_TILES_H)*SM_SCREEN_TILES_W)+(tilex%SM_SCREEN_TILES_W);
+    int screenx = qFloor(tilex/this->iScreenTilesW);
+    int screeny = qFloor(tiley/this->iScreenTilesH);
+    quint8 screen = (screeny*this->iScreensW)+screenx;
+    quint8 tile = ((tiley%this->iScreenTilesH)*this->iScreenTilesW)+(tilex%this->iScreenTilesW);
 
-	if((screen>=(SM_SCREENS_W*SM_SCREENS_H) || tile>=(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H)) ||
+    if((screen>=(this->iScreensW*this->iScreensH) || tile>=(this->iScreenTilesW*this->iScreenTilesH)) ||
 			(this->pRightMousePos.x()==screen && this->pRightMousePos.y()==tile))
 		return;
 	this->pRightMousePos = QPointF(screen,tile);
@@ -227,14 +237,14 @@ void StageManager::replaceStageTile(QPointF p)
 
 void StageManager::replaceScreenTileset(QPointF p)
 {
-    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
 	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
-	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
-	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
-	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
+    int screenx = qFloor(tilex/this->iScreenTilesW);
+    int screeny = qFloor(tiley/this->iScreenTilesH);
+    quint8 screen = (screeny*this->iScreensW)+screenx;
 
 	foreach(MetatileItem* t, this->vScreens[screen]) {
 		t->setTileset(this->iSelectedTileset);
@@ -244,15 +254,15 @@ void StageManager::replaceScreenTileset(QPointF p)
 
 void StageManager::replaceAllScreenTiles(QPointF p)
 {
-    if(p.x()<0 || p.y()<0 || p.x()>=(SM_SCREEN_PIX_WIDTH*SM_SCREENS_W) || p.y()>=(SM_SCREEN_PIX_HEIGHT*SM_SCREENS_H))
+    if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
 		return;
 
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
 	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
-	int screenx = qFloor(tilex/SM_SCREEN_TILES_W);
-	int screeny = qFloor(tiley/SM_SCREEN_TILES_H);
-	quint8 screen = (screeny*SM_SCREENS_W)+screenx;
-	quint8 tile = ((tiley%SM_SCREEN_TILES_H)*SM_SCREEN_TILES_W)+(tilex%SM_SCREEN_TILES_W);
+    int screenx = qFloor(tilex/this->iScreenTilesW);
+    int screeny = qFloor(tiley/this->iScreenTilesH);
+    quint8 screen = (screeny*this->iScreensW)+screenx;
+    quint8 tile = ((tiley%this->iScreenTilesH)*this->iScreenTilesW)+(tilex%this->iScreenTilesW);
 
 	foreach(MetatileItem *i, this->vScreens[screen])
 		i->setMetatileIndex(this->vScreens[screen][tile]->metatileIndex());
@@ -323,31 +333,31 @@ void StageManager::toggleShowTileGrid(bool showgrid)
 
 QVector<QByteArray> StageManager::createStageBinaryData()
 {
-	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
+    int numscreens = this->iScreensW*this->iScreensH;
 	QVector<QByteArray> bindata = QVector<QByteArray>(numscreens);
 	for(int s=0; s<numscreens; s++) {
 		// Create metatile data (vertical columns)
 		QByteArray bin;
-		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth++) {
-			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight++) {
-				bin.append(this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->metatileIndex());
+        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
+            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
+                bin.append(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex());
 			}
 		}
 		bindata.replace(s,bin);
 
 		// Create attribute data (vertical columns)
-		quint8 attributecolumn[qFloor(SM_SCREEN_TILES_H/2)];
+        quint8 attributecolumn[qFloor(this->iScreenTilesH/2)];
 		bin.clear();
-		for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) attributecolumn[i] = 0;
-		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth+=2) {
-			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight+=2) {
-				quint8 attr0 = (this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
-				quint8 attr1 = (this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
-				quint8 attr2 = (this->vScreens[s][((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
-				quint8 attr3 = (this->vScreens[s][((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
-				attributecolumn[qFloor(tileheight/qFloor(SM_SCREEN_TILES_H/2))%8] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
+        for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) attributecolumn[i] = 0;
+        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth+=2) {
+            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight+=2) {
+                quint8 attr0 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+                quint8 attr1 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+                quint8 attr2 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+                quint8 attr3 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+                attributecolumn[qFloor(tileheight/qFloor(this->iScreenTilesH/2))%8] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
 			}
-			for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) {
+            for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) {
 				bin.append(attributecolumn[i]);
 			}
 		}
@@ -364,16 +374,16 @@ QString StageManager::createStageASMData(QString labelprefix)
 	QString tilesetbytes = labelprefix+QString("_tilesets:\n\t.byte ");
 	quint8 tilesetbyte = 0x00;
 
-	int numscreens = SM_SCREENS_W*SM_SCREENS_H;
+    int numscreens = this->iScreensW*this->iScreensH;
 	for(int s=0; s<numscreens; s++) {
 		QString countedlabel = asmlabel+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
 
 		databytes += countedlabel+":\n\t.byte ";
 
 		QString screenbytes;
-		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth++) {
-			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight++) {
-				screenbytes += QString("$%1").arg(this->vScreens[s][(tileheight*SM_SCREEN_TILES_W)+tilewidth]->metatileIndex(),2,16,QChar('0')).toUpper().append(",");
+        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
+            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
+                screenbytes += QString("$%1").arg(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex(),2,16,QChar('0')).toUpper().append(",");
 			}
 		}
 		screenbytes = screenbytes.left(screenbytes.length()-1);
@@ -432,7 +442,7 @@ void StageManager::openStageFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-	QVector<QByteArray> inputbytes(SM_SCREENS_W*SM_SCREENS_H+1);
+    QVector<QByteArray> inputbytes(this->iScreensW*this->iScreensH+1);
 	QString labelname;
 	bool tilesetsfound = false;
 
@@ -455,9 +465,9 @@ void StageManager::openStageFile(QString filename)
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
 
-		if(!bytesin.isEmpty() && bytesin.size()==(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H)) {
+        if(!bytesin.isEmpty() && bytesin.size()==(this->iScreenTilesW*this->iScreenTilesH)) {
 			inputbytes.replace(labelnum,bytesin);
-		} else if(!bytesin.isEmpty() && tilesetsfound && bytesin.size()==qFloor((SM_SCREENS_W*SM_SCREENS_H)/2)) {
+        } else if(!bytesin.isEmpty() && tilesetsfound && bytesin.size()==qFloor((this->iScreensW*this->iScreensH)/2)) {
 			inputbytes.append(bytesin);
 			tilesetsfound = false;
 		}
@@ -484,21 +494,21 @@ void StageManager::openStageFile(QString filename)
 
 void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 {
-	for(int s=0; s<(SM_SCREENS_W*SM_SCREENS_H); s++) {
-		if(bindata[s].size()!=(SM_SCREEN_TILES_W*SM_SCREEN_TILES_H)) {
+    for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
+        if(bindata[s].size()!=(this->iScreenTilesW*this->iScreenTilesH)) {
 			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 			return;
 		}
-		for(int x=0; x<SM_SCREEN_TILES_W; x++) {
-			for(int y=0; y<SM_SCREEN_TILES_H; y++) {
-				this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]->setMetatileIndex(bindata[s].at((x*SM_SCREEN_TILES_H)+y));
-				emit(requestTileUpdate(this->vScreens[s][(y*SM_SCREEN_TILES_W)+x]));
+        for(int x=0; x<this->iScreenTilesW; x++) {
+            for(int y=0; y<this->iScreenTilesH; y++) {
+                this->vScreens[s][(y*this->iScreenTilesW)+x]->setMetatileIndex(bindata[s].at((x*this->iScreenTilesH)+y));
+                emit(requestTileUpdate(this->vScreens[s][(y*this->iScreenTilesW)+x]));
 			}
 		}
 	}
 
-	for(int s=0; s<(SM_SCREENS_W*SM_SCREENS_H); s++) {
-		if(bindata.last().size()!=qFloor((SM_SCREENS_W*SM_SCREENS_H)/2)) {
+    for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
+        if(bindata.last().size()!=qFloor((this->iScreensW*this->iScreensH)/2)) {
 			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 			return;
 		}
@@ -512,7 +522,7 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
-    this->setSceneRect(0, 0, SM_CANVAS_PIX_WIDTH, SM_CANVAS_PIX_HEIGHT);
+    this->setSceneRect(0, 0, (MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW, (MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH);
 	this->drawGridLines();
 	this->viewport()->update();
 }
