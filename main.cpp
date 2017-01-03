@@ -8,10 +8,10 @@ int main(int argc, char *argv[])
 
 	a.setOrganizationName("Batty Bovine Productions, LLC");
 	a.setOrganizationDomain("battybovine.com");
-	a.setApplicationName("NES Stage Tool");
-	a.setApplicationVersion(QString::number(Version::MAJOR)+
-							QString::number(Version::MINOR)+
-							QString::number(Version::REVISION)+
+    a.setApplicationName(QApplication::tr("NES Stage Tool"));
+    a.setApplicationVersion(QString::number(Version::MAJOR)+QString(".")+
+                            QString::number(Version::MINOR)+QString(".")+
+                            QString::number(Version::REVISION)+QString(".")+
 							QString::number(Version::BUILD));
 
 	NESStageTool w;

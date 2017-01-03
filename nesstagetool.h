@@ -45,6 +45,7 @@ private slots:
 	void saveProject();
 	void saveProjectToFolder(QString);
 	void showWikiPage();
+    void showAboutDialogue();
 
 	void initTilesetManagement(QImage img);
 

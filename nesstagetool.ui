@@ -2221,6 +2221,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAbout</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>showAboutDialogue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2245,5 +2261,6 @@
   <slot>sendBankUpdates()</slot>
   <slot>toggleAnimation(bool)</slot>
   <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
+  <slot>showAboutDialogue()</slot>
  </slots>
 </ui>

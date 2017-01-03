@@ -175,6 +175,15 @@ void NESStageTool::showWikiPage()
 	QDesktopServices::openUrl(QUrl(NESMT_WIKI_URL));
 }
 
+void NESStageTool::showAboutDialogue()
+{
+    QString abouttext = qApp->applicationName()+QString(" v")+qApp->applicationVersion()+QString("\n\n")+
+            tr("©2016 BattyBovine. All rights reserved.");
+    QMessageBox::question(this,qApp->applicationName(),
+                          abouttext,
+                          QMessageBox::Ok);
+}
+
 
 
 void NESStageTool::initTilesetManagement(QImage img)
