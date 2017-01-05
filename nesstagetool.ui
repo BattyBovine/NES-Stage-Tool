@@ -25,7 +25,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_12">
     <item>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tabProperties">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -621,6 +621,262 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Properties</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <item>
+         <widget class="QGroupBox" name="groupBox_9">
+          <property name="title">
+           <string>Stage</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QGraphicsView" name="gvScreenSelector">
+             <property name="acceptDrops">
+              <bool>false</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="interactive">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_17">
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_9">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Scroll Blocking:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="chkScrollBlockLeft">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Left</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>Song:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QCheckBox" name="chkScrollBlockRight">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Right</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" colspan="2">
+                <widget class="QSpinBox" name="spinSong">
+                 <property name="maximum">
+                  <number>256</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_8">
+          <property name="title">
+           <string>Metatiles</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="MetatileManager" name="gvMetatileSelectorProperties">
+             <property name="minimumSize">
+              <size>
+               <width>256</width>
+               <height>256</height>
+              </size>
+             </property>
+             <property name="acceptDrops">
+              <bool>false</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="interactive">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_15">
+             <item>
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboCollision">
+                 <item>
+                  <property name="text">
+                   <string>None</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Solid</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Top Solid</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Collision:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="chkDestructible">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Destructible</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="chkDeadly">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Deadly</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tabTilesets">
        <attribute name="title">
         <string>Tilesets</string>
@@ -773,7 +1029,7 @@
              <item>
               <widget class="QLabel" name="labelBank0">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -800,7 +1056,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -830,7 +1086,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -860,7 +1116,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -890,7 +1146,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -920,7 +1176,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -950,7 +1206,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -980,7 +1236,7 @@
                 <bool>false</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1263,6 +1519,8 @@
     <signal>tilesetChangedDelta(int)</signal>
     <signal>metatileUpdated(MetatileItem*,MetatileItem*)</signal>
     <signal>sendSelectedTileset(quint8)</signal>
+    <signal>sendSelectionProperties(int,bool,bool)</signal>
+    <signal>sendMetatileProperties(int,int,bool,bool)</signal>
     <slot>updateStageMetatile(MetatileItem*)</slot>
     <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
     <slot>deleteSelectedTiles()</slot>
@@ -1281,6 +1539,10 @@
     <slot>setGlobalTileset(int)</slot>
     <slot>setSelectedSubtile(int)</slot>
     <slot>getNewAnimationFrame(int)</slot>
+    <slot>setPropertyCollision(int)</slot>
+    <slot>setPropertyDestructible(bool)</slot>
+    <slot>setPropertyDeadly(bool)</slot>
+    <slot>setMetatileProperties(int,int,bool,bool)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1332,8 +1594,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>732</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1348,12 +1610,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1364,12 +1626,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1380,12 +1642,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1396,12 +1658,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1412,12 +1674,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1428,12 +1690,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1444,12 +1706,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>734</x>
+     <y>462</y>
     </hint>
    </hints>
   </connection>
@@ -1460,12 +1722,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>129</x>
-     <y>78</y>
+     <x>824</x>
+     <y>462</y>
     </hint>
    </hints>
   </connection>
@@ -1476,12 +1738,12 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>853</x>
+     <y>377</y>
     </hint>
    </hints>
   </connection>
@@ -1492,8 +1754,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -1508,8 +1770,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
      <x>891</x>
@@ -1524,8 +1786,8 @@
    <slot>toggleShowGrid8(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>499</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
@@ -1540,8 +1802,8 @@
    <slot>toggleShowGrid16(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>558</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>278</x>
@@ -1604,8 +1866,8 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1620,8 +1882,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1636,8 +1898,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1652,8 +1914,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1668,8 +1930,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>251</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1684,8 +1946,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>279</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1700,8 +1962,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>307</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1716,8 +1978,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1732,8 +1994,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>363</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1764,8 +2026,8 @@
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
@@ -1828,8 +2090,8 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1860,12 +2122,12 @@
    <slot>setNewGlobalPalette(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>
@@ -1876,8 +2138,8 @@
    <slot>getGlobalTilesetDelta(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>319</x>
-     <y>283</y>
+     <x>853</x>
+     <y>359</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1896,8 +2158,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
    </hints>
   </connection>
@@ -1908,12 +2170,12 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>283</y>
+     <x>853</x>
+     <y>359</y>
     </hint>
    </hints>
   </connection>
@@ -1924,8 +2186,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>763</x>
@@ -1960,8 +2222,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>853</x>
+     <y>377</y>
     </hint>
    </hints>
   </connection>
@@ -1972,8 +2234,8 @@
    <slot>getGlobalPalette(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>126</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1992,8 +2254,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>283</y>
+     <x>853</x>
+     <y>359</y>
     </hint>
    </hints>
   </connection>
@@ -2004,8 +2266,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>305</x>
@@ -2036,8 +2298,8 @@
    <slot>setSelectedSubtile(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>319</x>
-     <y>283</y>
+     <x>853</x>
+     <y>359</y>
     </hint>
     <hint type="destinationlabel">
      <x>305</x>
@@ -2237,6 +2499,118 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvPaletteManager</sender>
+   <signal>newSpriteColours(PaletteVector,quint8,bool)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>738</x>
+     <y>504</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>sendMetatileToSelector(MetatileItem*)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>getEditorMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboCollision</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setPropertyCollision(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>761</x>
+     <y>531</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>761</x>
+     <y>494</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDeadly</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setPropertyDeadly(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>555</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>478</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDestructible</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setPropertyDestructible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>606</x>
+     <y>555</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>634</x>
+     <y>485</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileSelectorProperties</sender>
+   <signal>sendSelectionProperties(int,bool,bool)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>getMetatileProperties(int,bool,bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>918</x>
+     <y>91</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>sendMetatileProperties(int,int,bool,bool)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setMetatileProperties(int,int,bool,bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2262,5 +2636,6 @@
   <slot>toggleAnimation(bool)</slot>
   <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
   <slot>showAboutDialogue()</slot>
+  <slot>getMetatileProperties(int,bool,bool)</slot>
  </slots>
 </ui>

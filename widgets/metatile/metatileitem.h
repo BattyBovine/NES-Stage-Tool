@@ -58,6 +58,12 @@ public:
 	quint8 animFrame(){return this->iAnimFrame;}
 	void setAnimFrame(int i){this->iAnimFrame=i;}
 	QRgb getPaletteColour(quint8 i){return this->imgTile.color(i);}
+    quint8 collision(){return this->iCollision;}
+    void setCollision(quint8 i){this->iCollision=i;}
+    bool destructible(){return this->bDestructible;}
+    void setDestructible(bool b){this->bDestructible=b;}
+    bool deadly(){return this->bDeadly;}
+    void setDeadly(bool b){this->bDeadly=b;}
 
 protected:
 	QRectF boundingRect() const {return QRectF(0,0,MTI_TILEWIDTH,MTI_TILEWIDTH);}
@@ -66,7 +72,8 @@ protected:
 private:
 	QImage  imgTile;
 	QPixmap pixPixmap;
-	quint8  iScreen,iMetatile,iPalette,iTileset,iAnimFrame;
+    quint8  iScreen,iMetatile,iPalette,iTileset,iAnimFrame,iCollision;
+    bool    bDestructible,bDeadly;
 	quint8  iTiles[4];
 	qreal   iX,iY,iW,iH,iScale;
 };

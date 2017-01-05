@@ -423,9 +423,7 @@ QString StageManager::createStageASMData(QString labelprefix)
 //		}
 //		attrbytes = attrbytes.left(attrbytes.length()-1);
 //		databytes.append(attrbytes).append("\n");
-	}
-
-	databytes += asmlabel+"_end:\n";
+    }
 
 	tilesetbytes = tilesetbytes.left(tilesetbytes.length()-1) + QString("\n");
 

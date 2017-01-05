@@ -19,12 +19,8 @@
 #include "globaltilesetmanager.h"
 #include "tilesetmanager.h"
 #include "palettemanager.h"
-//#include "metatileitem.h"
 #include "metatileitem.h"
 
-
-#define roundToMult(x,f)     (f*qCeil(x/f))
-#define getMultDiff(x,f)     (roundToMult(x,f)-x)
 
 #define MTM_CANVAS_SIZE      256
 #define MTM_METATILES_W      16
@@ -74,6 +70,8 @@ signals:
 	void setMetaspriteLabel(QString);
 	void bankDividerChanged(quint16);
 	void tilesetChangedDelta(int);
+    void sendMetatileProperties(int,int,bool,bool);
+    void sendSelectionProperties(int,bool,bool);
 
 #ifdef METASPRITETILEITEM_H
 	void updateList(GraphicsItemList,GraphicsItemList);
@@ -93,7 +91,12 @@ public slots:
 	void toggleShowGrid8(bool);
 	void toggleShowGrid16(bool);
 	void setGlobalTileset(int);
-	void setSelectedSubtile(int);
+    void setSelectedSubtile(int);
+
+    void setMetatileProperties(int,int,bool,bool);
+    void setPropertyCollision(int i){this->mtlMetatiles[this->iSelectedTile]->setCollision(i);}
+    void setPropertyDestructible(bool b){this->mtlMetatiles[this->iSelectedTile]->setDestructible(b);}
+    void setPropertyDeadly(bool b){this->mtlMetatiles[this->iSelectedTile]->setDeadly(b);}
 
 	void openMetatileFile(QString);
 	void importMetatileBinaryData(QVector<QByteArray>);
@@ -103,7 +106,7 @@ public slots:
 	void updateScreen();
 
 protected:
-	void resizeEvent(QResizeEvent*);//{this->fitInView(this->gsMetatiles->itemsBoundingRect(),Qt::KeepAspectRatio);}
+    void resizeEvent(QResizeEvent*);
 	void dragMoveEvent(QDragMoveEvent*e){e->accept();}
 	void dragEnterEvent(QDragEnterEvent*e){e->acceptProposedAction();}
 	void dropEvent(QDropEvent*);
@@ -134,7 +137,8 @@ private:
 	quint8 iGlobalTileset;
 	quint8 iSelectedTile;
 	quint8 iSelectedSubtile;
-	quint8 iSelectedPalette;
+    quint8 iSelectedPalette;
+
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;

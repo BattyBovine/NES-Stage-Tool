@@ -31,8 +31,9 @@ NESStageTool::NESStageTool(QWidget *parent) :
 
 	connect(ui->gvGlobalTileset,SIGNAL(chrDataChanged(QImage)),this,SLOT(initTilesetManagement(QImage)));
 
-	ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
-	ui->gvMetatileSelector->setSelectionMode(true);
+    ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
+    ui->gvMetatileSelector->setSelectionMode(true);
+    ui->gvMetatileSelectorProperties->setSelectionMode(true);
 
 	this->changeBankSize();
 	this->sendBankUpdates();
@@ -132,8 +133,12 @@ void NESStageTool::newProject()
 	case QMessageBox::Yes:
 		ui->gvStage->clearAllMetatileData();
 		ui->gvMetatileEditor->clearAllMetatileData();
+        ui->gvMetatileSelectorProperties->clearAllMetatileData();
 		ui->gvPaletteManager->clearAllPaletteData();
 		ui->gvGlobalTileset->clearAllTilesetData();
+        ui->comboCollision->setCurrentIndex(0);
+        ui->chkDestructible->setChecked(false);
+        ui->chkDeadly->setChecked(false);
 		ui->spinBank0->setValue(0);
 		ui->spinBank1->setValue(0);
 		ui->spinBank2->setValue(0);
@@ -291,6 +296,13 @@ void NESStageTool::getBankUpdates(int b0, int b1, int b2, int b3, int b4, int b5
 	ui->spinBank7->setValue(b7);
 }
 
+void NESStageTool::getMetatileProperties(int collision, bool destructible, bool deadly)
+{
+    ui->comboCollision->setCurrentIndex(collision);
+    ui->chkDestructible->setChecked(destructible);
+    ui->chkDeadly->setChecked(deadly);
+}
+
 
 
 void NESStageTool::openStage(QString path)
@@ -321,7 +333,7 @@ void NESStageTool::saveASMStage(QString path)
 
 	file.write(ui->gvStage->createStageASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
-	file.write(ui->gvMetatileEditor->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
+    file.write(ui->gvMetatileSelectorProperties->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
 	for(int tileset=0; tileset<GTSM_TILESET_COUNT; tileset++)
 		file.write(ui->gvPaletteManager->createPaletteASMData(ui->lineASMLabel->text(),tileset).toUtf8());

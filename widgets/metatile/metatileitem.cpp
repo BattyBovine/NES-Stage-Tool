@@ -16,6 +16,9 @@ MetatileItem::MetatileItem(QGraphicsItem *parent) : QGraphicsItem(parent)
 	this->iTiles[1] = 0x00;
 	this->iTiles[2] = 0x00;
 	this->iTiles[3] = 0x00;
+    this->iCollision = 0x00;
+    this->bDestructible = false;
+    this->bDeadly = false;
 	this->imgTile = QImage(this->iW,this->iH,QImage::Format_Indexed8);
 	this->imgTile.fill(0);
 	this->imgTile.setColor(0,qRgba(0x00,0x00,0x00,0x00));
