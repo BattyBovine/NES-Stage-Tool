@@ -133,16 +133,16 @@ void MetatileManager::populateBlankTiles() {
 
 bool MetatileManager::drawSelectionBox()
 {
-    if(this->griSelection[0]/* && this->griSelection[1]*/) {
-        if(this->griSelection[0]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[0]);
-//			if(this->griSelection[1]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[1]);
-        delete this->griSelection[0];
-//			delete this->griSelection[1];
-        this->griSelection[0] = NULL;
-//			this->griSelection[1] = NULL;
-    }
-
 	if(this->bSelectionMode) {
+		if(this->griSelection[0]/* && this->griSelection[1]*/) {
+			if(this->griSelection[0]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[0]);
+//			if(this->griSelection[1]->parentItem()) this->gsMetatiles->removeItem(this->griSelection[1]);
+			delete this->griSelection[0];
+//			delete this->griSelection[1];
+			this->griSelection[0] = NULL;
+//			this->griSelection[1] = NULL;
+		}
+
         if(this->pSelection.x()<0 || this->pSelection.y()<0 ||
                 this->pSelection.x()>=MTM_CANVAS_SIZE ||
                 this->pSelection.y()>=MTM_CANVAS_SIZE)
@@ -295,20 +295,6 @@ void MetatileManager::setMetatileProperties(int i, int col, bool des, bool ded)
     this->mtlMetatiles[i]->setCollision(col);
     this->mtlMetatiles[i]->setDestructible(des);
     this->mtlMetatiles[i]->setDeadly(ded);
-}
-
-
-
-void MetatileManager::toggleShowGrid8(bool showgrid)
-{
-	this->bShowGrid8 = showgrid;
-	this->drawGridLines();
-}
-
-void MetatileManager::toggleShowGrid16(bool showgrid)
-{
-	this->bShowGrid16 = showgrid;
-	this->drawGridLines();
 }
 
 void MetatileManager::setGlobalTileset(int i)

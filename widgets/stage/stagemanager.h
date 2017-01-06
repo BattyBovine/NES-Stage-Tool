@@ -31,6 +31,7 @@
 #define SM_GLOBAL_PALETTE_MAX 8
 #define SM_THICK_GRID_LINES   1.0
 #define SM_THIN_GRID_LINES    0.5
+#define SM_THICK_SEL_LINES    1.0
 
 #define SM_FILE_OPEN_ERROR_TITLE   "Error opening stage file"
 #define SM_FILE_OPEN_ERROR_BODY    "Could not open stage file. Please make sure you have the necessary permissions to access files in this location."
@@ -40,6 +41,15 @@
 #define SM_EOF_ERROR_BODY          "Error reading stage data: Unexpected end of file."
 #define SM_COUNT_ERROR_TITLE       SM_INVALID_STAGE_TITLE
 #define SM_COUNT_ERROR_BODY        "Error reading stage data: Tile counts do not match length of data."
+
+
+struct ScreenProperties
+{
+	quint8 Song;
+	bool ScrollBlockLeft;
+	bool ScrollBlockRight;
+};
+typedef QVector<ScreenProperties> ScreenPropList;
 
 
 class StageManager : public QGraphicsView
@@ -65,13 +75,21 @@ signals:
 	void updateAnimationFrame();
 	void updateSpriteBank(quint16);
 
+	void sendScreenProperties(int,int,bool,bool);
+	void sendSelectionProperties(int,bool,bool);
+
 public slots:
 	void setScale(qreal s){this->iScale=s;}
+	void setSelectionMode(bool);
+	void setScreenProperties(int,int,bool,bool);
+	void setPropertySong(int i){this->vScreenProperties[this->iSelectedScreen].Song=i;}
+	void setPropertyScrollBlockLeft(bool b){this->vScreenProperties[this->iSelectedScreen].ScrollBlockLeft=b;}
+	void setPropertyScrollBlockRight(bool b){this->vScreenProperties[this->iSelectedScreen].ScrollBlockRight=b;}
 
 	void clearAllMetatileData();
 
-	void toggleShowScreenGrid(bool);
-	void toggleShowTileGrid(bool);
+	void toggleShowScreenGrid(bool b){this->bShowScreenGrid=b;this->drawGridLines();}
+	void toggleShowTileGrid(bool b){this->bShowTileGrid=b;this->drawGridLines();}
 
 	void getNewTile(MetatileItem*, MetatileItem*);
 	void getUpdatedTile(MetatileItem*);
@@ -79,20 +97,23 @@ public slots:
 	void getNewAnimationFrame(int);
 
 	void openStageFile(QString);
+	void openScreenPropertiesFile(QString);
 	void importStageBinaryData(QVector<QByteArray>);
+	void importScreenPropertiesBinaryData(QByteArray);
 	QVector<QByteArray> createStageBinaryData();
 	QString createStageASMData(QString);
+	QString createScreenPropertiesASMData(QString);
 
 	void updateStageView();
 
 protected:
+	void resizeEvent(QResizeEvent*);
 	void dragMoveEvent(QDragMoveEvent*e){e->accept();}
 	void dragEnterEvent(QDragEnterEvent*e){e->acceptProposedAction();}
 	void dropEvent(QDropEvent*);
 	void dragLeaveEvent(QDragLeaveEvent*e){e->accept();}
 	void mousePressEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
-	void mouseReleaseEvent(QMouseEvent*);
 	void mouseDoubleClickEvent(QMouseEvent*);
 	void wheelEvent(QWheelEvent*);
 	void keyPressEvent(QKeyEvent*);
@@ -100,6 +121,7 @@ protected:
 private:
 	void populateBlankTiles();
 	void drawGridLines();
+	void drawSelectionBox();
 	void replaceStageTile(QPointF);
 	void replaceScreenTileset(QPointF);
 	void replaceAllScreenTiles(QPointF);
@@ -107,16 +129,20 @@ private:
 	qreal iScale;
     quint8 iScreensW, iScreensH;
     quint8 iScreenTilesW, iScreenTilesH;
+	bool bSelectionMode;
+	quint8 iSelectedScreen;
 	QPointF pMouseTranslation;
 	QPointF pRightMousePos;
 	QPointF pSceneTranslation;
 
 	bool bShowScreenGrid, bShowTileGrid;
+	ScreenList vScreens;
+	ScreenPropList vScreenProperties;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;
+	QGraphicsRectItem *griSelectionBox;
 	quint8 iSelectedTileset;
-	ScreenList vScreens;
 };
 
 #endif // STAGEMANAGER_H

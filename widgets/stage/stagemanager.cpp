@@ -14,7 +14,10 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
     this->iScreenTilesH = SM_SCREEN_TILES_H_DEFAULT;
 
 	this->bShowScreenGrid = this->bShowTileGrid = true;
+	this->bSelectionMode = false;
+	this->iSelectedScreen = 0;
 	this->iSelectedTileset = 0;
+	this->griSelectionBox = NULL;
     this->setBackgroundBrush(QBrush(Qt::black));
 
 	this->groupMetatiles = new QGraphicsItemGroup();
@@ -37,10 +40,24 @@ StageManager::~StageManager()
 
 
 
+void StageManager::resizeEvent(QResizeEvent *e)
+{
+	if(this->bSelectionMode) {
+		this->fitInView(this->gsMetatiles->sceneRect(), Qt::KeepAspectRatio);
+		this->iScale = qreal(this->viewport()->width())/qreal(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW);
+		this->drawSelectionBox();
+		this->drawGridLines();
+	} else {
+		QGraphicsView::resizeEvent(e);
+	}
+}
+
 void StageManager::dropEvent(QDropEvent *e)
 {
-	e->acceptProposedAction();
-	emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
+	if(!this->bSelectionMode) {
+		e->acceptProposedAction();
+		emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
+	}
 }
 
 void StageManager::mousePressEvent(QMouseEvent *e)
@@ -49,11 +66,25 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 
 	switch(e->button()) {
 	case Qt::RightButton:
-		this->pRightMousePos = QPointF(-1,-1);
-		this->replaceStageTile(this->mapToScene(e->pos()));
+		if(!this->bSelectionMode) {
+			this->pRightMousePos = QPointF(-1,-1);
+			this->replaceStageTile(this->mapToScene(e->pos()));
+		}
 		break;
 	case Qt::LeftButton:
-		this->replaceScreenTileset(this->mapToScene(e->pos()));
+		if(this->bSelectionMode) {
+			QPointF selection = this->mapToScene(e->pos());
+			if(selection.x()<0 || selection.y()<0 ||
+					selection.x()>=(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW) ||
+					selection.y()>=(MTI_TILEWIDTH*this->iScreenTilesH*this->iScreensH)) {
+				return;
+			}
+			this->iSelectedScreen = (qFloor(selection.y()/(MTI_TILEWIDTH*this->iScreenTilesH))*this->iScreensW)+
+									qFloor(selection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
+			this->drawSelectionBox();
+		} else {
+			this->replaceScreenTileset(this->mapToScene(e->pos()));
+		}
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
@@ -63,52 +94,53 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 {
 	QGraphicsView::mouseMoveEvent(e);
 
-	if(e->buttons()&Qt::MiddleButton) {
-		this->setTransformationAnchor(QGraphicsView::NoAnchor);
-		this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
-						(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
-	} else if(e->buttons()&Qt::RightButton) {
-		this->replaceStageTile(this->mapToScene(e->pos()));
-	}
+	if(!this->bSelectionMode) {
+		if(e->buttons()&Qt::MiddleButton) {
+			this->setTransformationAnchor(QGraphicsView::NoAnchor);
+			this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
+							(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
+		} else if(e->buttons()&Qt::RightButton) {
+			this->replaceStageTile(this->mapToScene(e->pos()));
+		}
 
-	this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-	this->pMouseTranslation = QPointF(e->x(),e->y());
+		this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+		this->pMouseTranslation = QPointF(e->x(),e->y());
+	}
 }
 
 void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 {
-	switch(e->button()) {
-	case Qt::MiddleButton:
-		this->iScale = SM_DEFAULT_ZOOM;
-		this->updateStageView();
-		break;
-//	case Qt::RightButton:
-//		this->replaceAllScreenTiles(this->mapToScene(e->pos()));
-//		break;
-	default:
-		QGraphicsView::mouseDoubleClickEvent(e);
+	if(!this->bSelectionMode) {
+		switch(e->button()) {
+		case Qt::MiddleButton:
+			this->iScale = SM_DEFAULT_ZOOM;
+			this->updateStageView();
+			break;
+//		case Qt::RightButton:
+//			this->replaceAllScreenTiles(this->mapToScene(e->pos()));
+//			break;
+		default:
+			QGraphicsView::mouseDoubleClickEvent(e);
+		}
 	}
 }
 
 void StageManager::wheelEvent(QWheelEvent *e)
 {
-	qreal steps = (((qreal)e->angleDelta().y()/8)/15)/4;
-	if(((this->iScale+steps)>=1) && ((this->iScale+steps)<=SM_MAX_ZOOM))
-		this->iScale += steps;
-	else
-		this->iScale = ((steps<0)?1:SM_MAX_ZOOM);
+	if(!this->bSelectionMode) {
+		qreal steps = (((qreal)e->angleDelta().y()/8)/15)/4;
+		if(((this->iScale+steps)>=1) && ((this->iScale+steps)<=SM_MAX_ZOOM))
+			this->iScale += steps;
+		else
+			this->iScale = ((steps<0)?1:SM_MAX_ZOOM);
 
-	this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-	QMatrix matrix;
-	matrix.scale(this->iScale,this->iScale);
-	this->setMatrix(matrix);
+		this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+		QMatrix matrix;
+		matrix.scale(this->iScale,this->iScale);
+		this->setMatrix(matrix);
 
-	this->updateStageView();
-}
-
-void StageManager::mouseReleaseEvent(QMouseEvent *e)
-{
-	QGraphicsView::mouseReleaseEvent(e);
+		this->updateStageView();
+	}
 }
 
 void StageManager::keyPressEvent(QKeyEvent *e)
@@ -143,9 +175,13 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 
 void StageManager::drawGridLines()
 {
-	foreach(QGraphicsLineItem *i, this->lGrid)
-		this->gsMetatiles->removeItem(i);
-	this->lGrid.clear();
+	for(int i=0; i<this->lGrid.length(); i++) {
+		if(this->lGrid[i]) {
+			if(this->lGrid[i]->parentItem()) this->gsMetatiles->removeItem(this->lGrid[i]);
+			delete this->lGrid[i];
+			this->lGrid[i] = NULL;
+		}
+	}
 
 	if(this->bShowScreenGrid || this->bShowTileGrid) {
 		QPen thicksolid(Qt::red,qFloor(SM_THICK_GRID_LINES/this->iScale),Qt::SolidLine);
@@ -186,6 +222,30 @@ void StageManager::drawGridLines()
 	}
 }
 
+void StageManager::drawSelectionBox()
+{
+	if(this->bSelectionMode) {
+		if(this->griSelectionBox) {
+			if(this->griSelectionBox->parentItem()) this->gsMetatiles->removeItem(this->griSelectionBox);
+			delete this->griSelectionBox;
+			this->griSelectionBox = NULL;
+		}
+		QPen thicksolid(Qt::red,(SM_THICK_SEL_LINES/this->iScale),Qt::SolidLine);
+		this->griSelectionBox = this->gsMetatiles->addRect(
+									(this->iSelectedScreen%this->iScreensW)*(MTI_TILEWIDTH*this->iScreenTilesW),
+									qFloor(this->iSelectedScreen/this->iScreensW)*(MTI_TILEWIDTH*this->iScreenTilesH),
+									(MTI_TILEWIDTH*this->iScreenTilesW),
+									(MTI_TILEWIDTH*this->iScreenTilesH),
+									thicksolid
+									);
+		emit(sendSelectionProperties(
+				this->vScreenProperties[this->iSelectedScreen].Song,
+				this->vScreenProperties[this->iSelectedScreen].ScrollBlockLeft,
+				this->vScreenProperties[this->iSelectedScreen].ScrollBlockRight
+				));
+	}
+}
+
 void StageManager::populateBlankTiles()
 {
     foreach(MetatileList l, this->vScreens) {
@@ -195,7 +255,8 @@ void StageManager::populateBlankTiles()
     }
 
     this->vScreens = ScreenList(this->iScreensW*this->iScreensH);
-    for(int sy=0; sy<this->iScreensH; sy++) {
+	this->vScreenProperties = ScreenPropList(this->iScreensW*this->iScreensH);
+	for(int sy=0; sy<this->iScreensH; sy++) {
         for(int sx=0; sx<this->iScreensW; sx++) {
 			// Each screen gets its own tile list
             int screen = sy*this->iScreensW+sx;
@@ -211,6 +272,11 @@ void StageManager::populateBlankTiles()
 				}
 			}
 		}
+	}
+	for(int i=0; i<(this->iScreensW*this->iScreensH); i++) {
+		this->vScreenProperties[i].Song = 0;
+		this->vScreenProperties[i].ScrollBlockLeft = false;
+		this->vScreenProperties[i].ScrollBlockRight = false;
 	}
 }
 
@@ -280,6 +346,12 @@ void StageManager::clearAllMetatileData()
 			i->setPalette(0);
 		}
 	}
+	for(int i=0; i<this->vScreenProperties.size(); i++) {
+		this->vScreenProperties[i].Song = 0;
+		this->vScreenProperties[i].ScrollBlockLeft = false;
+		this->vScreenProperties[i].ScrollBlockRight = false;
+	}
+
 	this->updateStageView();
 }
 
@@ -317,16 +389,20 @@ void StageManager::getNewAnimationFrame(int animframe)
 	this->viewport()->update();
 }
 
-void StageManager::toggleShowScreenGrid(bool showgrid)
+void StageManager::setSelectionMode(bool s)
 {
-	this->bShowScreenGrid = showgrid;
-	this->drawGridLines();
+	this->bSelectionMode=s;
+	this->toggleShowScreenGrid(!s);
+	this->toggleShowTileGrid(!s);
+	this->fitInView(this->gsMetatiles->sceneRect(), Qt::KeepAspectRatio);
+	this->setRenderHint(QPainter::SmoothPixmapTransform);
 }
 
-void StageManager::toggleShowTileGrid(bool showgrid)
+void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
 {
-	this->bShowTileGrid = showgrid;
-	this->drawGridLines();
+	this->vScreenProperties[i].Song = song;
+	this->vScreenProperties[i].ScrollBlockLeft = sbl;
+	this->vScreenProperties[i].ScrollBlockRight = sbr;
 }
 
 
@@ -374,16 +450,16 @@ QString StageManager::createStageASMData(QString labelprefix)
 	QString tilesetbytes = labelprefix+QString("_tilesets:\n\t.byte ");
 	quint8 tilesetbyte = 0x00;
 
-    int numscreens = this->iScreensW*this->iScreensH;
+	int numscreens = this->iScreensW*this->iScreensH;
 	for(int s=0; s<numscreens; s++) {
 		QString countedlabel = asmlabel+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
 
 		databytes += countedlabel+":\n\t.byte ";
 
 		QString screenbytes;
-        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
-            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
-                screenbytes += QString("$%1").arg(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex(),2,16,QChar('0')).toUpper().append(",");
+		for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
+			for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
+				screenbytes += QString("$%1").arg(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex(),2,16,QChar('0')).toUpper().append(",");
 			}
 		}
 		screenbytes = screenbytes.left(screenbytes.length()-1);
@@ -423,11 +499,30 @@ QString StageManager::createStageASMData(QString labelprefix)
 //		}
 //		attrbytes = attrbytes.left(attrbytes.length()-1);
 //		databytes.append(attrbytes).append("\n");
-    }
+	}
 
 	tilesetbytes = tilesetbytes.left(tilesetbytes.length()-1) + QString("\n");
 
 	return databytes+tilesetbytes;
+}
+
+QString StageManager::createScreenPropertiesASMData(QString labelprefix)
+{
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	QString propbytes = asmlabel+QString("_screenprops:\n\t.byte ");
+	quint8 propbyte;
+
+	for(int s=0; s<this->vScreenProperties.size(); s++) {
+		propbyte = (this->vScreenProperties[s].Song&0x3F);
+		propbyte |= this->vScreenProperties[s].ScrollBlockLeft?0x40:0x00;
+		propbyte |= this->vScreenProperties[s].ScrollBlockRight?0x80:0x00;
+
+		propbytes += QString("$%1").arg(propbyte,2,16,QChar('0')).toUpper().append(",");
+	}
+
+	propbytes = propbytes.left(propbytes.length()-1) + QString("\n");
+
+	return propbytes;
 }
 
 
@@ -440,7 +535,7 @@ void StageManager::openStageFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
-    QVector<QByteArray> inputbytes(this->iScreensW*this->iScreensH+1);
+	QVector<QByteArray> inputbytes(this->iScreensW*this->iScreensH+1);
 	QString labelname;
 	bool tilesetsfound = false;
 
@@ -463,9 +558,9 @@ void StageManager::openStageFile(QString filename)
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
 
-        if(!bytesin.isEmpty() && bytesin.size()==(this->iScreenTilesW*this->iScreenTilesH)) {
+		if(!bytesin.isEmpty() && bytesin.size()==(this->iScreenTilesW*this->iScreenTilesH)) {
 			inputbytes.replace(labelnum,bytesin);
-        } else if(!bytesin.isEmpty() && tilesetsfound && bytesin.size()==qFloor((this->iScreensW*this->iScreensH)/2)) {
+		} else if(!bytesin.isEmpty() && tilesetsfound && bytesin.size()==qFloor((this->iScreensW*this->iScreensH)/2)) {
 			inputbytes.append(bytesin);
 			tilesetsfound = false;
 		}
@@ -490,23 +585,64 @@ void StageManager::openStageFile(QString filename)
 	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
 }
 
+void StageManager::openScreenPropertiesFile(QString filename)
+{
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		QMessageBox::warning(this,tr(SM_FILE_OPEN_ERROR_TITLE),tr(SM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	QByteArray inputbytes;
+	bool propsfound = false;
+
+	while(!file.atEnd()) {
+		QString line = file.readLine();
+
+		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
+		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
+		QByteArray bytesin;
+		while(bytesiter.hasNext()) {
+			QRegularExpressionMatch bytesmatch = bytesiter.next();
+			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
+		}
+
+		if(!bytesin.isEmpty() && propsfound && bytesin.size()==(this->iScreensW*this->iScreensH)) {
+			inputbytes = bytesin;
+			propsfound = false;
+		}
+
+		QRegularExpression propslabel("^(.*?)_screenprops:$");
+		QRegularExpressionMatch propslabelmatch = propslabel.match(line);
+		if(propslabelmatch.hasMatch()) {
+			propsfound = true;
+		}
+	}
+	file.close();
+	if(!inputbytes.isEmpty()) {
+		this->importScreenPropertiesBinaryData(inputbytes);
+		return;
+	}
+
+	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
+}
+
 void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 {
-    for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
-        if(bindata[s].size()!=(this->iScreenTilesW*this->iScreenTilesH)) {
+	for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
+		if(bindata[s].size()!=(this->iScreenTilesW*this->iScreenTilesH)) {
 			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 			return;
 		}
-        for(int x=0; x<this->iScreenTilesW; x++) {
-            for(int y=0; y<this->iScreenTilesH; y++) {
-                this->vScreens[s][(y*this->iScreenTilesW)+x]->setMetatileIndex(bindata[s].at((x*this->iScreenTilesH)+y));
-                emit(requestTileUpdate(this->vScreens[s][(y*this->iScreenTilesW)+x]));
+		for(int x=0; x<this->iScreenTilesW; x++) {
+			for(int y=0; y<this->iScreenTilesH; y++) {
+				this->vScreens[s][(y*this->iScreenTilesW)+x]->setMetatileIndex(bindata[s].at((x*this->iScreenTilesH)+y));
+				emit(requestTileUpdate(this->vScreens[s][(y*this->iScreenTilesW)+x]));
 			}
 		}
 	}
 
-    for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
-        if(bindata.last().size()!=qFloor((this->iScreensW*this->iScreensH)/2)) {
+	for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
+		if(bindata.last().size()!=qFloor((this->iScreensW*this->iScreensH)/2)) {
 			QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 			return;
 		}
@@ -516,11 +652,30 @@ void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 	}
 }
 
+void StageManager::importScreenPropertiesBinaryData(QByteArray bindata)
+{
+	if(bindata.size()!=(this->iScreensW*this->iScreensH)) {
+		QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
+		this->vScreenProperties[s].Song = (bindata.at(s)&0x3F);
+		this->vScreenProperties[s].ScrollBlockLeft = (bindata.at(s)&0x40)?true:false;
+		this->vScreenProperties[s].ScrollBlockRight = (bindata.at(s)&0x80)?true:false;
+	}
+	emit(sendSelectionProperties(
+			this->vScreenProperties[this->iSelectedScreen].Song,
+			this->vScreenProperties[this->iSelectedScreen].ScrollBlockLeft,
+			this->vScreenProperties[this->iSelectedScreen].ScrollBlockRight
+			));
+}
+
 
 
 void StageManager::updateStageView()
 {
     this->setSceneRect(0, 0, (MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW, (MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH);
 	this->drawGridLines();
+	this->drawSelectionBox();
 	this->viewport()->update();
 }

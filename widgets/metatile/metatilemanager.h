@@ -88,8 +88,8 @@ public slots:
 	void updateStageMetatile(MetatileItem*);
 	void getNewAnimationFrame(int);
 
-	void toggleShowGrid8(bool);
-	void toggleShowGrid16(bool);
+	void toggleShowGrid8(bool b){this->bShowGrid8=b;this->drawGridLines();}
+	void toggleShowGrid16(bool b){this->bShowGrid16=b;this->drawGridLines();}
 	void setGlobalTileset(int);
     void setSelectedSubtile(int);
 

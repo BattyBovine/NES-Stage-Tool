@@ -29,6 +29,15 @@ Screen tilesets:
 	 |||  +++-- Screen 0's tileset
 	 +++------- Screen 1's tileset
 
+Screen properties:
+	Below the tileset data is an array of bytes representing the other properties associated with each screen, namely the associated music, and whether the screen should scroll into the next screen as the player moves toward it. Each byte is associated with one screen, and there are as many bytes as there are screens. The label is examplestage1_screenprops. The format looks like this:
+	
+	1000 1011 - Property byte for screen 0
+	|||| ||||
+	||++-++++-- Screen 0 music
+	|+--------- Screen 0 scroll block left
+	+---------- Screen 0 scroll block right
+
 Metatile definitions:
 	Metatiles are stored with each subtile in its own array. Top left is first, then top right, then bottom left, then bottom right. The labels for each are examplestage1_subtiles_tl, examplestage1_subtiles_tr, examplestage1_subtiles_bl and examplestage1_subtiles_br.
 

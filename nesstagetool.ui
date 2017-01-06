@@ -633,7 +633,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
-            <widget class="QGraphicsView" name="gvScreenSelector">
+            <widget class="StageManager" name="gvScreenSelector">
              <property name="acceptDrops">
               <bool>false</bool>
              </property>
@@ -723,7 +723,7 @@
                <item row="0" column="1" colspan="2">
                 <widget class="QSpinBox" name="spinSong">
                  <property name="maximum">
-                  <number>256</number>
+                  <number>63</number>
                  </property>
                 </widget>
                </item>
@@ -1555,6 +1555,7 @@
     <signal>setStageLabel(QString)</signal>
     <signal>stageFileDropped(QString)</signal>
     <signal>clearAllMetatileData()</signal>
+    <signal>sendSelectionProperties(int,bool,bool)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1563,6 +1564,9 @@
     <slot>getNewAnimationFrame(int)</slot>
     <slot>getNewTile(MetatileItem*,MetatileItem*)</slot>
     <slot>getSelectedTileset(quint8)</slot>
+    <slot>setPropertySong(int)</slot>
+    <slot>setPropertyScrollBlockLeft(bool)</slot>
+    <slot>setPropertyScrollBlockRight(bool)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2611,6 +2615,118 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>metatileUpdated(MetatileItem*)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>getUpdatedTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>requestTileUpdate(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>updateStageMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>763</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>newAnimationFrame(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>getNewAnimationFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinSong</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setPropertySong(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkScrollBlockLeft</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setPropertyScrollBlockLeft(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>557</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkScrollBlockRight</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setPropertyScrollBlockRight(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>557</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>sendSelectionProperties(int,bool,bool)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>getScreenProperties(int,bool,bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>238</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2637,5 +2753,6 @@
   <slot>getBankUpdates(int,int,int,int,int,int,int,int)</slot>
   <slot>showAboutDialogue()</slot>
   <slot>getMetatileProperties(int,bool,bool)</slot>
+  <slot>getScreenProperties(int,bool,bool)</slot>
  </slots>
 </ui>

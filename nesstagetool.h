@@ -61,7 +61,8 @@ private slots:
 
 	void sendBankUpdates();
 	void getBankUpdates(int,int,int,int,int,int,int,int);
-    void getMetatileProperties(int,bool,bool);
+	void getMetatileProperties(int,bool,bool);
+	void getScreenProperties(int,bool,bool);
 
 	void openStage(QString path="");
 	void saveASMStage(QString path="");

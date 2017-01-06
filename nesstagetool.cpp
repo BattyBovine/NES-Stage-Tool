@@ -34,6 +34,7 @@ NESStageTool::NESStageTool(QWidget *parent) :
     ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
     ui->gvMetatileSelector->setSelectionMode(true);
     ui->gvMetatileSelectorProperties->setSelectionMode(true);
+	ui->gvScreenSelector->setSelectionMode(true);
 
 	this->changeBankSize();
 	this->sendBankUpdates();
@@ -132,10 +133,14 @@ void NESStageTool::newProject()
 	switch(retval) {
 	case QMessageBox::Yes:
 		ui->gvStage->clearAllMetatileData();
+		ui->gvScreenSelector->clearAllMetatileData();
 		ui->gvMetatileEditor->clearAllMetatileData();
         ui->gvMetatileSelectorProperties->clearAllMetatileData();
 		ui->gvPaletteManager->clearAllPaletteData();
 		ui->gvGlobalTileset->clearAllTilesetData();
+		ui->spinSong->setValue(0);
+		ui->chkScrollBlockLeft->setChecked(false);
+		ui->chkScrollBlockRight->setChecked(false);
         ui->comboCollision->setCurrentIndex(0);
         ui->chkDestructible->setChecked(false);
         ui->chkDeadly->setChecked(false);
@@ -298,9 +303,16 @@ void NESStageTool::getBankUpdates(int b0, int b1, int b2, int b3, int b4, int b5
 
 void NESStageTool::getMetatileProperties(int collision, bool destructible, bool deadly)
 {
-    ui->comboCollision->setCurrentIndex(collision);
-    ui->chkDestructible->setChecked(destructible);
-    ui->chkDeadly->setChecked(deadly);
+	ui->comboCollision->setCurrentIndex(collision);
+	ui->chkDestructible->setChecked(destructible);
+	ui->chkDeadly->setChecked(deadly);
+}
+
+void NESStageTool::getScreenProperties(int song, bool sbl, bool sbr)
+{
+	ui->spinSong->setValue(song);
+	ui->chkScrollBlockLeft->setChecked(sbl);
+	ui->chkScrollBlockRight->setChecked(sbr);
 }
 
 
@@ -313,6 +325,8 @@ void NESStageTool::openStage(QString path)
 	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
 	ui->gvStage->openStageFile(filename);
+	ui->gvScreenSelector->openStageFile(filename);
+	ui->gvScreenSelector->openScreenPropertiesFile(filename);
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -332,6 +346,7 @@ void NESStageTool::saveASMStage(QString path)
 	}
 
 	file.write(ui->gvStage->createStageASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write(ui->gvScreenSelector->createScreenPropertiesASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
     file.write(ui->gvMetatileSelectorProperties->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");

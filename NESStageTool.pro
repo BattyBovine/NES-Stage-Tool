@@ -56,6 +56,6 @@ ICON = res/icon.icns
 
 QMAKE_TARGET_PRODUCT = "NES Stage Tool"
 QMAKE_TARGET_COMPANY = "Batty Bovine Productions, LLC"
-QMAKE_TARGET_COPYRIGHT = "(c) 2015 Batty Bovine Productions, LLC. Some Rights Reserved."
+QMAKE_TARGET_COPYRIGHT = "(c) 2016 Batty Bovine Productions, LLC. All Rights Reserved."
 GENERATED_VERSION_NUMBER = $$system(perl versionup.pl -get)
 VERSION = $${GENERATED_VERSION_NUMBER}
