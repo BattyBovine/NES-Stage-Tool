@@ -64,6 +64,13 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
+              <widget class="QLabel" name="labelTileInfo">
+               <property name="text">
+                <string>S: $SS | X: $XX | Y: $YY | Tile: $TT</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -797,6 +804,9 @@
               <layout class="QGridLayout" name="gridLayout_4">
                <item row="0" column="1">
                 <widget class="QComboBox" name="comboCollision">
+                 <property name="editable">
+                  <bool>true</bool>
+                 </property>
                  <item>
                   <property name="text">
                    <string>None</string>
@@ -810,6 +820,66 @@
                  <item>
                   <property name="text">
                    <string>Top Solid</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>(Reserved)</string>
                   </property>
                  </item>
                  <item>
@@ -1556,6 +1626,7 @@
     <signal>stageFileDropped(QString)</signal>
     <signal>clearAllMetatileData()</signal>
     <signal>sendSelectionProperties(int,bool,bool)</signal>
+    <signal>sendTileData(QString)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1870,8 +1941,8 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>104</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1886,8 +1957,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>167</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1902,8 +1973,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>195</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1918,8 +1989,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>223</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -1934,8 +2005,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>251</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1950,8 +2021,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>279</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1966,8 +2037,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>307</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1982,8 +2053,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>335</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1998,8 +2069,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>363</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -2030,8 +2101,8 @@
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>389</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
@@ -2094,8 +2165,8 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -2126,8 +2197,8 @@
    <slot>setNewGlobalPalette(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>851</x>
@@ -2162,8 +2233,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2174,8 +2245,8 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>853</x>
@@ -2190,8 +2261,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>763</x>
@@ -2270,8 +2341,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
-     <y>130</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>305</x>
@@ -2514,8 +2585,8 @@
      <y>504</y>
     </hint>
     <hint type="destinationlabel">
-     <x>682</x>
-     <y>211</y>
+     <x>319</x>
+     <y>263</y>
     </hint>
    </hints>
   </connection>
@@ -2530,8 +2601,8 @@
      <y>311</y>
     </hint>
     <hint type="destinationlabel">
-     <x>682</x>
-     <y>211</y>
+     <x>319</x>
+     <y>263</y>
     </hint>
    </hints>
   </connection>
@@ -2542,12 +2613,12 @@
    <slot>setPropertyCollision(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>761</x>
-     <y>531</y>
+     <x>132</x>
+     <y>80</y>
     </hint>
     <hint type="destinationlabel">
-     <x>761</x>
-     <y>494</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -2558,12 +2629,12 @@
    <slot>setPropertyDeadly(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>691</x>
-     <y>555</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>682</x>
-     <y>478</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -2574,12 +2645,12 @@
    <slot>setPropertyDestructible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>606</x>
-     <y>555</y>
+     <x>163</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>634</x>
-     <y>485</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -2590,8 +2661,8 @@
    <slot>getMetatileProperties(int,bool,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>876</x>
-     <y>91</y>
+     <x>319</x>
+     <y>143</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -2610,8 +2681,8 @@
      <y>311</y>
     </hint>
     <hint type="destinationlabel">
-     <x>682</x>
-     <y>299</y>
+     <x>319</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -2626,8 +2697,8 @@
      <y>311</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2638,8 +2709,8 @@
    <slot>updateStageMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>763</x>
@@ -2654,12 +2725,12 @@
    <slot>getNewAnimationFrame(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>325</y>
+     <x>275</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2670,12 +2741,12 @@
    <slot>setPropertySong(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>276</x>
-     <y>532</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2686,12 +2757,12 @@
    <slot>setPropertyScrollBlockLeft(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>557</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2702,12 +2773,12 @@
    <slot>setPropertyScrollBlockRight(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>300</x>
-     <y>557</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>
@@ -2718,12 +2789,28 @@
    <slot>getScreenProperties(int,bool,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>238</x>
-     <y>299</y>
+     <x>119</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>461</x>
      <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>sendTileData(QString)</signal>
+   <receiver>labelTileInfo</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>557</y>
     </hint>
    </hints>
   </connection>

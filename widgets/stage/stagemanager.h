@@ -65,6 +65,7 @@ public:
 
 signals:
 	void stageFileDropped(QString);
+	void sendTileData(QString);
 
 	void requestSelectedMetatile(MetatileItem*);
 	void requestTileUpdate(MetatileItem*);
@@ -125,6 +126,7 @@ private:
 	void replaceStageTile(QPointF);
 	void replaceScreenTileset(QPointF);
 	void replaceAllScreenTiles(QPointF);
+	void getHoveredTile(QPointF);
 
 	qreal iScale;
     quint8 iScreensW, iScreensH;

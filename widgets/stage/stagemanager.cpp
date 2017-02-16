@@ -106,6 +106,8 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 		this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 		this->pMouseTranslation = QPointF(e->x(),e->y());
 	}
+
+	this->getHoveredTile(this->mapToScene(e->pos()));
 }
 
 void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
@@ -353,6 +355,28 @@ void StageManager::clearAllMetatileData()
 	}
 
 	this->updateStageView();
+}
+
+void StageManager::getHoveredTile(QPointF p)
+{
+	if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
+		return;
+
+	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
+	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
+	int screenx = qFloor(tilex/this->iScreenTilesW);
+	int screeny = qFloor(tiley/this->iScreenTilesH);
+	quint8 screen = (screeny*this->iScreensW)+screenx;
+	quint8 tile = ((tiley%this->iScreenTilesH)*this->iScreenTilesW)+(tilex%this->iScreenTilesW);
+
+	QString tiledata;
+	tiledata += QString("S: $%1 | X: $%2 | Y: $%3 | T: $%4")
+				.arg(screen,2,16,QChar('0'))
+				.arg(tilex,2,16,QChar('0'))
+				.arg(tiley,2,16,QChar('0'))
+				.arg(this->vScreens[screen][tile]->metatileIndex(),2,16,QChar('0'))
+				.toUpper();
+	emit(sendTileData(tiledata));
 }
 
 
