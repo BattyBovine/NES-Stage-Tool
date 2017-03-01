@@ -28,6 +28,8 @@
 #define SM_DEFAULT_ZOOM           1
 #define SM_MAX_ZOOM               8
 
+#define SM_MAX_CHECKPOINTS        8
+
 #define SM_GLOBAL_PALETTE_MAX 8
 #define SM_THICK_GRID_LINES   1.0
 #define SM_THIN_GRID_LINES    0.5
@@ -50,6 +52,15 @@ struct ScreenProperties
 	bool ScrollBlockRight;
 };
 typedef QVector<ScreenProperties> ScreenPropList;
+
+
+struct Checkpoints
+{
+	quint8 Screen;
+	quint8 X;
+	quint8 Y;
+};
+typedef QVector<Checkpoints> CheckpointList;
 
 
 class StageManager : public QGraphicsView
@@ -78,6 +89,7 @@ signals:
 
 	void sendScreenProperties(int,int,bool,bool);
 	void sendSelectionProperties(int,bool,bool);
+	void sendCheckpointData(int,int,int);
 
 public slots:
 	void setScale(qreal s){this->iScale=s;}
@@ -97,13 +109,21 @@ public slots:
 	void getSelectedTileset(quint8);
 	void getNewAnimationFrame(int);
 
+	void setCheckpointIndex(int i);
+	void setCheckpointScreen(int i){this->vCheckpoints[this->iCheckpointIndex].Screen=i;}
+	void setCheckpointX(int i){this->vCheckpoints[this->iCheckpointIndex].X=i;}
+	void setCheckpointY(int i){this->vCheckpoints[this->iCheckpointIndex].Y=i;}
+
 	void openStageFile(QString);
 	void openScreenPropertiesFile(QString);
+	void openCheckpointsFile(QString);
 	void importStageBinaryData(QVector<QByteArray>);
 	void importScreenPropertiesBinaryData(QByteArray);
+	void importCheckpointsBinaryData(QVector<QByteArray>);
 	QVector<QByteArray> createStageBinaryData();
 	QString createStageASMData(QString);
 	QString createScreenPropertiesASMData(QString);
+	QString createCheckpointsASMData(QString);
 
 	void updateStageView();
 
@@ -140,6 +160,8 @@ private:
 	bool bShowScreenGrid, bShowTileGrid;
 	ScreenList vScreens;
 	ScreenPropList vScreenProperties;
+	quint8 iCheckpointIndex;
+	CheckpointList vCheckpoints;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;

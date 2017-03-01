@@ -63,6 +63,7 @@ private slots:
 	void getBankUpdates(int,int,int,int,int,int,int,int);
 	void getMetatileProperties(int,bool,bool);
 	void getScreenProperties(int,bool,bool);
+	void getCheckpointData(int,int,int);
 
 	void openStage(QString path="");
 	void saveASMStage(QString path="");

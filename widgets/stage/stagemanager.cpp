@@ -20,6 +20,14 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->griSelectionBox = NULL;
     this->setBackgroundBrush(QBrush(Qt::black));
 
+	this->iCheckpointIndex = 0;
+	this->vCheckpoints = CheckpointList(SM_MAX_CHECKPOINTS);
+	for(int i=0; i<SM_MAX_CHECKPOINTS; i++) {
+		this->vCheckpoints[i].Screen = 0;
+		this->vCheckpoints[i].X = 0;
+		this->vCheckpoints[i].Y = 0;
+	}
+
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
@@ -256,7 +264,7 @@ void StageManager::populateBlankTiles()
         }
     }
 
-    this->vScreens = ScreenList(this->iScreensW*this->iScreensH);
+	this->vScreens = ScreenList(this->iScreensW*this->iScreensH);
 	this->vScreenProperties = ScreenPropList(this->iScreensW*this->iScreensH);
 	for(int sy=0; sy<this->iScreensH; sy++) {
         for(int sx=0; sx<this->iScreensW; sx++) {
@@ -431,6 +439,17 @@ void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
 
 
 
+void StageManager::setCheckpointIndex(int i) {
+	this->iCheckpointIndex=i;
+	emit(sendCheckpointData(
+			this->vCheckpoints[this->iCheckpointIndex].Screen,
+			this->vCheckpoints[this->iCheckpointIndex].X,
+			this->vCheckpoints[this->iCheckpointIndex].Y
+			));
+}
+
+
+
 QVector<QByteArray> StageManager::createStageBinaryData()
 {
     int numscreens = this->iScreensW*this->iScreensH;
@@ -549,6 +568,26 @@ QString StageManager::createScreenPropertiesASMData(QString labelprefix)
 	return propbytes;
 }
 
+QString StageManager::createCheckpointsASMData(QString labelprefix)
+{
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	QString ckptscreen = asmlabel+QString("_checkpoint_screen:\n\t.byte ");
+	QString ckptx = asmlabel+QString("_checkpoint_posx:\n\t.byte ");
+	QString ckpty = asmlabel+QString("_checkpoint_posy:\n\t.byte ");
+
+	for(int c=0; c<this->vCheckpoints.size(); c++) {
+		ckptscreen += QString("$%1").arg(this->vCheckpoints[c].Screen,2,16,QChar('0')).toUpper().append(",");
+		ckptx += QString("$%1").arg(this->vCheckpoints[c].X,2,16,QChar('0')).toUpper().append(",");
+		ckpty += QString("$%1").arg(this->vCheckpoints[c].Y,2,16,QChar('0')).toUpper().append(",");
+	}
+
+	ckptscreen = ckptscreen.left(ckptscreen.length()-1) + QString("\n");
+	ckptx = ckptx.left(ckptx.length()-1) + QString("\n");
+	ckpty = ckpty.left(ckpty.length()-1) + QString("\n");
+
+	return ckptscreen+ckptx+ckpty;
+}
+
 
 
 void StageManager::openStageFile(QString filename)
@@ -650,6 +689,62 @@ void StageManager::openScreenPropertiesFile(QString filename)
 	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
 }
 
+void StageManager::openCheckpointsFile(QString filename)
+{
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		QMessageBox::warning(this,tr(SM_FILE_OPEN_ERROR_TITLE),tr(SM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	QVector<QByteArray> inputbytes;
+	bool screensfound = false;
+	bool cpxfound = false;
+	bool cpyfound = false;
+
+	while(!file.atEnd()) {
+		QString line = file.readLine();
+
+		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
+		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
+		QByteArray bytesin;
+		while(bytesiter.hasNext()) {
+			QRegularExpressionMatch bytesmatch = bytesiter.next();
+			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
+		}
+		if(!bytesin.isEmpty() && (screensfound || cpxfound || cpyfound) && bytesin.size()==SM_MAX_CHECKPOINTS) {
+			inputbytes.append(bytesin);
+			screensfound = false;
+			cpxfound = false;
+			cpyfound = false;
+		}
+
+		QRegularExpression ckptscreenlabel("^(.*?)_checkpoint_screen:$");
+		QRegularExpressionMatch ckptscreenlabelmatch = ckptscreenlabel.match(line);
+		if(ckptscreenlabelmatch.hasMatch()) {
+			screensfound = true;
+		}
+
+		QRegularExpression ckptxlabel("^(.*?)_checkpoint_posx:$");
+		QRegularExpressionMatch ckptxlabelmatch = ckptxlabel.match(line);
+		if(ckptxlabelmatch.hasMatch()) {
+			cpxfound = true;
+		}
+
+		QRegularExpression ckptylabel("^(.*?)_checkpoint_posy:$");
+		QRegularExpressionMatch ckptylabelmatch = ckptylabel.match(line);
+		if(ckptylabelmatch.hasMatch()) {
+			cpyfound = true;
+		}
+	}
+	file.close();
+	if(!inputbytes.isEmpty()) {
+		this->importCheckpointsBinaryData(inputbytes);
+		return;
+	}
+
+	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
+}
+
 void StageManager::importStageBinaryData(QVector<QByteArray> bindata)
 {
 	for(int s=0; s<(this->iScreensW*this->iScreensH); s++) {
@@ -691,6 +786,28 @@ void StageManager::importScreenPropertiesBinaryData(QByteArray bindata)
 			this->vScreenProperties[this->iSelectedScreen].Song,
 			this->vScreenProperties[this->iSelectedScreen].ScrollBlockLeft,
 			this->vScreenProperties[this->iSelectedScreen].ScrollBlockRight
+			));
+}
+
+void StageManager::importCheckpointsBinaryData(QVector<QByteArray> bindata)
+{
+	if(bindata.size()!=3) {
+		QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
+		this->vCheckpoints[j].Screen = quint8(bindata[0].at(j));
+	}
+	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
+		this->vCheckpoints[j].X = quint8(bindata[1].at(j));
+	}
+	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
+		this->vCheckpoints[j].Y = quint8(bindata[2].at(j));
+	}
+	emit(sendCheckpointData(
+			this->vCheckpoints[this->iCheckpointIndex].Screen,
+			this->vCheckpoints[this->iCheckpointIndex].X,
+			this->vCheckpoints[this->iCheckpointIndex].Y
 			));
 }
 

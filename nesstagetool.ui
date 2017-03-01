@@ -66,7 +66,7 @@
              <item>
               <widget class="QLabel" name="labelTileInfo">
                <property name="text">
-                <string>S: $SS | X: $XX | Y: $YY | Tile: $TT</string>
+                <string>S: $SS | X: $XX | Y: $YY | T: $TT</string>
                </property>
               </widget>
              </item>
@@ -667,7 +667,7 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>18</width>
                  <height>20</height>
                 </size>
                </property>
@@ -684,7 +684,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Scroll Blocking:</string>
+                  <string>Scroll Block:</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -738,6 +738,126 @@
              </item>
              <item>
               <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_18">
+             <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>X:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QSpinBox" name="spinCkptX">
+                 <property name="maximum">
+                  <number>255</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinCkptScreen">
+                 <property name="maximum">
+                  <number>255</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <widget class="QSpinBox" name="spinCkptY">
+                 <property name="maximum">
+                  <number>255</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Screen:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>Y:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" colspan="6">
+                <widget class="QComboBox" name="comboCheckpoints">
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 0</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 1</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 3</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 5</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 6</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Checkpoint 7</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_11">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -1627,6 +1747,7 @@
     <signal>clearAllMetatileData()</signal>
     <signal>sendSelectionProperties(int,bool,bool)</signal>
     <signal>sendTileData(QString)</signal>
+    <signal>sendCheckpointData(int,int,int)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1638,6 +1759,10 @@
     <slot>setPropertySong(int)</slot>
     <slot>setPropertyScrollBlockLeft(bool)</slot>
     <slot>setPropertyScrollBlockRight(bool)</slot>
+    <slot>setCheckpointIndex(int)</slot>
+    <slot>setCheckpointScreen(int)</slot>
+    <slot>setCheckpointX(int)</slot>
+    <slot>setCheckpointY(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1669,7 +1794,7 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>732</x>
+     <x>721</x>
      <y>565</y>
     </hint>
     <hint type="destinationlabel">
@@ -1817,8 +1942,8 @@
      <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>377</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
    </hints>
   </connection>
@@ -1897,8 +2022,8 @@
      <y>564</y>
     </hint>
     <hint type="destinationlabel">
-     <x>140</x>
-     <y>193</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -1913,8 +2038,8 @@
      <y>564</y>
     </hint>
     <hint type="destinationlabel">
-     <x>140</x>
-     <y>193</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -1925,12 +2050,12 @@
    <slot>getSelectedStageTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>140</x>
-     <y>193</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>891</x>
-     <y>330</y>
+     <y>339</y>
     </hint>
    </hints>
   </connection>
@@ -1941,8 +2066,8 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -1957,8 +2082,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -1973,8 +2098,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -1989,8 +2114,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -2005,8 +2130,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>251</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -2021,8 +2146,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>279</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -2037,8 +2162,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>307</y>
     </hint>
     <hint type="destinationlabel">
      <x>919</x>
@@ -2053,8 +2178,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>917</x>
@@ -2069,8 +2194,8 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>363</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -2101,8 +2226,8 @@
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
@@ -2149,8 +2274,8 @@
    <slot>setStageLabelPrefix(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>140</x>
-     <y>193</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>470</x>
@@ -2165,8 +2290,8 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -2197,8 +2322,8 @@
    <slot>setNewGlobalPalette(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>851</x>
@@ -2213,8 +2338,8 @@
    <slot>getGlobalTilesetDelta(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>853</x>
-     <y>359</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -2233,8 +2358,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
    </hints>
   </connection>
@@ -2245,12 +2370,12 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>359</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
    </hints>
   </connection>
@@ -2261,12 +2386,12 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
    </hints>
   </connection>
@@ -2277,8 +2402,8 @@
    <slot>getGlobalTilesetDelta(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -2297,8 +2422,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>377</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
    </hints>
   </connection>
@@ -2329,8 +2454,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>853</x>
-     <y>359</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
    </hints>
   </connection>
@@ -2341,8 +2466,8 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>890</x>
+     <y>130</y>
     </hint>
     <hint type="destinationlabel">
      <x>305</x>
@@ -2373,8 +2498,8 @@
    <slot>setSelectedSubtile(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>853</x>
-     <y>359</y>
+     <x>842</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>305</x>
@@ -2405,12 +2530,12 @@
    <slot>updateStageMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>319</x>
-     <y>325</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
    </hints>
   </connection>
@@ -2425,8 +2550,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>325</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -2473,8 +2598,8 @@
      <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>325</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -2489,8 +2614,8 @@
      <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
    </hints>
   </connection>
@@ -2501,12 +2626,12 @@
    <slot>getSelectedTileset(quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>325</y>
+     <x>129</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -2517,8 +2642,8 @@
    <slot>openStage(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>53</x>
-     <y>129</y>
+     <x>74</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -2581,12 +2706,12 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>738</x>
-     <y>504</y>
+     <x>851</x>
+     <y>537</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>263</y>
+     <x>740</x>
+     <y>338</y>
     </hint>
    </hints>
   </connection>
@@ -2597,12 +2722,12 @@
    <slot>getEditorMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>263</y>
+     <x>740</x>
+     <y>338</y>
     </hint>
    </hints>
   </connection>
@@ -2613,12 +2738,12 @@
    <slot>setPropertyCollision(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>80</y>
+     <x>765</x>
+     <y>542</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>740</x>
+     <y>391</y>
     </hint>
    </hints>
   </connection>
@@ -2629,12 +2754,12 @@
    <slot>setPropertyDeadly(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>741</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>740</x>
+     <y>391</y>
     </hint>
    </hints>
   </connection>
@@ -2645,12 +2770,12 @@
    <slot>setPropertyDestructible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>90</y>
+     <x>679</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>740</x>
+     <y>391</y>
     </hint>
    </hints>
   </connection>
@@ -2661,8 +2786,8 @@
    <slot>getMetatileProperties(int,bool,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>319</x>
-     <y>143</y>
+     <x>740</x>
+     <y>218</y>
     </hint>
     <hint type="destinationlabel">
      <x>918</x>
@@ -2677,12 +2802,12 @@
    <slot>setMetatileProperties(int,int,bool,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
-     <y>316</y>
+     <x>740</x>
+     <y>391</y>
     </hint>
    </hints>
   </connection>
@@ -2693,8 +2818,8 @@
    <slot>getUpdatedTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>311</y>
+     <x>305</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2713,8 +2838,8 @@
      <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>763</x>
-     <y>211</y>
+     <x>891</x>
+     <y>286</y>
     </hint>
    </hints>
   </connection>
@@ -2741,8 +2866,8 @@
    <slot>setPropertySong(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>317</x>
+     <y>486</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2757,8 +2882,8 @@
    <slot>setPropertyScrollBlockLeft(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>263</x>
+     <y>509</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2773,8 +2898,8 @@
    <slot>setPropertyScrollBlockRight(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
+     <x>317</x>
+     <y>509</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2805,12 +2930,92 @@
    <slot>setText(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>100</x>
-     <y>472</y>
+     <x>121</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>48</x>
-     <y>557</y>
+     <x>70</x>
+     <y>566</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboCheckpoints</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setCheckpointIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>154</x>
+     <y>530</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>390</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinCkptScreen</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setCheckpointScreen(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>548</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinCkptX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setCheckpointX(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>558</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinCkptY</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setCheckpointY(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>554</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>355</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>sendCheckpointData(int,int,int)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>getCheckpointData(int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>417</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>595</y>
     </hint>
    </hints>
   </connection>
@@ -2841,5 +3046,6 @@
   <slot>showAboutDialogue()</slot>
   <slot>getMetatileProperties(int,bool,bool)</slot>
   <slot>getScreenProperties(int,bool,bool)</slot>
+  <slot>getCheckpointData(int,int,int)</slot>
  </slots>
 </ui>

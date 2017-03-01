@@ -315,6 +315,13 @@ void NESStageTool::getScreenProperties(int song, bool sbl, bool sbr)
 	ui->chkScrollBlockRight->setChecked(sbr);
 }
 
+void NESStageTool::getCheckpointData(int screen, int x, int y)
+{
+	ui->spinCkptScreen->setValue(screen);
+	ui->spinCkptX->setValue(x);
+	ui->spinCkptY->setValue(y);
+}
+
 
 
 void NESStageTool::openStage(QString path)
@@ -327,6 +334,7 @@ void NESStageTool::openStage(QString path)
 	ui->gvStage->openStageFile(filename);
 	ui->gvScreenSelector->openStageFile(filename);
 	ui->gvScreenSelector->openScreenPropertiesFile(filename);
+	ui->gvScreenSelector->openCheckpointsFile(filename);
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -348,7 +356,9 @@ void NESStageTool::saveASMStage(QString path)
 	file.write(ui->gvStage->createStageASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write(ui->gvScreenSelector->createScreenPropertiesASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
-    file.write(ui->gvMetatileSelectorProperties->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write(ui->gvMetatileSelectorProperties->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write("\n");
+	file.write(ui->gvScreenSelector->createCheckpointsASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
 	for(int tileset=0; tileset<GTSM_TILESET_COUNT; tileset++)
 		file.write(ui->gvPaletteManager->createPaletteASMData(ui->lineASMLabel->text(),tileset).toUtf8());
