@@ -49,17 +49,19 @@ void MetatileManager::mousePressEvent(QMouseEvent *e)
 {
 	QPointF p = this->mapToScene(e->pos());
 	switch(e->button()) {
-	case Qt::RightButton:
-		if(!this->bSelectionMode) this->addNewSubtile(p);
+	case Qt::LeftButton:
+		if(this->bSelectionMode) {
+			this->pSelection = QPointF(qFloor(p.x()/this->iScale),qFloor(p.y()/this->iScale));
+			this->drawSelectionBox();
+		} else {
+			this->addNewSubtile(p);
+		}
 		break;
 	case Qt::MiddleButton:
 		this->pMouseTranslation = QPoint(e->x(),e->y());
 		break;
-    case Qt::LeftButton:
-        this->pSelection = QPointF(qFloor(p.x()/this->iScale),qFloor(p.y()/this->iScale));
-		if(this->bSelectionMode)
-			this->drawSelectionBox();
-		else
+	case Qt::RightButton:
+		if(!this->bSelectionMode)
 			this->applySelectedPalette(p);
 		break;
 	default:

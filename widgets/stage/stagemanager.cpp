@@ -73,13 +73,13 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 	this->pMouseTranslation = QPointF(e->x(),e->y());
 
 	switch(e->button()) {
-	case Qt::RightButton:
+	case Qt::LeftButton:
 		if(!this->bSelectionMode) {
 			this->pRightMousePos = QPointF(-1,-1);
 			this->replaceStageTile(this->mapToScene(e->pos()));
 		}
 		break;
-	case Qt::LeftButton:
+	case Qt::RightButton:
 		if(this->bSelectionMode) {
 			QPointF selection = this->mapToScene(e->pos());
 			if(selection.x()<0 || selection.y()<0 ||
@@ -107,7 +107,7 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 			this->setTransformationAnchor(QGraphicsView::NoAnchor);
 			this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
 							(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
-		} else if(e->buttons()&Qt::RightButton) {
+		} else if(e->buttons()&Qt::LeftButton) {
 			this->replaceStageTile(this->mapToScene(e->pos()));
 		}
 
@@ -155,7 +155,7 @@ void StageManager::wheelEvent(QWheelEvent *e)
 
 void StageManager::keyPressEvent(QKeyEvent *e)
 {
-	switch(e->key()) {
+//	switch(e->key()) {
 //	case Qt::Key_Left:
 //	case Qt::Key_Right:
 //		this->moveSelectedX((e->key()==Qt::Key_Right),(e->modifiers()&Qt::ShiftModifier));
@@ -176,9 +176,9 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 //	case Qt::Key_V:
 //		this->flipVertical();
 //		break;
-	default:
+//	default:
 		QGraphicsView::keyPressEvent(e);
-	}
+//	}
 }
 
 
@@ -465,7 +465,7 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 		bindata.replace(s,bin);
 
 		// Create attribute data (vertical columns)
-        quint8 attributecolumn[qFloor(this->iScreenTilesH/2)];
+		quint8 *attributecolumn = new quint8[qFloor(this->iScreenTilesH/2)];
 		bin.clear();
         for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) attributecolumn[i] = 0;
         for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth+=2) {
@@ -480,6 +480,7 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 				bin.append(attributecolumn[i]);
 			}
 		}
+		delete [] attributecolumn;
 	}
 	return bindata;
 }
