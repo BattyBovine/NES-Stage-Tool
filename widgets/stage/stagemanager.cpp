@@ -74,12 +74,6 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 
 	switch(e->button()) {
 	case Qt::LeftButton:
-		if(!this->bSelectionMode) {
-			this->pRightMousePos = QPointF(-1,-1);
-			this->replaceStageTile(this->mapToScene(e->pos()));
-		}
-		break;
-	case Qt::RightButton:
 		if(this->bSelectionMode) {
 			QPointF selection = this->mapToScene(e->pos());
 			if(selection.x()<0 || selection.y()<0 ||
@@ -91,8 +85,13 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 									qFloor(selection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
 			this->drawSelectionBox();
 		} else {
-			this->replaceScreenTileset(this->mapToScene(e->pos()));
+			this->pRightMousePos = QPointF(-1,-1);
+			this->replaceStageTile(this->mapToScene(e->pos()));
 		}
+		break;
+	case Qt::RightButton:
+		if(!this->bSelectionMode)
+			this->replaceScreenTileset(this->mapToScene(e->pos()));
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}

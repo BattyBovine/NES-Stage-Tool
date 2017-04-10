@@ -32,7 +32,7 @@ MetatileManager::~MetatileManager()
 void MetatileManager::resizeEvent(QResizeEvent*)
 {
     QRectF viewrect = this->mapToScene(this->rect()).boundingRect();
-    this->iScale = qFloor(qMax(viewrect.width(),viewrect.height())/(MTI_TILEWIDTH*MTM_METATILES_W));
+	this->iScale = qFloor(qMin(viewrect.width(),viewrect.height())/(MTI_TILEWIDTH*MTM_METATILES_W));
 	this->groupMetatiles->setScale(this->iScale);
 	this->setSceneRect(0,0, MTI_TILEWIDTH*MTM_METATILES_W*this->iScale, MTI_TILEWIDTH*MTM_METATILES_H*this->iScale);
 	this->drawGridLines();
