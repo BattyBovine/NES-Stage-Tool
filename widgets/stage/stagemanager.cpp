@@ -513,35 +513,6 @@ QString StageManager::createStageASMData(QString labelprefix)
 			tilesetbytes += QString("$%1").arg(tilesetbyte,2,16,QChar('0')).toUpper().append(",");
 			tilesetbyte = 0x00;
 		}
-
-		// Create attribute data (vertical columns)
-//		QString attrcountedlabel = labelprefix+QString("_attributes")+QString("_%1").arg(s,2,16,QChar('0')).toUpper();
-//		attrbytes = attrcountedlabel+":\n\t.byte ";
-//		quint8 attributecolumn[qFloor(SM_SCREEN_TILES_H/2)];
-//		for(int i=0; i<qFloor(SM_SCREEN_TILES_H/2); i++) attributecolumn[i] = 0;
-//		for(int tilewidth=0; tilewidth<SM_SCREEN_TILES_W; tilewidth+=2) {
-//			for(int tileheight=0; tileheight<SM_SCREEN_TILES_H; tileheight+=2) {
-//				quint8 attr0index = (tileheight*SM_SCREEN_TILES_W)+tilewidth;
-//				quint8 attr1index = (tileheight*SM_SCREEN_TILES_W)+tilewidth+1;
-//				quint8 attr2index = ((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth;
-//				quint8 attr3index = ((tileheight+1)*SM_SCREEN_TILES_W)+tilewidth+1;
-
-//				quint8 attr0 = (this->vScreens[s][attr0index]->palette()%PM_SUBPALETTES_MAX);
-//				quint8 attr1 = (this->vScreens[s][attr1index]->palette()%PM_SUBPALETTES_MAX);
-//				quint8 attr2 = (this->vScreens[s][attr2index]->palette()%PM_SUBPALETTES_MAX);
-//				quint8 attr3 = (this->vScreens[s][attr3index]->palette()%PM_SUBPALETTES_MAX);
-//				quint8 attrindex = qFloor(tileheight/2)%qFloor(SM_SCREEN_TILES_H/2);
-//				attributecolumn[attrindex] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
-//			}
-//			attrbytes += QString("$%1").arg(attributecolumn[0],2,16,QChar('0')).toUpper().append(",");
-//			attrbytes += QString("$%1").arg(attributecolumn[4],2,16,QChar('0')).toUpper().append(",");
-//			attrbytes += QString("$%1").arg(attributecolumn[1],2,16,QChar('0')).toUpper().append(",");
-//			attrbytes += QString("$%1").arg(attributecolumn[5],2,16,QChar('0')).toUpper().append(",");
-//			attrbytes += QString("$%1").arg(attributecolumn[2],2,16,QChar('0')).toUpper().append(",");
-//			attrbytes += QString("$%1").arg(attributecolumn[3],2,16,QChar('0')).toUpper().append(",");
-//		}
-//		attrbytes = attrbytes.left(attrbytes.length()-1);
-//		databytes.append(attrbytes).append("\n");
 	}
 
 	tilesetbytes = tilesetbytes.left(tilesetbytes.length()-1) + QString("\n");

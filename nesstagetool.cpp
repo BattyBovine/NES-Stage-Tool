@@ -141,9 +141,9 @@ void NESStageTool::newProject()
 		ui->spinSong->setValue(0);
 		ui->chkScrollBlockLeft->setChecked(false);
 		ui->chkScrollBlockRight->setChecked(false);
-        ui->comboCollision->setCurrentIndex(0);
-        ui->chkDestructible->setChecked(false);
-        ui->chkDeadly->setChecked(false);
+		ui->spinCollision->setValue(0);
+//        ui->chkDestructible->setChecked(false);
+//        ui->chkDeadly->setChecked(false);
 		ui->spinBank0->setValue(0);
 		ui->spinBank1->setValue(0);
 		ui->spinBank2->setValue(0);
@@ -301,11 +301,11 @@ void NESStageTool::getBankUpdates(int b0, int b1, int b2, int b3, int b4, int b5
 	ui->spinBank7->setValue(b7);
 }
 
-void NESStageTool::getMetatileProperties(int collision, bool destructible, bool deadly)
+void NESStageTool::getMetatileProperties(int collision, bool/* destructible*/, bool/* deadly*/)
 {
-	ui->comboCollision->setCurrentIndex(collision);
-	ui->chkDestructible->setChecked(destructible);
-	ui->chkDeadly->setChecked(deadly);
+	ui->spinCollision->setValue(collision);
+//	ui->chkDestructible->setChecked(destructible);
+//	ui->chkDeadly->setChecked(deadly);
 }
 
 void NESStageTool::getScreenProperties(int song, bool sbl, bool sbr)

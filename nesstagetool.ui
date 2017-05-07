@@ -749,23 +749,6 @@
                </property>
               </spacer>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_18">
-             <item>
-              <spacer name="horizontalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
              <item>
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="1" column="2">
@@ -921,72 +904,34 @@
               </spacer>
              </item>
              <item>
-              <layout class="QGridLayout" name="gridLayout_4">
-               <item row="0" column="1">
-                <widget class="QComboBox" name="comboCollision">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="editable">
-                  <bool>true</bool>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>None</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Solid</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Top Solid</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Collision:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="chkDestructible">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Destructible</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="chkDeadly">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Deadly</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Collision:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinCollision">
+               <property name="maximum">
+                <number>255</number>
+               </property>
+               <property name="displayIntegerBase">
+                <number>16</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineCollisionDescription">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>(Coming Soon)</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_5">
@@ -2673,54 +2618,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>comboCollision</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>gvMetatileSelectorProperties</receiver>
-   <slot>setPropertyCollision(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>765</x>
-     <y>542</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>740</x>
-     <y>391</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkDeadly</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gvMetatileSelectorProperties</receiver>
-   <slot>setPropertyDeadly(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>741</x>
-     <y>565</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>740</x>
-     <y>391</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkDestructible</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gvMetatileSelectorProperties</receiver>
-   <slot>setPropertyDestructible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>679</x>
-     <y>565</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>740</x>
-     <y>391</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvMetatileSelectorProperties</sender>
    <signal>sendSelectionProperties(int,bool,bool)</signal>
    <receiver>NESStageTool</receiver>
@@ -2957,6 +2854,22 @@
     <hint type="destinationlabel">
      <x>436</x>
      <y>595</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinCollision</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gvMetatileSelectorProperties</receiver>
+   <slot>setPropertyCollision(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>963</x>
+     <y>646</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>835</x>
+     <y>356</y>
     </hint>
    </hints>
   </connection>

@@ -336,7 +336,7 @@ QString MetatileManager::createMetatileASMData(QString labelprefix)
     QString databytes_prop = asmlabel+"_mtprops:\n\t.byte ";
 
 	quint8 palettecompressed[4] = {0,0,0,0};
-    quint8 propertiescompressed[2] = {0,0};
+//    quint8 propertiescompressed[2] = {0,0};
 	for(int i=0; i<this->mtlMetatiles.size(); i++) {
 		databytes_tl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(0),2,16,QChar('0')).append(",").toUpper();
 		databytes_bl += QString("$%1").arg(this->mtlMetatiles[i]->tileIndex(2),2,16,QChar('0')).append(",").toUpper();
@@ -347,9 +347,10 @@ QString MetatileManager::createMetatileASMData(QString labelprefix)
 		if((i%4)==3)
 			databytes_p += QString("$%1").arg((palettecompressed[0] | palettecompressed[1] | palettecompressed[2] | palettecompressed[3]),2,16,QChar('0')).append(",").toUpper();
 
-        propertiescompressed[i%2] = (this->mtlMetatiles[i]->collision()|(this->mtlMetatiles[i]->destructible()?0x04:0x00)|(this->mtlMetatiles[i]->deadly()?0x08:0x00))<<((i%2)*4);
-        if((i%2)==1)
-            databytes_prop += QString("$%1").arg((propertiescompressed[0] | propertiescompressed[1]),2,16,QChar('0')).append(",").toUpper();
+//        propertiescompressed[i%2] = (this->mtlMetatiles[i]->collision()|(this->mtlMetatiles[i]->destructible()?0x04:0x00)|(this->mtlMetatiles[i]->deadly()?0x08:0x00))<<((i%2)*4);
+//        if((i%2)==1)
+//            databytes_prop += QString("$%1").arg((propertiescompressed[0] | propertiescompressed[1]),2,16,QChar('0')).append(",").toUpper();
+		databytes_prop += QString("$%1").arg((this->mtlMetatiles[i]->collision()|(this->mtlMetatiles[i]->destructible()?0x40:0x00)|(this->mtlMetatiles[i]->deadly()?0x80:0x00)),2,16,QChar('0')).append(",").toUpper();
 	}
 
 	databytes_tl = databytes_tl.left(databytes_tl.length()-1);
@@ -413,7 +414,7 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 			bindata[2].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
             bindata[3].size()!=(MTM_METATILES_W*MTM_METATILES_H) ||
             bindata[4].size()!=qFloor((MTM_METATILES_W*MTM_METATILES_H)/4) ||
-            bindata[5].size()!=qFloor((MTM_METATILES_W*MTM_METATILES_H)/2)) {
+			bindata[5].size()!=qFloor((MTM_METATILES_W*MTM_METATILES_H)/*/2*/)) {
 		QMessageBox::critical(this,tr(MTM_COUNT_ERROR_TITLE),tr(MTM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 		return;
 	}
@@ -424,11 +425,12 @@ void MetatileManager::importMetatileBinaryData(QVector<QByteArray> bindata)
 		this->mtlMetatiles[count]->setTileIndex(3,bindata[3].at(count));
 		this->mtlMetatiles[count]->setPalette(((bindata[4].at(qFloor(count/4)))&(0x03<<((count%4)*2)))>>((count%4)*2));
 
-        emit(sendMetatileToSelector(this->mtlMetatiles[count]));
-        emit(this->sendMetatileProperties(count,
-                (bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x03,
-                ((bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x04)?true:false,
-                ((bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x08)?true:false));
+		emit(sendMetatileToSelector(this->mtlMetatiles[count]));
+		emit(this->sendMetatileProperties(count, bindata[5].at(count),false,false));
+//		emit(this->sendMetatileProperties(count,
+//                (bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x03,
+//                ((bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x04)?true:false,
+//                ((bindata[5].at(qFloor(count/2))>>((count%2)*4))&0x08)?true:false));
 	}
 	this->updateScreen();
 }
