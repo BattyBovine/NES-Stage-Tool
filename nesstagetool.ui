@@ -915,6 +915,12 @@
              </item>
              <item>
               <widget class="QSpinBox" name="spinCollision">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="maximum">
                 <number>255</number>
                </property>
@@ -924,14 +930,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineCollisionDescription">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>(Coming Soon)</string>
-               </property>
-              </widget>
+              <widget class="QLineEdit" name="lineCollisionDescription"/>
              </item>
              <item>
               <spacer name="horizontalSpacer_5">
@@ -1680,8 +1679,8 @@
    <slot>setNewPaletteFile(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>721</x>
-     <y>565</y>
+     <x>1093</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>491</x>
@@ -1696,12 +1695,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>734</x>
-     <y>436</y>
+     <x>822</x>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
    </hints>
   </connection>
@@ -1712,12 +1711,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>824</x>
-     <y>436</y>
+     <x>950</x>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
    </hints>
   </connection>
@@ -1728,12 +1727,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>734</x>
-     <y>462</y>
+     <x>822</x>
+     <y>552</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
    </hints>
   </connection>
@@ -1744,12 +1743,12 @@
    <slot>spritePaletteSelected(QString,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>824</x>
-     <y>462</y>
+     <x>950</x>
+     <y>552</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
    </hints>
   </connection>
@@ -1760,12 +1759,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
-     <x>734</x>
-     <y>436</y>
+     <x>822</x>
+     <y>526</y>
     </hint>
    </hints>
   </connection>
@@ -1776,12 +1775,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
-     <x>824</x>
-     <y>436</y>
+     <x>950</x>
+     <y>526</y>
     </hint>
    </hints>
   </connection>
@@ -1792,12 +1791,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
-     <x>734</x>
-     <y>462</y>
+     <x>822</x>
+     <y>552</y>
     </hint>
    </hints>
   </connection>
@@ -1808,12 +1807,12 @@
    <slot>setPaletteScene(QGraphicsScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
-     <x>824</x>
-     <y>462</y>
+     <x>950</x>
+     <y>552</y>
     </hint>
    </hints>
   </connection>
@@ -1824,8 +1823,8 @@
    <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>842</x>
@@ -1840,8 +1839,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -1856,8 +1855,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>891</x>
@@ -1873,7 +1872,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>499</x>
-     <y>564</y>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
@@ -1889,7 +1888,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>558</x>
-     <y>564</y>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>278</x>
@@ -1904,8 +1903,8 @@
    <slot>toggleShowTileGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>541</x>
-     <y>564</y>
+     <x>745</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>129</x>
@@ -1920,8 +1919,8 @@
    <slot>toggleShowScreenGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>608</x>
-     <y>564</y>
+     <x>812</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>129</x>
@@ -1952,7 +1951,7 @@
    <slot>getBankSize(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>104</y>
     </hint>
     <hint type="destinationlabel">
@@ -1968,7 +1967,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>167</y>
     </hint>
     <hint type="destinationlabel">
@@ -1984,7 +1983,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>195</y>
     </hint>
     <hint type="destinationlabel">
@@ -2000,7 +1999,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>223</y>
     </hint>
     <hint type="destinationlabel">
@@ -2016,7 +2015,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>251</y>
     </hint>
     <hint type="destinationlabel">
@@ -2032,7 +2031,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>279</y>
     </hint>
     <hint type="destinationlabel">
@@ -2048,7 +2047,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>307</y>
     </hint>
     <hint type="destinationlabel">
@@ -2064,7 +2063,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>335</y>
     </hint>
     <hint type="destinationlabel">
@@ -2080,7 +2079,7 @@
    <slot>sendBankUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>363</y>
     </hint>
     <hint type="destinationlabel">
@@ -2112,7 +2111,7 @@
    <slot>toggleAnimation(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>389</y>
     </hint>
     <hint type="destinationlabel">
@@ -2176,7 +2175,7 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
     <hint type="destinationlabel">
@@ -2208,12 +2207,12 @@
    <slot>setNewGlobalPalette(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
     <hint type="destinationlabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
    </hints>
   </connection>
@@ -2244,7 +2243,7 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
    </hints>
@@ -2256,7 +2255,7 @@
    <slot>getGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
     <hint type="destinationlabel">
@@ -2272,7 +2271,7 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
     <hint type="destinationlabel">
@@ -2320,8 +2319,8 @@
    <slot>getGlobalPalette(PaletteVector,quint8)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -2352,7 +2351,7 @@
    <slot>setGlobalTileset(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>890</x>
+     <x>1094</x>
      <y>130</y>
     </hint>
     <hint type="destinationlabel">
@@ -2592,8 +2591,8 @@
    <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>851</x>
-     <y>537</y>
+     <x>953</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>740</x>
@@ -2704,8 +2703,8 @@
    <slot>setPropertySong(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>317</x>
-     <y>486</y>
+     <x>231</x>
+     <y>630</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2720,8 +2719,8 @@
    <slot>setPropertyScrollBlockLeft(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>509</y>
+     <x>177</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2736,8 +2735,8 @@
    <slot>setPropertyScrollBlockRight(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>317</x>
-     <y>509</y>
+     <x>231</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2772,8 +2771,8 @@
      <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>70</x>
-     <y>566</y>
+     <x>92</x>
+     <y>656</y>
     </hint>
    </hints>
   </connection>
@@ -2784,8 +2783,8 @@
    <slot>setCheckpointIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>154</x>
-     <y>530</y>
+     <x>431</x>
+     <y>629</y>
     </hint>
     <hint type="destinationlabel">
      <x>148</x>
@@ -2800,8 +2799,8 @@
    <slot>setCheckpointScreen(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>186</x>
-     <y>548</y>
+     <x>371</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>148</x>
@@ -2816,8 +2815,8 @@
    <slot>setCheckpointX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>558</y>
+     <x>436</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>148</x>
@@ -2832,8 +2831,8 @@
    <slot>setCheckpointY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>554</y>
+     <x>501</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>148</x>
@@ -2864,12 +2863,44 @@
    <slot>setPropertyCollision(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>963</x>
-     <y>646</y>
+     <x>814</x>
+     <y>656</y>
     </hint>
     <hint type="destinationlabel">
      <x>835</x>
      <y>356</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineCollisionDescription</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>storeCollisionName(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>938</x>
+     <y>649</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1122</x>
+     <y>650</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinCollision</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>retrieveCollisionName(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>779</x>
+     <y>643</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1112</x>
+     <y>685</y>
     </hint>
    </hints>
   </connection>
@@ -2901,5 +2932,7 @@
   <slot>getMetatileProperties(int,bool,bool)</slot>
   <slot>getScreenProperties(int,bool,bool)</slot>
   <slot>getCheckpointData(int,int,int)</slot>
+  <slot>storeCollisionName(QString)</slot>
+  <slot>retrieveCollisionName(int)</slot>
  </slots>
 </ui>

@@ -142,8 +142,6 @@ void NESStageTool::newProject()
 		ui->chkScrollBlockLeft->setChecked(false);
 		ui->chkScrollBlockRight->setChecked(false);
 		ui->spinCollision->setValue(0);
-//        ui->chkDestructible->setChecked(false);
-//        ui->chkDeadly->setChecked(false);
 		ui->spinBank0->setValue(0);
 		ui->spinBank1->setValue(0);
 		ui->spinBank2->setValue(0);
@@ -268,6 +266,15 @@ void NESStageTool::savePaletteSwatch()
 	this->sSettings.setValue("PaletteSwatch", ui->comboPalettes->currentIndex());
 }
 
+void NESStageTool::storeCollisionName(QString name)
+{
+	this->sSettings.setValue("CollisionDescription"+QString::number(ui->spinCollision->value(),16),name);
+}
+void NESStageTool::retrieveCollisionName(int value)
+{
+	ui->lineCollisionDescription->setText(this->sSettings.value("CollisionDescription"+QString::number(value,16),"").toString());
+}
+
 
 void NESStageTool::restoreSettings()
 {
@@ -278,6 +285,7 @@ void NESStageTool::restoreSettings()
 	ui->comboBankSize->setCurrentIndex(this->sSettings.value("BankSize",0).toInt());
 	ui->comboPalettes->setCurrentIndex(this->sSettings.value("PaletteSwatch",0).toInt());
 	ui->chkAnimation->setChecked(this->sSettings.value("ShowAnimation",false).toBool());
+	this->retrieveCollisionName(ui->spinCollision->value());
 }
 
 

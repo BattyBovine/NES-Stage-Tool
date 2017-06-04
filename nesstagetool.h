@@ -59,6 +59,9 @@ private slots:
 	void changeBankSize();
 	void restoreSettings();
 
+	void storeCollisionName(QString);
+	void retrieveCollisionName(int);
+
 	void sendBankUpdates();
 	void getBankUpdates(int,int,int,int,int,int,int,int);
 	void getMetatileProperties(int,bool,bool);
