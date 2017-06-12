@@ -27,7 +27,7 @@
     <item>
      <widget class="QTabWidget" name="tabProperties">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabStage">
        <attribute name="title">
@@ -1648,6 +1648,7 @@
     <slot>setCheckpointScreen(int)</slot>
     <slot>setCheckpointX(int)</slot>
     <slot>setCheckpointY(int)</slot>
+    <slot>getReplacementTile(MetatileItem*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2668,7 +2669,7 @@
    <sender>gvScreenSelector</sender>
    <signal>requestTileUpdate(MetatileItem*)</signal>
    <receiver>gvMetatileSelector</receiver>
-   <slot>updateStageMetatile(MetatileItem*)</slot>
+   <slot>getSelectedStageTile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>119</x>
@@ -2901,6 +2902,22 @@
     <hint type="destinationlabel">
      <x>1112</x>
      <y>685</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>requestSelectedMetatile(MetatileItem*)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>getReplacementTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>421</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>342</y>
     </hint>
    </hints>
   </connection>

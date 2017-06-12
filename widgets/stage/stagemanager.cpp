@@ -406,6 +406,17 @@ void StageManager::getUpdatedTile(MetatileItem *mtnew)
 	}
 }
 
+void StageManager::getReplacementTile(MetatileItem *mtrep)
+{
+	foreach(MetatileList l, this->vScreens) {
+		foreach(MetatileItem *t, l) {
+			if(t->realX() == mtrep->realX() && t->realY() == mtrep->realY()) {
+				emit(requestTileUpdate(t));
+			}
+		}
+	}
+}
+
 void StageManager::getSelectedTileset(quint8 ts)
 {
 	this->iSelectedTileset = ts;

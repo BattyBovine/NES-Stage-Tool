@@ -106,6 +106,7 @@ public slots:
 
 	void getNewTile(MetatileItem*, MetatileItem*);
 	void getUpdatedTile(MetatileItem*);
+	void getReplacementTile(MetatileItem*);
 	void getSelectedTileset(quint8);
 	void getNewAnimationFrame(int);
 
