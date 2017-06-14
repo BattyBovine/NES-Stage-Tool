@@ -7,8 +7,8 @@
 #include <QMessageBox>
 
 
-#define CHR_OPEN_ERROR_TITLE    "Error opening file"
-#define CHR_OPEN_ERROR_BODY     "The file could not be opened."
+#define CHR_OPEN_ERROR_TITLE    "Error opening CHR file"
+#define CHR_OPEN_ERROR_BODY     "The file could not be found, or is damaged."
 #define CHR_SIZE_ERROR_TITLE    "Could not open CHR file"
 #define CHR_SIZE_ERROR_BODY     "CHR file must be a multiple of 512B."
 

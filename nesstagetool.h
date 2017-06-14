@@ -60,6 +60,7 @@ private slots:
 	void restoreSettings();
 
 	void storeCollisionName(QString);
+	void storeOpenedChrFile(QString);
 	void retrieveCollisionName(int);
 
 	void sendBankUpdates();

@@ -119,7 +119,8 @@ void GlobalTilesetManager::loadCHRData(QString filename)
         if(!this->fswCHR.files().isEmpty()) this->fswCHR.removePath(this->sCurrentTilesetFile);
         this->sCurrentTilesetFile = filename;
         this->fswCHR.addPath(this->sCurrentTilesetFile);
-    }
+		emit(saveOpenedChrFile(this->sCurrentTilesetFile));
+	}
     this->threadCHR->loadFile(this->sCurrentTilesetFile);
 }
 
@@ -177,6 +178,7 @@ void GlobalTilesetManager::getNewCHRData(QImage img)
 
 void GlobalTilesetManager::getCHRError(QString title,QString body)
 {
+	this->loadCHRData(":/chr/blank.chr");
 	QMessageBox::warning(NULL,title,body,QMessageBox::NoButton);
 }
 

@@ -56,6 +56,7 @@ signals:
 	void chrDataChanged(QImage);
 	void checkTilesBank(quint16,quint16);
 	void metatileUpdated(MetatileItem*);
+	void saveOpenedChrFile(QString);
 
 	void banksChanged(int,int,int,int,int,int,int,int);
 	void setGlobalTilesetSelectedIndex(int);

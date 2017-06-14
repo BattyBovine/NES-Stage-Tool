@@ -31,7 +31,12 @@ NESStageTool::NESStageTool(QWidget *parent) :
 
 	connect(ui->gvGlobalTileset,SIGNAL(chrDataChanged(QImage)),this,SLOT(initTilesetManagement(QImage)));
 
-    ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
+	QString lastchr = this->sSettings.value("LastOpenedChrFile","").toString();
+	if(!lastchr.isEmpty())
+		ui->gvGlobalTileset->loadCHRData(lastchr);
+	else
+		ui->gvGlobalTileset->loadCHRData(":/chr/blank.chr");
+
     ui->gvMetatileSelector->setSelectionMode(true);
     ui->gvMetatileSelectorProperties->setSelectionMode(true);
 	ui->gvScreenSelector->setSelectionMode(true);
@@ -268,11 +273,15 @@ void NESStageTool::savePaletteSwatch()
 
 void NESStageTool::storeCollisionName(QString name)
 {
-	this->sSettings.setValue("CollisionDescription"+QString::number(ui->spinCollision->value(),16),name);
+	this->sSettings.setValue("CollisionDescriptions/"+QString::number(ui->spinCollision->value(),16),name);
+}
+void NESStageTool::storeOpenedChrFile(QString file)
+{
+	this->sSettings.setValue("LastOpenedChrFile", file);
 }
 void NESStageTool::retrieveCollisionName(int value)
 {
-	ui->lineCollisionDescription->setText(this->sSettings.value("CollisionDescription"+QString::number(value,16),"").toString());
+	ui->lineCollisionDescription->setText(this->sSettings.value("CollisionDescriptions/"+QString::number(value,16),"").toString());
 }
 
 
