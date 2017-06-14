@@ -27,7 +27,7 @@
     <item>
      <widget class="QTabWidget" name="tabProperties">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabStage">
        <attribute name="title">
@@ -1633,6 +1633,8 @@
     <signal>sendSelectionProperties(int,bool,bool)</signal>
     <signal>sendTileData(QString)</signal>
     <signal>sendCheckpointData(int,int,int)</signal>
+    <signal>updateTileset(quint8,quint8)</signal>
+    <signal>updateStageData(ScreenList)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1649,6 +1651,7 @@
     <slot>setCheckpointX(int)</slot>
     <slot>setCheckpointY(int)</slot>
     <slot>getReplacementTile(MetatileItem*)</slot>
+    <slot>setScreenTileset(quint8,quint8)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1660,6 +1663,7 @@
     <signal>banksChanged(int,int,int,int,int,int,int,int)</signal>
     <signal>setGlobalTilesetSelectedIndex(int)</signal>
     <signal>newAnimationFrame(int)</signal>
+    <signal>saveOpenedChrFile(QString)</signal>
     <slot>setNewSpriteColours(PaletteVector,quint8)</slot>
     <slot>getBankSize(int)</slot>
     <slot>getBankSelections(int,int,int,int,int,int,int,int)</slot>
@@ -2669,7 +2673,7 @@
    <sender>gvScreenSelector</sender>
    <signal>requestTileUpdate(MetatileItem*)</signal>
    <receiver>gvMetatileSelector</receiver>
-   <slot>getSelectedStageTile(MetatileItem*)</slot>
+   <slot>updateStageMetatile(MetatileItem*)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>119</x>
@@ -2921,6 +2925,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>updateTileset(quint8,quint8)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>setScreenTileset(quint8,quint8)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>421</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>requestSelectedMetatile(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getSelectedStageTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>967</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvGlobalTileset</sender>
+   <signal>saveOpenedChrFile(QString)</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>storeOpenedChrFile(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>494</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2951,5 +3003,6 @@
   <slot>getCheckpointData(int,int,int)</slot>
   <slot>storeCollisionName(QString)</slot>
   <slot>retrieveCollisionName(int)</slot>
+  <slot>storeOpenedChrFile(QString)</slot>
  </slots>
 </ui>

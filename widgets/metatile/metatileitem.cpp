@@ -8,6 +8,7 @@ MetatileItem::MetatileItem(QGraphicsItem *parent) : QGraphicsItem(parent)
 	this->setRealY(0);
 	this->iW = this->iH = MTI_TILEWIDTH;
 	this->iScreen = 0x00;
+	this->iScreenIndex = 0x00;
 	this->iMetatile = 0x00;
 	this->iPalette = 0x00;
 	this->iTileset = 0x00;

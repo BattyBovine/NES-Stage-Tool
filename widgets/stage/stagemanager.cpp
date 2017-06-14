@@ -18,6 +18,7 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->iSelectedScreen = 0;
 	this->iSelectedTileset = 0;
 	this->griSelectionBox = NULL;
+	this->griTileSelector = NULL;
     this->setBackgroundBrush(QBrush(Qt::black));
 
 	this->iCheckpointIndex = 0;
@@ -31,8 +32,7 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
-	this->pMouseTranslation = QPoint(-1,-1);
-	this->pRightMousePos = QPoint(-1,-1);
+	this->rTileSelection = QRect(-1,-1,-1,-1);
 	this->pSceneTranslation = QPoint(-1,-1);
 
 	this->populateBlankTiles();
@@ -70,12 +70,12 @@ void StageManager::dropEvent(QDropEvent *e)
 
 void StageManager::mousePressEvent(QMouseEvent *e)
 {
-	this->pMouseTranslation = QPointF(e->x(),e->y());
+	this->pSceneTranslation = QPointF(e->x(),e->y());
+	QPointF selection = this->mapToScene(e->pos());
 
 	switch(e->button()) {
 	case Qt::LeftButton:
 		if(this->bSelectionMode) {
-			QPointF selection = this->mapToScene(e->pos());
 			if(selection.x()<0 || selection.y()<0 ||
 					selection.x()>=(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW) ||
 					selection.y()>=(MTI_TILEWIDTH*this->iScreenTilesH*this->iScreensH)) {
@@ -85,13 +85,15 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 									qFloor(selection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
 			this->drawSelectionBox();
 		} else {
-			this->pRightMousePos = QPointF(-1,-1);
-			this->replaceStageTile(this->mapToScene(e->pos()));
+			this->rTileSelection = QRectF(qFloor(selection.x()/MTI_TILEWIDTH),
+										  qFloor(selection.y()/MTI_TILEWIDTH),
+										  0, 0);
+			this->drawTileSelectionBox();
 		}
 		break;
 	case Qt::RightButton:
 		if(!this->bSelectionMode)
-			this->replaceScreenTileset(this->mapToScene(e->pos()));
+			this->replaceScreenTileset(selection);
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
@@ -102,19 +104,38 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 	QGraphicsView::mouseMoveEvent(e);
 
 	if(!this->bSelectionMode) {
-		if(e->buttons()&Qt::MiddleButton) {
+		if(e->buttons()&Qt::LeftButton) {
+			QPointF mousepos = this->mapToScene(e->pos());
+			this->rTileSelection.setWidth(qFloor(qFloor(mousepos.x()/MTI_TILEWIDTH)-this->rTileSelection.x()));
+			this->rTileSelection.setHeight(qFloor(qFloor(mousepos.y()/MTI_TILEWIDTH)-this->rTileSelection.y()));
+			this->drawTileSelectionBox();
+		} else if(e->buttons()&Qt::MiddleButton) {
 			this->setTransformationAnchor(QGraphicsView::NoAnchor);
-			this->translate((e->x()/this->iScale)-(this->pMouseTranslation.x()/this->iScale),
-							(e->y()/this->iScale)-(this->pMouseTranslation.y()/this->iScale));
-		} else if(e->buttons()&Qt::LeftButton) {
-			this->replaceStageTile(this->mapToScene(e->pos()));
+			this->translate((e->x()/this->iScale)-(this->pSceneTranslation.x()/this->iScale),
+							(e->y()/this->iScale)-(this->pSceneTranslation.y()/this->iScale));
 		}
 
 		this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-		this->pMouseTranslation = QPointF(e->x(),e->y());
+		this->pSceneTranslation = QPointF(e->x(),e->y());
 	}
 
 	this->getHoveredTile(this->mapToScene(e->pos()));
+}
+
+void StageManager::mouseReleaseEvent(QMouseEvent *e)
+{
+	switch(e->button()) {
+	case Qt::LeftButton:
+		if(!this->bSelectionMode) {
+			this->replaceStageTiles();
+		}
+		break;
+	case Qt::RightButton:
+		if(!this->bSelectionMode)
+			this->replaceScreenTileset(this->mapToScene(e->pos()));
+	default:
+		QGraphicsView::mousePressEvent(e);
+	}
 }
 
 void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
@@ -125,9 +146,6 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 			this->iScale = SM_DEFAULT_ZOOM;
 			this->updateStageView();
 			break;
-//		case Qt::RightButton:
-//			this->replaceAllScreenTiles(this->mapToScene(e->pos()));
-//			break;
 		default:
 			QGraphicsView::mouseDoubleClickEvent(e);
 		}
@@ -255,6 +273,31 @@ void StageManager::drawSelectionBox()
 	}
 }
 
+void StageManager::drawTileSelectionBox()
+{
+	if(!this->bSelectionMode) {
+		if(this->griTileSelector) {
+			if(this->griTileSelector->parentItem()) this->gsMetatiles->removeItem(this->griTileSelector);
+			delete this->griTileSelector;
+			this->griTileSelector = NULL;
+		}
+
+		if(this->rTileSelection.x()<0)	this->rTileSelection.setX(0);
+		if(this->rTileSelection.y()<0)	this->rTileSelection.setY(0);
+
+		QPen outline(Qt::blue,(SM_THICK_SEL_LINES/this->iScale),Qt::SolidLine);
+		QColor fillcolour(Qt::blue);
+		fillcolour.setAlpha(128);
+		QBrush fillrect(fillcolour);
+		this->griTileSelector = this->gsMetatiles->addRect(
+									(this->rTileSelection.x()*MTI_TILEWIDTH)+((this->rTileSelection.width()<0?MTI_TILEWIDTH:0)),
+									(this->rTileSelection.y()*MTI_TILEWIDTH)+((this->rTileSelection.height()<0?MTI_TILEWIDTH:0)),
+									(this->rTileSelection.width()*MTI_TILEWIDTH)+((this->rTileSelection.width()<0)?(-MTI_TILEWIDTH):MTI_TILEWIDTH),
+									(this->rTileSelection.height()*MTI_TILEWIDTH)+((this->rTileSelection.height()<0)?(-MTI_TILEWIDTH):MTI_TILEWIDTH),
+									outline,fillrect);
+	}
+}
+
 void StageManager::populateBlankTiles()
 {
     foreach(MetatileList l, this->vScreens) {
@@ -276,6 +319,7 @@ void StageManager::populateBlankTiles()
                     i->setRealX((x*MTI_TILEWIDTH)+(sx*this->iScreenTilesW*MTI_TILEWIDTH));
                     i->setRealY((y*MTI_TILEWIDTH)+(sy*this->iScreenTilesH*MTI_TILEWIDTH));
 					i->setScreen(screen);
+					i->setScreenIndex(this->vScreens[screen].size());
 					this->vScreens[screen].append(i);
 					this->groupMetatiles->addToGroup(i);
 				}
@@ -289,42 +333,77 @@ void StageManager::populateBlankTiles()
 	}
 }
 
-void StageManager::replaceStageTile(QPointF p)
+void StageManager::replaceStageTiles()
 {
-    if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
-		return;
+	if(this->griTileSelector) {
+		if(this->griTileSelector->parentItem()) this->gsMetatiles->removeItem(this->griTileSelector);
+		delete this->griTileSelector;
+		this->griTileSelector = NULL;
+	}
 
-	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
-	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
-    int screenx = qFloor(tilex/this->iScreenTilesW);
-    int screeny = qFloor(tiley/this->iScreenTilesH);
-    quint8 screen = (screeny*this->iScreensW)+screenx;
-    quint8 tile = ((tiley%this->iScreenTilesH)*this->iScreenTilesW)+(tilex%this->iScreenTilesW);
+	if(!this->bSelectionMode) {
+		int xbegin=0,xend=0,ybegin=0,yend=0;
+		if(this->rTileSelection.width()<0) {
+			if(this->rTileSelection.height()<0) {	// Selection box is fully inverted
+				xbegin = (this->rTileSelection.x()+this->rTileSelection.width());
+				ybegin = (this->rTileSelection.y()+this->rTileSelection.height());
+				xend = this->rTileSelection.x();
+				yend = this->rTileSelection.y();
+			} else {								// Selection box width is inverted
+				xbegin = (this->rTileSelection.x()+this->rTileSelection.width());
+				ybegin = this->rTileSelection.y();
+				xend = this->rTileSelection.x();
+				yend = (this->rTileSelection.y()+this->rTileSelection.height());
+			}
+		} else {
+			if(this->rTileSelection.height()<0) {
+				xbegin = this->rTileSelection.x();	// Selection box height is inverted
+				ybegin = (this->rTileSelection.y()+this->rTileSelection.height());
+				xend = (this->rTileSelection.x()+this->rTileSelection.width());
+				yend = this->rTileSelection.y();
+			} else {								// Selection box is normal
+				xbegin = this->rTileSelection.x();
+				ybegin = this->rTileSelection.y();
+				xend = (this->rTileSelection.x()+this->rTileSelection.width());
+				yend = (this->rTileSelection.y()+this->rTileSelection.height());
+			}
+		}
 
-    if((screen>=(this->iScreensW*this->iScreensH) || tile>=(this->iScreenTilesW*this->iScreenTilesH)) ||
-			(this->pRightMousePos.x()==screen && this->pRightMousePos.y()==tile))
-		return;
-	this->pRightMousePos = QPointF(screen,tile);
+		for(int y=ybegin; y<=yend; y++) {
+			for(int x=xbegin; x<=xend; x++) {
+				if(x<0 || y<0 || x>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || y>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))	continue;
+				int screenx = qFloor(x/this->iScreenTilesW);
+				int screeny = qFloor(y/this->iScreenTilesH);
+				quint8 screen = (screeny*this->iScreensW)+screenx;
+				quint8 tile = ((y%this->iScreenTilesH)*this->iScreenTilesW)+(x%this->iScreenTilesW);
+				if((screen>=(this->iScreensW*this->iScreensH) || tile>=(this->iScreenTilesW*this->iScreenTilesH)))	continue;
 
-	emit(this->requestSelectedMetatile(this->vScreens[screen][tile]));
-	this->updateStageView();
+				emit(this->requestSelectedMetatile(this->vScreens[screen][tile]));
+			}
+		}
+		this->updateStageView();
+	}
 }
 
 void StageManager::replaceScreenTileset(QPointF p)
 {
-    if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
+	if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
 		return;
-
 	int tilex = qFloor(p.x()/MTI_TILEWIDTH);
 	int tiley = qFloor(p.y()/MTI_TILEWIDTH);
-    int screenx = qFloor(tilex/this->iScreenTilesW);
-    int screeny = qFloor(tiley/this->iScreenTilesH);
-    quint8 screen = (screeny*this->iScreensW)+screenx;
-
-	foreach(MetatileItem* t, this->vScreens[screen]) {
-		t->setTileset(this->iSelectedTileset);
-	}
+	int screenx = qFloor(tilex/this->iScreenTilesW);
+	int screeny = qFloor(tiley/this->iScreenTilesH);
+	quint8 screen = (screeny*this->iScreensW)+screenx;
+	this->setScreenTileset(screen,this->iSelectedTileset);
+	emit(updateTileset(screen,this->iSelectedTileset));
 	this->updateStageView();
+}
+
+void StageManager::setScreenTileset(quint8 screen, quint8 tileset)
+{
+	foreach(MetatileItem* t, this->vScreens[screen]) {
+		t->setTileset(tileset);
+	}
 }
 
 void StageManager::replaceAllScreenTiles(QPointF p)
@@ -406,15 +485,9 @@ void StageManager::getUpdatedTile(MetatileItem *mtnew)
 	}
 }
 
-void StageManager::getReplacementTile(MetatileItem *mtrep)
+void StageManager::getReplacementTile(MetatileItem *mt)
 {
-	foreach(MetatileList l, this->vScreens) {
-		foreach(MetatileItem *t, l) {
-			if(t->realX() == mtrep->realX() && t->realY() == mtrep->realY()) {
-				emit(requestTileUpdate(t));
-			}
-		}
-	}
+	emit(requestSelectedMetatile(this->vScreens[mt->screen()][mt->screenIndex()]));
 }
 
 void StageManager::getSelectedTileset(quint8 ts)

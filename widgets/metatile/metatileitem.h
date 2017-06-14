@@ -45,6 +45,10 @@ public:
 	void setImg(QImage i){this->imgTile=i;}
 	quint8 screen(){return this->iScreen;}
 	void setScreen(quint8 i){this->iScreen=i;}
+
+	quint8 screenIndex(){return this->iScreenIndex;}
+	void setScreenIndex(quint8 i){this->iScreenIndex=i;}
+
 	quint8 metatileIndex(){return this->iMetatile;}
 	void setMetatileIndex(quint8 i){this->iMetatile=i;}
 	quint8 palette(){return this->iPalette;}
@@ -72,7 +76,7 @@ protected:
 private:
 	QImage  imgTile;
 	QPixmap pixPixmap;
-    quint8  iScreen,iMetatile,iPalette,iTileset,iAnimFrame,iCollision;
+	quint8  iScreen,iScreenIndex,iMetatile,iPalette,iTileset,iAnimFrame,iCollision;
     bool    bDestructible,bDeadly;
 	quint8  iTiles[4];
 	qreal   iX,iY,iW,iH,iScale;

@@ -84,6 +84,7 @@ signals:
 	void setStageLabel(QString);
 	void bankDividerChanged(quint16);
 
+	void updateTileset(quint8,quint8);
 	void updateAnimationFrame();
 	void updateSpriteBank(quint16);
 
@@ -110,6 +111,7 @@ public slots:
 	void getSelectedTileset(quint8);
 	void getNewAnimationFrame(int);
 
+	void setScreenTileset(quint8,quint8);
 	void setCheckpointIndex(int i);
 	void setCheckpointScreen(int i){this->vCheckpoints[this->iCheckpointIndex].Screen=i;}
 	void setCheckpointX(int i){this->vCheckpoints[this->iCheckpointIndex].X=i;}
@@ -136,6 +138,7 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent*e){e->accept();}
 	void mousePressEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
+	void mouseReleaseEvent(QMouseEvent*);
 	void mouseDoubleClickEvent(QMouseEvent*);
 	void wheelEvent(QWheelEvent*);
 	void keyPressEvent(QKeyEvent*);
@@ -144,7 +147,8 @@ private:
 	void populateBlankTiles();
 	void drawGridLines();
 	void drawSelectionBox();
-	void replaceStageTile(QPointF);
+	void drawTileSelectionBox();
+	void replaceStageTiles();
 	void replaceScreenTileset(QPointF);
 	void replaceAllScreenTiles(QPointF);
 	void getHoveredTile(QPointF);
@@ -154,9 +158,8 @@ private:
     quint8 iScreenTilesW, iScreenTilesH;
 	bool bSelectionMode;
 	quint8 iSelectedScreen;
-	QPointF pMouseTranslation;
-	QPointF pRightMousePos;
 	QPointF pSceneTranslation;
+	QRectF rTileSelection;
 
 	bool bShowScreenGrid, bShowTileGrid;
 	ScreenList vScreens;
@@ -167,6 +170,7 @@ private:
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;
 	QGraphicsRectItem *griSelectionBox;
+	QGraphicsRectItem *griTileSelector;
 	quint8 iSelectedTileset;
 };
 
