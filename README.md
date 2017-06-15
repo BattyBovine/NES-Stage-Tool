@@ -65,7 +65,6 @@ Each metatile has its subpalette defined in this array, labelled *examplestage1_
 
 ### Metatile properties
 Each metatile has a configurable "collision" value that affects how the player should interact with it. The value is a simple number, defined by the game developer. This can be interpreted in any way the developer finds most convenient but the simplest, and probably most sensible, solution is to use it as an entry point into a jump table, which then performs a particular action. The array is labelled *examplestage1_mtprops*, and each byte in the array represents one metatile.
-```
 
 ### Checkpoints
 Checkpoints can be used to start the player later in the level once they've passed a certain area. The checkpoint data is split into three separate arrays representing the screen, X position, and Y position. They are labelled *examplestage1_checkpoint_screen*, *examplestage1_checkpoint_posx*, and *examplestage1_checkpoint_posy*, respectively. Eight checkpoints are currently supported, with the first one intented to be the starting point for the level. Each of these arrays is eight bytes long, each byte representing the corresponding value. In other words, to load the player at checkpoint 2, read the second value in each array, and use the *screen* value to load the stage at that screen, and the *posx* and *posy* values to load the player at that pixel location within the screen.
