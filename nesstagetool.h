@@ -13,6 +13,7 @@
 #include <QSettings>
 #include <QEvent>
 
+#include "objectmodel.h"
 
 #define NESST_WIKI_URL				"https://github.com/BattyBovine/NES-Stage-Tool/wiki"
 

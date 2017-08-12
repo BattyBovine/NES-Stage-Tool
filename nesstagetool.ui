@@ -10,11 +10,11 @@
     <height>690</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>1128</width>
-    <height>690</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="acceptDrops">
    <bool>true</bool>
@@ -25,7 +25,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_12">
     <item>
-     <widget class="QTabWidget" name="tabProperties">
+     <widget class="QTabWidget" name="tabEditors">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -122,62 +122,119 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_2">
+         <widget class="QTabWidget" name="tabTools">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="title">
-           <string>Metatiles</string>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="MetatileManager" name="gvMetatileSelector">
-             <property name="minimumSize">
-              <size>
-               <width>256</width>
-               <height>256</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>256</width>
-               <height>256</height>
-              </size>
-             </property>
-             <property name="acceptDrops">
-              <bool>false</bool>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="interactive">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <widget class="QWidget" name="tabMetatileTool">
+           <attribute name="title">
+            <string>Metatiles</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <widget class="MetatileManager" name="gvMetatileSelector">
+              <property name="minimumSize">
+               <size>
+                <width>256</width>
+                <height>256</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>256</width>
+                <height>256</height>
+               </size>
+              </property>
+              <property name="acceptDrops">
+               <bool>false</bool>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="interactive">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>298</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabObjectTool">
+           <attribute name="title">
+            <string>Objects</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QTableView" name="listObjects">
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>32</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabCheckpointTool">
+           <attribute name="title">
+            <string>Checkpoints</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <widget class="QListView" name="listCheckpoints"/>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>275</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -628,7 +685,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tabProperties">
        <attribute name="title">
         <string>Properties</string>
        </attribute>
@@ -1854,22 +1911,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvPaletteManager</sender>
-   <signal>newSpriteColours(PaletteVector,quint8,bool)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>953</x>
-     <y>627</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>339</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkShowGrid8</sender>
    <signal>toggled(bool)</signal>
    <receiver>gvMetatileEditor</receiver>
@@ -1930,22 +1971,6 @@
     <hint type="destinationlabel">
      <x>129</x>
      <y>141</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvStage</sender>
-   <signal>requestSelectedMetatile(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getSelectedStageTile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>129</x>
-     <y>141</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>339</y>
     </hint>
    </hints>
   </connection>
@@ -2270,38 +2295,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>comboGlobalTileset</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>setGlobalTileset(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1094</x>
-     <y>130</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>286</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileSelector</sender>
-   <signal>tilesetChangedDelta(int)</signal>
-   <receiver>gvGlobalTileset</receiver>
-   <slot>getGlobalTilesetDelta(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>891</x>
-     <y>286</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>275</x>
-     <y>316</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvGlobalTileset</sender>
    <signal>tilesetChanged(QImage)</signal>
    <receiver>gvTileset</receiver>
@@ -2414,22 +2407,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvStage</sender>
-   <signal>requestTileUpdate(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>updateStageMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>129</x>
-     <y>141</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>286</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvGlobalTileset</sender>
    <signal>newAnimationFrame(int)</signal>
    <receiver>gvStage</receiver>
@@ -2486,38 +2463,6 @@
     <hint type="sourcelabel">
      <x>305</x>
      <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>129</x>
-     <y>141</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileEditor</sender>
-   <signal>sendMetatileToSelector(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getEditorMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>305</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>286</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvMetatileSelector</sender>
-   <signal>sendSelectedTileset(quint8)</signal>
-   <receiver>gvStage</receiver>
-   <slot>getSelectedTileset(quint8)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>891</x>
-     <y>286</y>
     </hint>
     <hint type="destinationlabel">
      <x>129</x>
@@ -2666,22 +2611,6 @@
     <hint type="destinationlabel">
      <x>119</x>
      <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvScreenSelector</sender>
-   <signal>requestTileUpdate(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>updateStageMetatile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>119</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>891</x>
-     <y>286</y>
     </hint>
    </hints>
   </connection>
@@ -2942,22 +2871,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gvScreenSelector</sender>
-   <signal>requestSelectedMetatile(MetatileItem*)</signal>
-   <receiver>gvMetatileSelector</receiver>
-   <slot>getSelectedStageTile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>289</x>
-     <y>342</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>967</x>
-     <y>211</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gvGlobalTileset</sender>
    <signal>saveOpenedChrFile(QString)</signal>
    <receiver>NESStageTool</receiver>
@@ -2970,6 +2883,150 @@
     <hint type="destinationlabel">
      <x>563</x>
      <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvPaletteManager</sender>
+   <signal>newSpriteColours(PaletteVector,quint8,bool)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>953</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>requestSelectedMetatile(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getSelectedStageTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>129</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboGlobalTileset</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>setGlobalTileset(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1094</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileSelector</sender>
+   <signal>tilesetChangedDelta(int)</signal>
+   <receiver>gvGlobalTileset</receiver>
+   <slot>getGlobalTilesetDelta(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>275</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvStage</sender>
+   <signal>requestTileUpdate(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>updateStageMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>129</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileEditor</sender>
+   <signal>sendMetatileToSelector(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getEditorMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>305</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileSelector</sender>
+   <signal>sendSelectedTileset(quint8)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getSelectedTileset(quint8)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>requestTileUpdate(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>updateStageMetatile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>891</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvScreenSelector</sender>
+   <signal>requestSelectedMetatile(MetatileItem*)</signal>
+   <receiver>gvMetatileSelector</receiver>
+   <slot>getSelectedStageTile(MetatileItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>967</x>
+     <y>211</y>
     </hint>
    </hints>
   </connection>

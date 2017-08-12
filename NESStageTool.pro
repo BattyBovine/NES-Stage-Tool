@@ -30,7 +30,8 @@ SOURCES += main.cpp \
 	widgets/metatile/metatilemanager.cpp \
 	widgets/metatile/metatileitem.cpp \
 	widgets/tileset/chrthread.cpp \
-    widgets/tileset/tilesetcache.cpp
+    widgets/tileset/tilesetcache.cpp \
+    widgets/ui/objectmodel.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -42,13 +43,14 @@ HEADERS  += nesstagetool.h \
 	widgets/metatile/metatilemanager.h \
 	widgets/metatile/metatileitem.h \
 	widgets/tileset/chrthread.h \
-    widgets/tileset/tilesetcache.h
+    widgets/tileset/tilesetcache.h \
+    widgets/ui/objectmodel.h
 
 FORMS    += nesstagetool.ui
 
 RESOURCES += \
-    res/chr.qrc \
-    res/palettes.qrc
+	res/chr.qrc \
+	res/palettes.qrc
 
 
 win32:RC_ICONS += res/icon.ico
