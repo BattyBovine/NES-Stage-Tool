@@ -41,14 +41,16 @@ NESStageTool::NESStageTool(QWidget *parent) :
     ui->gvMetatileSelectorProperties->setSelectionMode(true);
 	ui->gvScreenSelector->setSelectionMode(true);
 
-	ui->listObjects->setModel(new ObjectModel());
+	this->listObjects = new ObjectModel();
+	ui->listObjects->setModel(this->listObjects);
 	ui->listObjects->setItemDelegate(new ObjectDelegate());
 	ui->listObjects->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 	ui->listObjects->horizontalHeader()->setDefaultSectionSize(OM_OBJECT_IMG_DIM+8);
 	ui->listObjects->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 	ui->listObjects->verticalHeader()->setDefaultSectionSize(OM_OBJECT_IMG_DIM+2);
 
-	ui->listCheckpoints->setModel(new CheckpointModel());
+	this->listCheckpoints = new CheckpointModel();
+	ui->listCheckpoints->setModel(this->listCheckpoints);
 
 	this->changeBankSize();
 	this->sendBankUpdates();
@@ -282,7 +284,7 @@ void NESStageTool::savePaletteSwatch()
 
 void NESStageTool::storeCollisionName(QString name)
 {
-	this->sSettings.setValue("CollisionDescriptions/"+QString::number(ui->spinCollision->value(),16),name);
+	this->sSettings.setValue(QString("CollisionDescriptions/%1").arg(QString::number(ui->spinCollision->value(),16),2,'0').toUpper(),name);
 }
 void NESStageTool::storeOpenedChrFile(QString file)
 {
@@ -290,7 +292,7 @@ void NESStageTool::storeOpenedChrFile(QString file)
 }
 void NESStageTool::retrieveCollisionName(int value)
 {
-	ui->lineCollisionDescription->setText(this->sSettings.value("CollisionDescriptions/"+QString::number(value,16),"").toString());
+	ui->lineCollisionDescription->setText(this->sSettings.value(QString("CollisionDescriptions/%1").arg(QString::number(value,16),2,'0').toUpper(),"").toString());
 }
 
 
@@ -452,6 +454,34 @@ void NESStageTool::savePalette(QString path)
 		pal.append(ui->gvPaletteManager->createPaletteBinaryData(tileset));
 	file.write(pal);
 	file.close();
+}
+
+
+
+void NESStageTool::clearObjectList()
+{
+	switch(QMessageBox::warning(this,tr("Clear Object List"),
+								tr("Are you sure you wish to clear all object names and sprites?"),
+								QMessageBox::Ok,QMessageBox::Cancel))
+	{
+	case QMessageBox::Ok:
+		this->listObjects->clear();
+		break;
+	}
+}
+
+void NESStageTool::clearCollisionTypes()
+{
+	switch(QMessageBox::warning(this,tr("Clear Collision Types"),
+								tr("Are you sure you wish to clear all tile collison labels?"),
+								QMessageBox::Ok,QMessageBox::Cancel))
+	{
+	case QMessageBox::Ok:
+		for(int i=0; i<256; i++)
+			this->sSettings.remove(QString("CollisionDescriptions/%1").arg(QString::number(i,16),2,'0').toUpper());
+		ui->lineCollisionDescription->setText("");
+		break;
+	}
 }
 
 

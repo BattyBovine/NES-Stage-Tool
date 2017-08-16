@@ -210,32 +210,12 @@
               </attribute>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tabCheckpointTool">
-           <attribute name="title">
-            <string>Checkpoints</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_12">
             <item>
              <widget class="QListView" name="listCheckpoints">
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
               </property>
              </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>275</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -1462,6 +1442,9 @@
     <addaction name="actionOpenCHR"/>
     <addaction name="actionOpenPalette"/>
     <addaction name="separator"/>
+    <addaction name="actionClearObjectList"/>
+    <addaction name="actionClearCollisionTypes"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -1571,6 +1554,16 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About...</string>
+   </property>
+  </action>
+  <action name="actionClearObjectList">
+   <property name="text">
+    <string>Clear Object List</string>
+   </property>
+  </action>
+  <action name="actionClearCollisionTypes">
+   <property name="text">
+    <string>Clear Collision Types</string>
    </property>
   </action>
  </widget>
@@ -3034,6 +3027,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionClearObjectList</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>clearObjectList()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClearCollisionTypes</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>clearCollisionTypes()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -3065,5 +3090,7 @@
   <slot>storeCollisionName(QString)</slot>
   <slot>retrieveCollisionName(int)</slot>
   <slot>storeOpenedChrFile(QString)</slot>
+  <slot>clearObjectList()</slot>
+  <slot>clearCollisionTypes()</slot>
  </slots>
 </ui>

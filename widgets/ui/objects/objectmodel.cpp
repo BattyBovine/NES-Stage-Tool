@@ -2,12 +2,8 @@
 
 ObjectModel::ObjectModel(QObject *parent) : QAbstractTableModel(parent)
 {
-	for(int i=0; i<OM_OBJECT_COUNT; i++) {
-		Object obj;
-		obj.name = QString("");
-		obj.imgdata = QString("");
-		this->lObjects.append(obj);
-	}
+	this->settingsObjects.beginGroup("Objects");
+	this->reload();
 }
 
 QVariant ObjectModel::headerData(int segment, Qt::Orientation, int role) const
@@ -56,11 +52,16 @@ bool ObjectModel::setData(const QModelIndex &index, const QVariant &value, int r
 	if(index.isValid() && role==Qt::EditRole) {
 		switch(index.column()) {
 		case ObjectModel::ColumnName:
-			if(!value.toString().isEmpty())
+			if(!value.toString().isEmpty()) {
 				this->lObjects[index.row()].name = value.toString();
+				this->settingsObjects.setValue(QString("Name%1").arg(QString::number(index.row(),16),2,'0'),value);
+			}
 			break;
 		case ObjectModel::ColumnImage:
-			this->lObjects[index.row()].imgdata = value.toString();
+			if(!value.toString().isEmpty()) {
+				this->lObjects[index.row()].imgdata = value.toString();
+				this->settingsObjects.setValue(QString("Image%1").arg(QString::number(index.row(),16),2,'0'),value);
+			}
 			break;
 		}
 		emit(dataChanged(index,index));
@@ -74,4 +75,30 @@ Qt::ItemFlags ObjectModel::flags(const QModelIndex &index) const
 	if(index.isValid() && index.row()!=0)
 		return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
 	return QAbstractTableModel::flags(index);
+}
+
+
+
+void ObjectModel::clear()
+{
+	this->lObjects.clear();
+	for(int i=0; i<OM_OBJECT_COUNT; i++) {
+		Object obj;
+		obj.name = QString("");
+		obj.imgdata = QString("");
+		this->lObjects.append(obj);
+		this->settingsObjects.remove(QString("Name%1").arg(QString::number(i,16),2,'0'));
+		this->settingsObjects.remove(QString("Image%1").arg(QString::number(i,16),2,'0'));
+	}
+}
+
+void ObjectModel::reload()
+{
+	this->lObjects.clear();
+	for(int i=0; i<OM_OBJECT_COUNT; i++) {
+		Object obj;
+		obj.name = this->settingsObjects.value(QString("Name%1").arg(QString::number(i,16),2,'0')).toString();
+		obj.imgdata = this->settingsObjects.value(QString("Image%1").arg(QString::number(i,16),2,'0')).toString();
+		this->lObjects.append(obj);
+	}
 }

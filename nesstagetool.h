@@ -80,6 +80,9 @@ private slots:
 	void openPalette();
 	void savePalette(QString path="");
 
+	void clearObjectList();
+	void clearCollisionTypes();
+
 	void saveASMAnimation(QString path="");
 
 	void setStageLabelPrefix(QString);
@@ -91,6 +94,8 @@ protected:
 private:
 	Ui::NESStageTool *ui;
 
+	ObjectModel *listObjects;
+	CheckpointModel *listCheckpoints;
 	QSettings sSettings;
 };
 

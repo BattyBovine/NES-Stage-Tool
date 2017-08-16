@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QImage>
 #include <QTextStream>
+#include <QSettings>
 
 #define OM_OBJECT_COUNT			256
 #define OM_OBJECT_IMG_DIM		32
@@ -34,8 +35,12 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
 	enum { ColumnImage, ColumnName };
 
+	void clear();
+	void reload();
+
 private:
 	ObjectData lObjects;
+	QSettings settingsObjects;
 };
 
 #endif // OBJECTMODEL_H
