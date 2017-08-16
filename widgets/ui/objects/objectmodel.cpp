@@ -2,10 +2,10 @@
 
 ObjectModel::ObjectModel(QObject *parent) : QAbstractTableModel(parent)
 {
-	for(int i=0; i<256; i++) {
+	for(int i=0; i<OM_OBJECT_COUNT; i++) {
 		Object obj;
 		obj.name = QString("");
-		obj.imgdata = this->sNoImgBase64;
+		obj.imgdata = QString("");
 		this->lObjects.append(obj);
 	}
 }
@@ -25,18 +25,20 @@ QVariant ObjectModel::data(const QModelIndex &index, int role) const
 {
 	switch(role) {
 	case Qt::DisplayRole:
-		if(index.column()==1) {
+		if(index.column()==ObjectModel::ColumnName) {
 			if(index.row()==0)
-				return tr("Invalid");
+				return tr(OM_INVALID_OBJECT_NAME);
 			else if(!this->lObjects[index.row()].name.isEmpty())
 				return this->lObjects[index.row()].name;
 			else
-				return tr("Unused");
+				return tr(OM_EMPTY_OBJECT_NAME);
 		}
-		break;
 	case Qt::DecorationRole:
-		if(index.column()==0)
-			return QImage::fromData(QByteArray::fromBase64(this->lObjects[index.row()].imgdata.toLocal8Bit()),"PNG");
+		if(index.column()==ObjectModel::ColumnImage)
+			if(!this->lObjects[index.row()].imgdata.isEmpty())
+				return QImage(this->lObjects[index.row()].imgdata).scaled(OM_OBJECT_IMG_DIM,OM_OBJECT_IMG_DIM,Qt::KeepAspectRatio);
+			else
+				return QImage(":/icons/noicon");
 		break;
 	case Qt::FontRole:
 		if(!this->lObjects[index.row()].name.isEmpty()) {
@@ -53,8 +55,12 @@ bool ObjectModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
 	if(index.isValid() && role==Qt::EditRole) {
 		switch(index.column()) {
-		case 1:
-			this->lObjects[index.row()].name = value.toString();
+		case ObjectModel::ColumnName:
+			if(!value.toString().isEmpty())
+				this->lObjects[index.row()].name = value.toString();
+			break;
+		case ObjectModel::ColumnImage:
+			this->lObjects[index.row()].imgdata = value.toString();
 			break;
 		}
 		emit(dataChanged(index,index));
@@ -65,7 +71,7 @@ bool ObjectModel::setData(const QModelIndex &index, const QVariant &value, int r
 
 Qt::ItemFlags ObjectModel::flags(const QModelIndex &index) const
 {
-	if(index.isValid() && index.row()!=0 && index.column()!=0)
+	if(index.isValid() && index.row()!=0)
 		return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
-	return Qt::ItemIsEnabled;
+	return QAbstractTableModel::flags(index);
 }

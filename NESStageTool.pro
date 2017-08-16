@@ -12,6 +12,8 @@ TARGET = NESStageTool
 TEMPLATE = app
 
 INCLUDEPATH += widgets/ui \
+	widgets/ui/objects \
+	widgets/ui/checkpoints \
 	widgets/metatile \
 	widgets/palette \
 	widgets/sprite \
@@ -30,8 +32,10 @@ SOURCES += main.cpp \
 	widgets/metatile/metatilemanager.cpp \
 	widgets/metatile/metatileitem.cpp \
 	widgets/tileset/chrthread.cpp \
-    widgets/tileset/tilesetcache.cpp \
-    widgets/ui/objectmodel.cpp
+	widgets/tileset/tilesetcache.cpp \
+    widgets/ui/objects/objectmodel.cpp \
+    widgets/ui/objects/objectdelegate.cpp \
+    widgets/ui/checkpoints/checkpointmodel.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -43,14 +47,17 @@ HEADERS  += nesstagetool.h \
 	widgets/metatile/metatilemanager.h \
 	widgets/metatile/metatileitem.h \
 	widgets/tileset/chrthread.h \
-    widgets/tileset/tilesetcache.h \
-    widgets/ui/objectmodel.h
+	widgets/tileset/tilesetcache.h \
+    widgets/ui/objects/objectmodel.h \
+    widgets/ui/objects/objectdelegate.h \
+    widgets/ui/checkpoints/checkpointmodel.h
 
 FORMS    += nesstagetool.ui
 
 RESOURCES += \
 	res/chr.qrc \
-	res/palettes.qrc
+	res/palettes.qrc \
+    res/icons.qrc
 
 
 win32:RC_ICONS += res/icon.ico

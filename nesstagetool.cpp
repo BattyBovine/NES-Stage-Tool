@@ -41,12 +41,14 @@ NESStageTool::NESStageTool(QWidget *parent) :
     ui->gvMetatileSelectorProperties->setSelectionMode(true);
 	ui->gvScreenSelector->setSelectionMode(true);
 
-	ObjectModel *obj = new ObjectModel();
-	ui->listObjects->setModel(obj);
+	ui->listObjects->setModel(new ObjectModel());
+	ui->listObjects->setItemDelegate(new ObjectDelegate());
 	ui->listObjects->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	ui->listObjects->horizontalHeader()->setDefaultSectionSize(40);
+	ui->listObjects->horizontalHeader()->setDefaultSectionSize(OM_OBJECT_IMG_DIM+8);
 	ui->listObjects->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	ui->listObjects->verticalHeader()->setDefaultSectionSize(32);
+	ui->listObjects->verticalHeader()->setDefaultSectionSize(OM_OBJECT_IMG_DIM+2);
+
+	ui->listCheckpoints->setModel(new CheckpointModel());
 
 	this->changeBankSize();
 	this->sendBankUpdates();

@@ -14,6 +14,8 @@
 #include <QEvent>
 
 #include "objectmodel.h"
+#include "objectdelegate.h"
+#include "checkpointmodel.h"
 
 #define NESST_WIKI_URL				"https://github.com/BattyBovine/NES-Stage-Tool/wiki"
 
