@@ -2,6 +2,7 @@
 #define OBJECTMODEL_H
 
 #include <QObject>
+#include <QTableView>
 #include <QAbstractTableModel>
 #include <QFont>
 #include <QPixmap>
@@ -9,17 +10,14 @@
 #include <QTextStream>
 #include <QSettings>
 
+#include "objectcache.h"
+
 #define OM_OBJECT_COUNT			256
 #define OM_OBJECT_IMG_DIM		32
 #define OM_INVALID_OBJECT_NAME	"Invalid"
 #define OM_EMPTY_OBJECT_NAME	"Unused"
 
-struct Object
-{
-	QString name;
-	QString imgdata;
-};
-typedef QList<Object> ObjectData;
+
 
 class ObjectModel : public QAbstractTableModel
 {
@@ -27,7 +25,7 @@ class ObjectModel : public QAbstractTableModel
 
 public:
 	ObjectModel(QObject *parent = nullptr);
-	int rowCount(const QModelIndex&) const override { return this->lObjects.count(); }
+	int rowCount(const QModelIndex&) const override { return OM_OBJECT_COUNT; }
 	int columnCount(const QModelIndex&) const override { return 2; }
 	QVariant headerData(int, Qt::Orientation, int) const override;
 	QVariant data(const QModelIndex&,int role = Qt::DisplayRole) const override;
@@ -39,7 +37,6 @@ public:
 	void reload();
 
 private:
-	ObjectData lObjects;
 	QSettings settingsObjects;
 };
 

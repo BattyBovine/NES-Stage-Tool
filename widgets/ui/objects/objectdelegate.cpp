@@ -7,6 +7,7 @@ QWidget *ObjectDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
 		return QItemEditorFactory::defaultFactory()->createEditor(index.data(Qt::DisplayRole).userType(),parent);
 	case ObjectModel::ColumnImage:
 		QFileDialog *replace = new QFileDialog(nullptr,tr("Open Object Sprite"),"",tr("PNG Image (*.png)"));
+		replace->setMinimumSize(QSize(800,480));
 		replace->setFileMode(QFileDialog::ExistingFile);
 		replace->setOption(QFileDialog::DontUseNativeDialog,true);
 		connect(replace,SIGNAL(fileSelected(QString)),this,SLOT(getNewImageFile(QString)));

@@ -17,8 +17,10 @@
 
 #include <QtMath>
 
+#include "objectmodel.h"
 #include "palettemanager.h"
 #include "metatileitem.h"
+#include "objectitem.h"
 
 
 #define SM_SCREEN_TILES_W_DEFAULT 16
@@ -27,6 +29,7 @@
 #define SM_SCREENS_H_DEFAULT      4
 #define SM_DEFAULT_ZOOM           1
 #define SM_MAX_ZOOM               8
+#define SM_OBJECT_LIMIT           64
 
 #define SM_MAX_CHECKPOINTS        8
 
@@ -43,6 +46,8 @@
 #define SM_EOF_ERROR_BODY          "Error reading stage data: Unexpected end of file."
 #define SM_COUNT_ERROR_TITLE       SM_INVALID_STAGE_TITLE
 #define SM_COUNT_ERROR_BODY        "Error reading stage data: Tile counts do not match length of data."
+#define SM_OBJ_LIMIT_ERROR_TITLE   "Too many objects"
+#define SM_OBJ_LIMIT_ERROR_BODY    "You have reached the object limit of %1."
 
 
 struct ScreenProperties
@@ -76,6 +81,7 @@ public:
 
 signals:
 	void stageFileDropped(QString);
+	void objectDropped(int);
 	void sendTileData(QString);
 
 	void requestSelectedMetatile(MetatileItem*);
@@ -87,6 +93,8 @@ signals:
 	void updateTileset(quint8,quint8);
 	void updateAnimationFrame();
 	void updateSpriteBank(quint16);
+
+	void objectDropped(quint8);
 
 	void sendScreenProperties(int,int,bool,bool);
 	void sendSelectionProperties(int,bool,bool);
@@ -102,6 +110,7 @@ public slots:
 
 	void clearAllMetatileData();
 
+	void toggleShowObjects(bool b){foreach(ObjectItem *i, this->lObjects){i->setVisible(b);}}
 	void toggleShowScreenGrid(bool b){this->bShowScreenGrid=b;this->drawGridLines();}
 	void toggleShowTileGrid(bool b){this->bShowTileGrid=b;this->drawGridLines();}
 
@@ -116,6 +125,7 @@ public slots:
 	void setCheckpointScreen(int i){this->vCheckpoints[this->iCheckpointIndex].Screen=i;}
 	void setCheckpointX(int i){this->vCheckpoints[this->iCheckpointIndex].X=i;}
 	void setCheckpointY(int i){this->vCheckpoints[this->iCheckpointIndex].Y=i;}
+	void setToolMode(int);
 
 	void openStageFile(QString);
 	void openScreenPropertiesFile(QString);
@@ -161,13 +171,14 @@ private:
 	QPointF pSceneTranslation;
 	QRectF rTileSelection;
 
-	bool bShowScreenGrid, bShowTileGrid;
+	bool bShowObjects, bTileSelectMode, bShowScreenGrid, bShowTileGrid;
 	ScreenList vScreens;
 	ScreenPropList vScreenProperties;
 	quint8 iCheckpointIndex;
 	CheckpointList vCheckpoints;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
+	ObjectList lObjects;
 	QList<QGraphicsLineItem*> lGrid;
 	QGraphicsRectItem *griSelectionBox;
 	QGraphicsRectItem *griTileSelector;

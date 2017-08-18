@@ -71,6 +71,29 @@
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chkShowObjects">
+               <property name="text">
+                <string>Show Objects</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -128,9 +151,6 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
           </property>
           <widget class="QWidget" name="tabMetatileTool">
            <attribute name="title">
@@ -190,14 +210,26 @@
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
              <widget class="QTableView" name="listObjects">
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
               <property name="dragEnabled">
                <bool>true</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
               </property>
               <property name="selectionMode">
                <enum>QAbstractItemView::SingleSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
               </property>
               <attribute name="horizontalHeaderVisible">
                <bool>false</bool>
@@ -1689,6 +1721,7 @@
     <signal>sendCheckpointData(int,int,int)</signal>
     <signal>updateTileset(quint8,quint8)</signal>
     <signal>updateStageData(ScreenList)</signal>
+    <signal>objectDropped(quint8)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1706,6 +1739,9 @@
     <slot>setCheckpointY(int)</slot>
     <slot>getReplacementTile(MetatileItem*)</slot>
     <slot>setScreenTileset(quint8,quint8)</slot>
+    <slot>placeObjectItem(quint8)</slot>
+    <slot>toggleShowObjects(bool)</slot>
+    <slot>setToolMode(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1946,7 +1982,7 @@
    <slot>toggleShowTileGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>745</x>
+     <x>741</x>
      <y>654</y>
     </hint>
     <hint type="destinationlabel">
@@ -1962,7 +1998,7 @@
    <slot>toggleShowScreenGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>812</x>
+     <x>808</x>
      <y>654</y>
     </hint>
     <hint type="destinationlabel">
@@ -3059,6 +3095,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>chkShowObjects</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvStage</receiver>
+   <slot>toggleShowObjects(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>379</x>
+     <y>647</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>544</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabTools</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>gvStage</receiver>
+   <slot>setToolMode(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>965</x>
+     <y>364</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>419</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -3092,5 +3160,6 @@
   <slot>storeOpenedChrFile(QString)</slot>
   <slot>clearObjectList()</slot>
   <slot>clearCollisionTypes()</slot>
+  <slot>createNewObjectItem(quint8)</slot>
  </slots>
 </ui>

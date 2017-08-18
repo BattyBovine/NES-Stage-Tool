@@ -14,6 +14,8 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
     this->iScreenTilesH = SM_SCREEN_TILES_H_DEFAULT;
 
 	this->bShowScreenGrid = this->bShowTileGrid = true;
+	this->bShowObjects = true;
+	this->bTileSelectMode = true;
 	this->bSelectionMode = false;
 	this->iSelectedScreen = 0;
 	this->iSelectedTileset = 0;
@@ -63,8 +65,31 @@ void StageManager::resizeEvent(QResizeEvent *e)
 void StageManager::dropEvent(QDropEvent *e)
 {
 	if(!this->bSelectionMode) {
-		e->acceptProposedAction();
-		emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
+		if(e->mimeData()->hasUrls()) {
+			e->acceptProposedAction();
+			emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
+		} else if(e->mimeData()->formats().contains("application/x-qabstractitemmodeldatalist")) {
+			if(this->lObjects.count()>=SM_OBJECT_LIMIT) {
+				QMessageBox::warning(this,
+									 tr(SM_OBJ_LIMIT_ERROR_TITLE),
+									 tr(SM_OBJ_LIMIT_ERROR_BODY).arg(SM_OBJECT_LIMIT),
+									 QMessageBox::Ok);
+				return;
+			}
+			QDataStream stream(&e->mimeData()->data("application/x-qabstractitemmodeldatalist"),QIODevice::ReadOnly);
+			int row;
+			stream >> row;
+			ObjectItem *item = new ObjectItem(row);
+			if(!item->isNull()) {
+				e->acceptProposedAction();
+				QPointF drop = this->mapToScene(e->pos());
+				item->setX(qFloor(drop.x()));
+				item->setY(qFloor(drop.y()));
+				if(!this->bTileSelectMode)	item->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+				this->lObjects.append(item);
+				this->gsMetatiles->addItem(item);
+			}
+		}
 	}
 }
 
@@ -84,7 +109,7 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 			this->iSelectedScreen = (qFloor(selection.y()/(MTI_TILEWIDTH*this->iScreenTilesH))*this->iScreensW)+
 									qFloor(selection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
 			this->drawSelectionBox();
-		} else {
+		} else if(this->bTileSelectMode) {
 			this->rTileSelection = QRectF(qFloor(selection.x()/MTI_TILEWIDTH),
 										  qFloor(selection.y()/MTI_TILEWIDTH),
 										  0, 0);
@@ -94,9 +119,10 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 	case Qt::RightButton:
 		if(!this->bSelectionMode)
 			this->replaceScreenTileset(selection);
-	default:
-		QGraphicsView::mousePressEvent(e);
+		break;
 	}
+
+	QGraphicsView::mousePressEvent(e);
 }
 
 void StageManager::mouseMoveEvent(QMouseEvent *e)
@@ -106,9 +132,18 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 	if(!this->bSelectionMode) {
 		if(e->buttons()&Qt::LeftButton) {
 			QPointF mousepos = this->mapToScene(e->pos());
-			this->rTileSelection.setWidth(qFloor(qFloor(mousepos.x()/MTI_TILEWIDTH)-this->rTileSelection.x()));
-			this->rTileSelection.setHeight(qFloor(qFloor(mousepos.y()/MTI_TILEWIDTH)-this->rTileSelection.y()));
-			this->drawTileSelectionBox();
+			if(this->bTileSelectMode) {
+				this->rTileSelection.setWidth(qFloor(qFloor(mousepos.x()/MTI_TILEWIDTH)-this->rTileSelection.x()));
+				this->rTileSelection.setHeight(qFloor(qFloor(mousepos.y()/MTI_TILEWIDTH)-this->rTileSelection.y()));
+				this->drawTileSelectionBox();
+			} else {
+				foreach(ObjectItem *i, this->lObjects) {
+					if(i->isSelected()) {
+						i->setX(mousepos.x());
+						i->setY(mousepos.y());
+					}
+				}
+			}
 		} else if(e->buttons()&Qt::MiddleButton) {
 			this->setTransformationAnchor(QGraphicsView::NoAnchor);
 			this->translate((e->x()/this->iScale)-(this->pSceneTranslation.x()/this->iScale),
@@ -126,13 +161,10 @@ void StageManager::mouseReleaseEvent(QMouseEvent *e)
 {
 	switch(e->button()) {
 	case Qt::LeftButton:
-		if(!this->bSelectionMode) {
-			this->replaceStageTiles();
-		}
+		if(!this->bSelectionMode && this->bTileSelectMode) this->replaceStageTiles();
 		break;
 	case Qt::RightButton:
-		if(!this->bSelectionMode)
-			this->replaceScreenTileset(this->mapToScene(e->pos()));
+		if(!this->bSelectionMode)	this->replaceScreenTileset(this->mapToScene(e->pos()));
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
@@ -172,7 +204,7 @@ void StageManager::wheelEvent(QWheelEvent *e)
 
 void StageManager::keyPressEvent(QKeyEvent *e)
 {
-//	switch(e->key()) {
+	switch(e->key()) {
 //	case Qt::Key_Left:
 //	case Qt::Key_Right:
 //		this->moveSelectedX((e->key()==Qt::Key_Right),(e->modifiers()&Qt::ShiftModifier));
@@ -193,9 +225,19 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 //	case Qt::Key_V:
 //		this->flipVertical();
 //		break;
-//	default:
+	case Qt::Key_Delete:
+		if(!this->bTileSelectMode) {
+			foreach(ObjectItem *i, this->lObjects) {
+				if(i->isSelected()) {
+					this->lObjects.removeAll(i);
+					this->gsMetatiles->removeItem(i);
+					delete i;
+				}
+			}
+		}
+	default:
 		QGraphicsView::keyPressEvent(e);
-//	}
+	}
 }
 
 
@@ -522,13 +564,22 @@ void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
 
 
 
-void StageManager::setCheckpointIndex(int i) {
+void StageManager::setCheckpointIndex(int i)
+{
 	this->iCheckpointIndex=i;
 	emit(sendCheckpointData(
 			this->vCheckpoints[this->iCheckpointIndex].Screen,
 			this->vCheckpoints[this->iCheckpointIndex].X,
 			this->vCheckpoints[this->iCheckpointIndex].Y
 			));
+}
+
+void StageManager::setToolMode(int t) {
+	this->bTileSelectMode = t?false:true;
+	foreach(ObjectItem *i, this->lObjects) {
+		i->setFlag(QGraphicsItem::ItemIsMovable,!this->bTileSelectMode);
+		i->setFlag(QGraphicsItem::ItemIsSelectable,!this->bTileSelectMode);
+	}
 }
 
 
@@ -870,7 +921,7 @@ void StageManager::importCheckpointsBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
-    this->setSceneRect(0, 0, (MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW, (MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH);
+	this->setSceneRect(0, 0, (MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW, (MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH);
 	this->drawGridLines();
 	this->drawSelectionBox();
 	this->viewport()->update();

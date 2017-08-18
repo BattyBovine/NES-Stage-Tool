@@ -35,7 +35,9 @@ SOURCES += main.cpp \
 	widgets/tileset/tilesetcache.cpp \
     widgets/ui/objects/objectmodel.cpp \
     widgets/ui/objects/objectdelegate.cpp \
-    widgets/ui/checkpoints/checkpointmodel.cpp
+    widgets/ui/checkpoints/checkpointmodel.cpp \
+    widgets/ui/objects/objectcache.cpp \
+    widgets/ui/objects/objectitem.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -50,7 +52,9 @@ HEADERS  += nesstagetool.h \
 	widgets/tileset/tilesetcache.h \
     widgets/ui/objects/objectmodel.h \
     widgets/ui/objects/objectdelegate.h \
-    widgets/ui/checkpoints/checkpointmodel.h
+    widgets/ui/checkpoints/checkpointmodel.h \
+    widgets/ui/objects/objectcache.h \
+    widgets/ui/objects/objectitem.h
 
 FORMS    += nesstagetool.ui
 
