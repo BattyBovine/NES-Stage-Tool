@@ -152,6 +152,8 @@ void NESStageTool::newProject()
 		ui->gvScreenSelector->clearAllMetatileData();
 		ui->gvMetatileEditor->clearAllMetatileData();
         ui->gvMetatileSelectorProperties->clearAllMetatileData();
+		ui->gvStage->clearAllObjectData();
+		ui->gvStage->clearAllCheckpointData();
 		ui->gvPaletteManager->clearAllPaletteData();
 		ui->gvGlobalTileset->clearAllTilesetData();
 		ui->spinSong->setValue(0);

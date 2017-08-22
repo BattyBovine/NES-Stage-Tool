@@ -102,6 +102,8 @@ public slots:
 	void setPropertyScrollBlockRight(bool b){this->vScreenProperties[this->iSelectedScreen].ScrollBlockRight=b;}
 
 	void clearAllMetatileData();
+	void clearAllObjectData();
+	void clearAllCheckpointData();
 
 	void toggleShowScreenGrid(bool b){this->bShowScreenGrid=b;this->drawGridLines();}
 	void toggleShowTileGrid(bool b){this->bShowTileGrid=b;this->drawGridLines();}

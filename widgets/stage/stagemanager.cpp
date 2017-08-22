@@ -515,6 +515,19 @@ void StageManager::clearAllMetatileData()
 	this->updateStageView();
 }
 
+void StageManager::clearAllObjectData()
+{
+	foreach(ObjectItem *i, this->lObjects)
+		delete i;
+	this->lObjects.clear();
+}
+
+void StageManager::clearAllCheckpointData()
+{
+	foreach(CheckpointItem *i, this->lCheckpoints)
+		i->setEnabled(false);
+}
+
 void StageManager::getHoveredTile(QPointF p)
 {
 	if(p.x()<0 || p.y()<0 || p.x()>=((MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW) || p.y()>=((MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH))
