@@ -16,23 +16,21 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->bShowScreenGrid = this->bShowTileGrid = true;
 	this->bShowObjects = true;
 	this->bTileSelectMode = true;
-	this->bSelectionMode = false;
+	this->bScreenSelectMode = false;
 	this->iSelectedScreen = 0;
 	this->iSelectedTileset = 0;
 	this->griSelectionBox = NULL;
 	this->griTileSelector = NULL;
-    this->setBackgroundBrush(QBrush(Qt::black));
-
-	this->iCheckpointIndex = 0;
-	this->vCheckpoints = CheckpointList(SM_MAX_CHECKPOINTS);
-	for(int i=0; i<SM_MAX_CHECKPOINTS; i++) {
-		this->vCheckpoints[i].Screen = 0;
-		this->vCheckpoints[i].X = 0;
-		this->vCheckpoints[i].Y = 0;
-	}
+	this->setBackgroundBrush(QBrush(Qt::black));
 
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
+
+	for(int i=0; i<SM_CHECKPOINT_LIMIT; i++) {
+		this->lCheckpoints.append(new CheckpointItem(i));
+		this->lCheckpoints[i]->setEnabled(false);
+		this->gsMetatiles->addItem(this->lCheckpoints[i]);
+	}
 
 	this->rTileSelection = QRect(-1,-1,-1,-1);
 	this->pSceneTranslation = QPoint(-1,-1);
@@ -52,7 +50,7 @@ StageManager::~StageManager()
 
 void StageManager::resizeEvent(QResizeEvent *e)
 {
-	if(this->bSelectionMode) {
+	if(this->bScreenSelectMode) {
 		this->fitInView(this->gsMetatiles->sceneRect(), Qt::KeepAspectRatio);
 		this->iScale = qreal(this->viewport()->width())/qreal(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW);
 		this->drawSelectionBox();
@@ -64,11 +62,11 @@ void StageManager::resizeEvent(QResizeEvent *e)
 
 void StageManager::dropEvent(QDropEvent *e)
 {
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		if(e->mimeData()->hasUrls()) {
 			e->acceptProposedAction();
 			emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
-		} else if(e->mimeData()->formats().contains("application/x-qabstractitemmodeldatalist")) {
+		} else if(e->mimeData()->formats().contains("application/objectdata")) {
 			if(this->lObjects.count()>=SM_OBJECT_LIMIT) {
 				QMessageBox::warning(this,
 									 tr(SM_OBJ_LIMIT_ERROR_TITLE),
@@ -76,7 +74,7 @@ void StageManager::dropEvent(QDropEvent *e)
 									 QMessageBox::Ok);
 				return;
 			}
-			QDataStream stream(&e->mimeData()->data("application/x-qabstractitemmodeldatalist"),QIODevice::ReadOnly);
+			QDataStream stream(&e->mimeData()->data(OM_MIME_TYPE),QIODevice::ReadOnly);
 			int row;
 			stream >> row;
 			ObjectItem *item = new ObjectItem(row);
@@ -85,10 +83,20 @@ void StageManager::dropEvent(QDropEvent *e)
 				QPointF drop = this->mapToScene(e->pos());
 				item->setX(qFloor(drop.x()));
 				item->setY(qFloor(drop.y()));
-				if(!this->bTileSelectMode)	item->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+				if(!this->bTileSelectMode)
+					item->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
 				this->lObjects.append(item);
 				this->gsMetatiles->addItem(item);
 			}
+		} else if(e->mimeData()->formats().contains("application/checkpointdata")) {
+			QDataStream stream(&e->mimeData()->data(CM_MIME_TYPE),QIODevice::ReadOnly);
+			int id;
+			stream >> id;
+			e->acceptProposedAction();
+			QPointF drop = this->mapToScene(e->pos());
+			this->lCheckpoints[id]->setX(qFloor(drop.x()));
+			this->lCheckpoints[id]->setY(qFloor(drop.y()));
+			this->lCheckpoints[id]->setEnabled(true);
 		}
 	}
 }
@@ -100,7 +108,7 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 
 	switch(e->button()) {
 	case Qt::LeftButton:
-		if(this->bSelectionMode) {
+		if(this->bScreenSelectMode) {
 			if(selection.x()<0 || selection.y()<0 ||
 					selection.x()>=(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW) ||
 					selection.y()>=(MTI_TILEWIDTH*this->iScreenTilesH*this->iScreensH)) {
@@ -117,7 +125,7 @@ void StageManager::mousePressEvent(QMouseEvent *e)
 		}
 		break;
 	case Qt::RightButton:
-		if(!this->bSelectionMode)
+		if(!this->bScreenSelectMode)
 			this->replaceScreenTileset(selection);
 		break;
 	}
@@ -129,7 +137,7 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 {
 	QGraphicsView::mouseMoveEvent(e);
 
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		if(e->buttons()&Qt::LeftButton) {
 			QPointF mousepos = this->mapToScene(e->pos());
 			if(this->bTileSelectMode) {
@@ -138,6 +146,12 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 				this->drawTileSelectionBox();
 			} else {
 				foreach(ObjectItem *i, this->lObjects) {
+					if(i->isSelected()) {
+						i->setX(mousepos.x());
+						i->setY(mousepos.y());
+					}
+				}
+				foreach(CheckpointItem *i, this->lCheckpoints) {
 					if(i->isSelected()) {
 						i->setX(mousepos.x());
 						i->setY(mousepos.y());
@@ -161,10 +175,10 @@ void StageManager::mouseReleaseEvent(QMouseEvent *e)
 {
 	switch(e->button()) {
 	case Qt::LeftButton:
-		if(!this->bSelectionMode && this->bTileSelectMode) this->replaceStageTiles();
+		if(!this->bScreenSelectMode && this->bTileSelectMode) this->replaceStageTiles();
 		break;
 	case Qt::RightButton:
-		if(!this->bSelectionMode)	this->replaceScreenTileset(this->mapToScene(e->pos()));
+		if(!this->bScreenSelectMode && this->bTileSelectMode)	this->replaceScreenTileset(this->mapToScene(e->pos()));
 	default:
 		QGraphicsView::mousePressEvent(e);
 	}
@@ -172,7 +186,7 @@ void StageManager::mouseReleaseEvent(QMouseEvent *e)
 
 void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 {
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		switch(e->button()) {
 		case Qt::MiddleButton:
 			this->iScale = SM_DEFAULT_ZOOM;
@@ -186,7 +200,7 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 
 void StageManager::wheelEvent(QWheelEvent *e)
 {
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		qreal steps = (((qreal)e->angleDelta().y()/8)/15)/4;
 		if(((this->iScale+steps)>=1) && ((this->iScale+steps)<=SM_MAX_ZOOM))
 			this->iScale += steps;
@@ -205,34 +219,49 @@ void StageManager::wheelEvent(QWheelEvent *e)
 void StageManager::keyPressEvent(QKeyEvent *e)
 {
 	switch(e->key()) {
-//	case Qt::Key_Left:
-//	case Qt::Key_Right:
-//		this->moveSelectedX((e->key()==Qt::Key_Right),(e->modifiers()&Qt::ShiftModifier));
-//		break;
-//	case Qt::Key_Up:
-//	case Qt::Key_Down:
-//		this->moveSelectedY((e->key()==Qt::Key_Down),(e->modifiers()&Qt::ShiftModifier));
-//		break;
-//	case Qt::Key_PageUp:
-//		this->moveSelectedUp();
-//		break;
-//	case Qt::Key_PageDown:
-//		this->moveSelectedDown();
-//		break;
-//	case Qt::Key_H:
-//		this->flipHorizontal();
-//		break;
-//	case Qt::Key_V:
-//		this->flipVertical();
-//		break;
+	case Qt::Key_Left:
+		foreach(ObjectItem *i, this->lObjects)
+			if(i->isSelected())
+				i->moveBy(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
+		foreach(CheckpointItem *i, this->lCheckpoints)
+			if(i->isSelected())
+				i->moveBy(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
+		break;
+	case Qt::Key_Right:
+		foreach(ObjectItem *i, this->lObjects)
+			if(i->isSelected())
+				i->moveBy(1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
+		foreach(CheckpointItem *i, this->lCheckpoints)
+			if(i->isSelected())
+				i->moveBy(1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
+		break;
+	case Qt::Key_Up:
+		foreach(ObjectItem *i, this->lObjects)
+			if(i->isSelected())
+				i->moveBy(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
+		foreach(CheckpointItem *i, this->lCheckpoints)
+			if(i->isSelected())
+				i->moveBy(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
+		break;
+	case Qt::Key_Down:
+		foreach(ObjectItem *i, this->lObjects)
+			if(i->isSelected())
+				i->moveBy(0,1*(e->modifiers()&Qt::ShiftModifier?10:1));
+		foreach(CheckpointItem *i, this->lCheckpoints)
+			if(i->isSelected())
+				i->moveBy(0,1*(e->modifiers()&Qt::ShiftModifier?10:1));
+		break;
 	case Qt::Key_Delete:
 		if(!this->bTileSelectMode) {
 			foreach(ObjectItem *i, this->lObjects) {
 				if(i->isSelected()) {
 					this->lObjects.removeAll(i);
-					this->gsMetatiles->removeItem(i);
 					delete i;
 				}
+			}
+			foreach(CheckpointItem *i, this->lCheckpoints) {
+				if(i->isSelected())
+					i->setEnabled(false);
 			}
 		}
 	default:
@@ -293,7 +322,7 @@ void StageManager::drawGridLines()
 
 void StageManager::drawSelectionBox()
 {
-	if(this->bSelectionMode) {
+	if(this->bScreenSelectMode) {
 		if(this->griSelectionBox) {
 			if(this->griSelectionBox->parentItem()) this->gsMetatiles->removeItem(this->griSelectionBox);
 			delete this->griSelectionBox;
@@ -317,7 +346,7 @@ void StageManager::drawSelectionBox()
 
 void StageManager::drawTileSelectionBox()
 {
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		if(this->griTileSelector) {
 			if(this->griTileSelector->parentItem()) this->gsMetatiles->removeItem(this->griTileSelector);
 			delete this->griTileSelector;
@@ -342,24 +371,24 @@ void StageManager::drawTileSelectionBox()
 
 void StageManager::populateBlankTiles()
 {
-    foreach(MetatileList l, this->vScreens) {
-        foreach(MetatileItem *i, l) {
-            this->groupMetatiles->removeFromGroup(i);
-        }
-    }
+	foreach(MetatileList l, this->vScreens) {
+		foreach(MetatileItem *i, l) {
+			this->groupMetatiles->removeFromGroup(i);
+		}
+	}
 
 	this->vScreens = ScreenList(this->iScreensW*this->iScreensH);
 	this->vScreenProperties = ScreenPropList(this->iScreensW*this->iScreensH);
 	for(int sy=0; sy<this->iScreensH; sy++) {
-        for(int sx=0; sx<this->iScreensW; sx++) {
+		for(int sx=0; sx<this->iScreensW; sx++) {
 			// Each screen gets its own tile list
-            int screen = sy*this->iScreensW+sx;
+			int screen = sy*this->iScreensW+sx;
 			this->vScreens[screen].clear();
-            for(int y=0; y<this->iScreenTilesH; y++) {
-                for(int x=0; x<this->iScreenTilesW; x++) {
+			for(int y=0; y<this->iScreenTilesH; y++) {
+				for(int x=0; x<this->iScreenTilesW; x++) {
 					MetatileItem *i = new MetatileItem();
-                    i->setRealX((x*MTI_TILEWIDTH)+(sx*this->iScreenTilesW*MTI_TILEWIDTH));
-                    i->setRealY((y*MTI_TILEWIDTH)+(sy*this->iScreenTilesH*MTI_TILEWIDTH));
+					i->setRealX((x*MTI_TILEWIDTH)+(sx*this->iScreenTilesW*MTI_TILEWIDTH));
+					i->setRealY((y*MTI_TILEWIDTH)+(sy*this->iScreenTilesH*MTI_TILEWIDTH));
 					i->setScreen(screen);
 					i->setScreenIndex(this->vScreens[screen].size());
 					this->vScreens[screen].append(i);
@@ -383,7 +412,7 @@ void StageManager::replaceStageTiles()
 		this->griTileSelector = NULL;
 	}
 
-	if(!this->bSelectionMode) {
+	if(!this->bScreenSelectMode) {
 		int xbegin=0,xend=0,ybegin=0,yend=0;
 		if(this->rTileSelection.width()<0) {
 			if(this->rTileSelection.height()<0) {	// Selection box is fully inverted
@@ -548,11 +577,14 @@ void StageManager::getNewAnimationFrame(int animframe)
 
 void StageManager::setSelectionMode(bool s)
 {
-	this->bSelectionMode=s;
+	this->bScreenSelectMode=s;
 	this->toggleShowScreenGrid(!s);
 	this->toggleShowTileGrid(!s);
-	this->fitInView(this->gsMetatiles->sceneRect(), Qt::KeepAspectRatio);
-	this->setRenderHint(QPainter::SmoothPixmapTransform);
+	if(s) {
+		QRectF view(0,0,this->iScreensW*this->iScreenTilesW*MTI_TILEWIDTH,this->iScreensH*this->iScreenTilesH*MTI_TILEWIDTH);
+		this->fitInView(view, Qt::KeepAspectRatio);
+		this->setRenderHint(QPainter::SmoothPixmapTransform);
+	}
 }
 
 void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
@@ -564,19 +596,13 @@ void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
 
 
 
-void StageManager::setCheckpointIndex(int i)
-{
-	this->iCheckpointIndex=i;
-	emit(sendCheckpointData(
-			this->vCheckpoints[this->iCheckpointIndex].Screen,
-			this->vCheckpoints[this->iCheckpointIndex].X,
-			this->vCheckpoints[this->iCheckpointIndex].Y
-			));
-}
-
 void StageManager::setToolMode(int t) {
 	this->bTileSelectMode = t?false:true;
 	foreach(ObjectItem *i, this->lObjects) {
+		i->setFlag(QGraphicsItem::ItemIsMovable,!this->bTileSelectMode);
+		i->setFlag(QGraphicsItem::ItemIsSelectable,!this->bTileSelectMode);
+	}
+	foreach(CheckpointItem *i, this->lCheckpoints) {
 		i->setFlag(QGraphicsItem::ItemIsMovable,!this->bTileSelectMode);
 		i->setFlag(QGraphicsItem::ItemIsSelectable,!this->bTileSelectMode);
 	}
@@ -591,9 +617,9 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 	for(int s=0; s<numscreens; s++) {
 		// Create metatile data (vertical columns)
 		QByteArray bin;
-        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
-            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
-                bin.append(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex());
+		for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth++) {
+			for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight++) {
+				bin.append(this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->metatileIndex());
 			}
 		}
 		bindata.replace(s,bin);
@@ -601,16 +627,16 @@ QVector<QByteArray> StageManager::createStageBinaryData()
 		// Create attribute data (vertical columns)
 		quint8 *attributecolumn = new quint8[qFloor(this->iScreenTilesH/2)];
 		bin.clear();
-        for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) attributecolumn[i] = 0;
-        for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth+=2) {
-            for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight+=2) {
-                quint8 attr0 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
-                quint8 attr1 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
-                quint8 attr2 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
-                quint8 attr3 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
-                attributecolumn[qFloor(tileheight/qFloor(this->iScreenTilesH/2))%8] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
+		for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) attributecolumn[i] = 0;
+		for(int tilewidth=0; tilewidth<this->iScreenTilesW; tilewidth+=2) {
+			for(int tileheight=0; tileheight<this->iScreenTilesH; tileheight+=2) {
+				quint8 attr0 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr1 = (this->vScreens[s][(tileheight*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr2 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth]->palette()%PM_SUBPALETTES_MAX);
+				quint8 attr3 = (this->vScreens[s][((tileheight+1)*this->iScreenTilesW)+tilewidth+1]->palette()%PM_SUBPALETTES_MAX);
+				attributecolumn[qFloor(tileheight/qFloor(this->iScreenTilesH/2))%8] = ((attr0)|(attr1<<2)|(attr2<<4)|(attr3<<6));
 			}
-            for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) {
+			for(int i=0; i<qFloor(this->iScreenTilesH/2); i++) {
 				bin.append(attributecolumn[i]);
 			}
 		}
@@ -681,10 +707,16 @@ QString StageManager::createCheckpointsASMData(QString labelprefix)
 	QString ckptx = asmlabel+QString("_checkpoint_posx:\n\t.byte ");
 	QString ckpty = asmlabel+QString("_checkpoint_posy:\n\t.byte ");
 
-	for(int c=0; c<this->vCheckpoints.size(); c++) {
-		ckptscreen += QString("$%1").arg(this->vCheckpoints[c].Screen,2,16,QChar('0')).toUpper().append(",");
-		ckptx += QString("$%1").arg(this->vCheckpoints[c].X,2,16,QChar('0')).toUpper().append(",");
-		ckpty += QString("$%1").arg(this->vCheckpoints[c].Y,2,16,QChar('0')).toUpper().append(",");
+	for(int c=0; c<SM_CHECKPOINT_LIMIT; c++) {
+		if(this->lCheckpoints[c]->isEnabled()) {
+			ckptscreen += QString("$%1").arg(this->lCheckpoints[c]->screen(),2,16,QChar('0')).toUpper().append(",");
+			ckptx += QString("$%1").arg(this->lCheckpoints[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
+			ckpty += QString("$%1").arg(this->lCheckpoints[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
+		} else {
+			ckptscreen += QString("$00,");
+			ckptx += QString("$00,");
+			ckpty += QString("$00,");
+		}
 	}
 
 	ckptscreen = ckptscreen.left(ckptscreen.length()-1) + QString("\n");
@@ -692,6 +724,36 @@ QString StageManager::createCheckpointsASMData(QString labelprefix)
 	ckpty = ckpty.left(ckpty.length()-1) + QString("\n");
 
 	return ckptscreen+ckptx+ckpty;
+}
+
+QString StageManager::createObjectsASMData(QString labelprefix)
+{
+	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
+	QString objid = asmlabel+QString("_object_id:\n\t.byte ");
+	QString objscreen = asmlabel+QString("_object_screen:\n\t.byte ");
+	QString objx = asmlabel+QString("_object_posx:\n\t.byte ");
+	QString objy = asmlabel+QString("_object_posy:\n\t.byte ");
+
+	for(int c=0; c<SM_OBJECT_LIMIT; c++) {
+		if(c<this->lObjects.count()) {
+			objid += QString("$%1").arg(this->lObjects[c]->id(),2,16,QChar('0')).toUpper().append(",");
+			objscreen += QString("$%1").arg(this->lObjects[c]->screen(),2,16,QChar('0')).toUpper().append(",");
+			objx += QString("$%1").arg(this->lObjects[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
+			objy += QString("$%1").arg(this->lObjects[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
+		} else {
+			objid += QString("$00,");
+			objscreen += QString("$00,");
+			objx += QString("$00,");
+			objy += QString("$00,");
+		}
+	}
+
+	objid = objid.left(objid.length()-1) + QString("\n");
+	objscreen = objscreen.left(objscreen.length()-1) + QString("\n");
+	objx = objx.left(objx.length()-1) + QString("\n");
+	objy = objy.left(objy.length()-1) + QString("\n");
+
+	return objid+objscreen+objx+objy;
 }
 
 
@@ -802,6 +864,10 @@ void StageManager::openCheckpointsFile(QString filename)
 		QMessageBox::warning(this,tr(SM_FILE_OPEN_ERROR_TITLE),tr(SM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
 		return;
 	}
+
+	foreach(CheckpointItem *i, this->lCheckpoints)
+		i->setEnabled(false);
+
 	QVector<QByteArray> inputbytes;
 	bool screensfound = false;
 	bool cpxfound = false;
@@ -817,7 +883,7 @@ void StageManager::openCheckpointsFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-		if(!bytesin.isEmpty() && (screensfound || cpxfound || cpyfound) && bytesin.size()==SM_MAX_CHECKPOINTS) {
+		if(!bytesin.isEmpty() && (screensfound || cpxfound || cpyfound) && bytesin.size()==SM_CHECKPOINT_LIMIT) {
 			inputbytes.append(bytesin);
 			screensfound = false;
 			cpxfound = false;
@@ -845,6 +911,75 @@ void StageManager::openCheckpointsFile(QString filename)
 	file.close();
 	if(!inputbytes.isEmpty()) {
 		this->importCheckpointsBinaryData(inputbytes);
+		return;
+	}
+
+	QMessageBox::critical(this,tr(SM_INVALID_STAGE_TITLE),tr(SM_INVALID_STAGE_BODY),QMessageBox::NoButton);
+}
+
+void StageManager::openObjectsFile(QString filename)
+{
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		QMessageBox::warning(this,tr(SM_FILE_OPEN_ERROR_TITLE),tr(SM_FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+
+	foreach(ObjectItem *i, this->lObjects)
+		delete i;
+	this->lObjects.clear();
+
+	QVector<QByteArray> inputbytes;
+	bool idsfound = false;
+	bool screensfound = false;
+	bool cpxfound = false;
+	bool cpyfound = false;
+
+	while(!file.atEnd()) {
+		QString line = file.readLine();
+
+		QRegularExpression bytes(",?\\$([0-9a-fA-F]+)");
+		QRegularExpressionMatchIterator bytesiter = bytes.globalMatch(line);
+		QByteArray bytesin;
+		while(bytesiter.hasNext()) {
+			QRegularExpressionMatch bytesmatch = bytesiter.next();
+			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
+		}
+		if(!bytesin.isEmpty() && (idsfound || screensfound || cpxfound || cpyfound) && bytesin.size()==SM_OBJECT_LIMIT) {
+			inputbytes.append(bytesin);
+			idsfound = false;
+			screensfound = false;
+			cpxfound = false;
+			cpyfound = false;
+		}
+
+		QRegularExpression objectidlabel("^(.*?)_object_id:$");
+		QRegularExpressionMatch objectidlabelmatch = objectidlabel.match(line);
+		if(objectidlabelmatch.hasMatch()) {
+			idsfound = true;
+		}
+
+		QRegularExpression objectscreenlabel("^(.*?)_object_screen:$");
+		QRegularExpressionMatch objectscreenlabelmatch = objectscreenlabel.match(line);
+		if(objectscreenlabelmatch.hasMatch()) {
+			screensfound = true;
+		}
+
+		QRegularExpression objectxlabel("^(.*?)_object_posx:$");
+		QRegularExpressionMatch objectxlabelmatch = objectxlabel.match(line);
+		if(objectxlabelmatch.hasMatch()) {
+			cpxfound = true;
+		}
+
+		QRegularExpression objectylabel("^(.*?)_object_posy:$");
+		QRegularExpressionMatch objectylabelmatch = objectylabel.match(line);
+		if(objectylabelmatch.hasMatch()) {
+			cpyfound = true;
+		}
+	}
+	file.close();
+	if(!inputbytes.isEmpty()) {
+		this->importObjectsBinaryData(inputbytes);
 		return;
 	}
 
@@ -901,20 +1036,41 @@ void StageManager::importCheckpointsBinaryData(QVector<QByteArray> bindata)
 		QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
 		return;
 	}
-	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
-		this->vCheckpoints[j].Screen = quint8(bindata[0].at(j));
+
+	quint8 screen, x, y;
+	for(int j=0; j<SM_CHECKPOINT_LIMIT; j++) {
+		screen = quint8(bindata[0].at(j));
+		x = quint8(bindata[1].at(j));
+		y = quint8(bindata[2].at(j));
+		if(screen!=0 || x!=0 || y!=0) {
+			this->lCheckpoints[j]->setX(((screen%8)*256)+x+0.5f);
+			this->lCheckpoints[j]->setY((qFloor(screen/8)*192)+y+0.5f);
+			this->lCheckpoints[j]->setEnabled(true);
+		}
 	}
-	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
-		this->vCheckpoints[j].X = quint8(bindata[1].at(j));
+}
+
+void StageManager::importObjectsBinaryData(QVector<QByteArray> bindata)
+{
+	if(bindata.size()!=4) {
+		QMessageBox::critical(this,tr(SM_COUNT_ERROR_TITLE),tr(SM_COUNT_ERROR_BODY),QMessageBox::NoButton);
+		return;
 	}
-	for(int j=0; j<SM_MAX_CHECKPOINTS; j++) {
-		this->vCheckpoints[j].Y = quint8(bindata[2].at(j));
+
+	quint8 id, screen, x, y;
+	for(int j=0; j<SM_OBJECT_LIMIT; j++) {
+		id = quint8(bindata[0].at(j));
+		screen = quint8(bindata[1].at(j));
+		x = quint8(bindata[2].at(j));
+		y = quint8(bindata[3].at(j));
+		if(id!=0 || screen!=0 || x!=0 || y!=0) {
+			ObjectItem *i = new ObjectItem(id);
+			i->setX(((screen%8)*256)+x+0.5f);
+			i->setY((qFloor(screen/8)*192)+y+0.5f);
+			this->gsMetatiles->addItem(i);
+			this->lObjects.append(i);
+		}
 	}
-	emit(sendCheckpointData(
-			this->vCheckpoints[this->iCheckpointIndex].Screen,
-			this->vCheckpoints[this->iCheckpointIndex].X,
-			this->vCheckpoints[this->iCheckpointIndex].Y
-			));
 }
 
 

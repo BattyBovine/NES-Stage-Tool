@@ -380,6 +380,9 @@ void MetatileManager::openMetatileFile(QString filename)
 		return;
 	}
 	quint8 labelnum = 0;
+	bool subtilesfound = false;
+	bool palettesfound = false;
+	bool propsfound = false;
     QVector<QByteArray> inputbytes(6);
 	while(!file.atEnd()) {
 		QString line = file.readLine();
@@ -391,8 +394,30 @@ void MetatileManager::openMetatileFile(QString filename)
 			QRegularExpressionMatch bytesmatch = bytesiter.next();
 			bytesin.append(quint8(bytesmatch.captured(1).toUInt(NULL,16)));
 		}
-        if(!bytesin.isEmpty() && (bytesin.size()==(MTM_METATILES_W*MTM_METATILES_H) || bytesin.size()==qFloor((MTM_METATILES_W*MTM_METATILES_H)/4) || bytesin.size()==qFloor((MTM_METATILES_W*MTM_METATILES_H)/2))) {
+
+		QRegularExpression subtileslabel("^(.*?)_subtiles_(tl|bl|tr|br):$");
+		QRegularExpressionMatch subtileslabelmatch = subtileslabel.match(line);
+		if(subtileslabelmatch.hasMatch()) {
+			subtilesfound = true;
+		}
+
+		QRegularExpression paletteslabel("^(.*?)_mtpalettes:$");
+		QRegularExpressionMatch paletteslabelmatch = paletteslabel.match(line);
+		if(paletteslabelmatch.hasMatch()) {
+			palettesfound = true;
+		}
+
+		QRegularExpression propslabel("^(.*?)_mtprops:$");
+		QRegularExpressionMatch propslabelmatch = propslabel.match(line);
+		if(propslabelmatch.hasMatch()) {
+			propsfound = true;
+		}
+
+		if(!bytesin.isEmpty() && (subtilesfound || palettesfound || propsfound)) {
 			inputbytes.replace(labelnum,bytesin);
+			subtilesfound = false;
+			palettesfound = false;
+			propsfound = false;
 			labelnum++;
         }
 	}

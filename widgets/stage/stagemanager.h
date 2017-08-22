@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <QGraphicsSvgItem>
 #include <QScrollBar>
 
 #include <QDragMoveEvent>
@@ -18,9 +19,11 @@
 #include <QtMath>
 
 #include "objectmodel.h"
+#include "checkpointmodel.h"
 #include "palettemanager.h"
 #include "metatileitem.h"
 #include "objectitem.h"
+#include "checkpointitem.h"
 
 
 #define SM_SCREEN_TILES_W_DEFAULT 16
@@ -29,9 +32,8 @@
 #define SM_SCREENS_H_DEFAULT      4
 #define SM_DEFAULT_ZOOM           1
 #define SM_MAX_ZOOM               8
+#define SM_CHECKPOINT_LIMIT       8
 #define SM_OBJECT_LIMIT           64
-
-#define SM_MAX_CHECKPOINTS        8
 
 #define SM_GLOBAL_PALETTE_MAX 8
 #define SM_THICK_GRID_LINES   1.0
@@ -57,15 +59,6 @@ struct ScreenProperties
 	bool ScrollBlockRight;
 };
 typedef QVector<ScreenProperties> ScreenPropList;
-
-
-struct Checkpoints
-{
-	quint8 Screen;
-	quint8 X;
-	quint8 Y;
-};
-typedef QVector<Checkpoints> CheckpointList;
 
 
 class StageManager : public QGraphicsView
@@ -98,7 +91,6 @@ signals:
 
 	void sendScreenProperties(int,int,bool,bool);
 	void sendSelectionProperties(int,bool,bool);
-	void sendCheckpointData(int,int,int);
 
 public slots:
 	void setScale(qreal s){this->iScale=s;}
@@ -110,6 +102,7 @@ public slots:
 
 	void clearAllMetatileData();
 
+	void toggleShowCheckpoints(bool b){foreach(CheckpointItem *i, this->lCheckpoints){i->setVisible(b);}}
 	void toggleShowObjects(bool b){foreach(ObjectItem *i, this->lObjects){i->setVisible(b);}}
 	void toggleShowScreenGrid(bool b){this->bShowScreenGrid=b;this->drawGridLines();}
 	void toggleShowTileGrid(bool b){this->bShowTileGrid=b;this->drawGridLines();}
@@ -121,22 +114,21 @@ public slots:
 	void getNewAnimationFrame(int);
 
 	void setScreenTileset(quint8,quint8);
-	void setCheckpointIndex(int i);
-	void setCheckpointScreen(int i){this->vCheckpoints[this->iCheckpointIndex].Screen=i;}
-	void setCheckpointX(int i){this->vCheckpoints[this->iCheckpointIndex].X=i;}
-	void setCheckpointY(int i){this->vCheckpoints[this->iCheckpointIndex].Y=i;}
 	void setToolMode(int);
 
 	void openStageFile(QString);
 	void openScreenPropertiesFile(QString);
 	void openCheckpointsFile(QString);
+	void openObjectsFile(QString);
 	void importStageBinaryData(QVector<QByteArray>);
 	void importScreenPropertiesBinaryData(QByteArray);
 	void importCheckpointsBinaryData(QVector<QByteArray>);
+	void importObjectsBinaryData(QVector<QByteArray>);
 	QVector<QByteArray> createStageBinaryData();
 	QString createStageASMData(QString);
 	QString createScreenPropertiesASMData(QString);
 	QString createCheckpointsASMData(QString);
+	QString createObjectsASMData(QString);
 
 	void updateStageView();
 
@@ -165,20 +157,18 @@ private:
 
 	qreal iScale;
     quint8 iScreensW, iScreensH;
-    quint8 iScreenTilesW, iScreenTilesH;
-	bool bSelectionMode;
+	quint8 iScreenTilesW, iScreenTilesH;
 	quint8 iSelectedScreen;
 	QPointF pSceneTranslation;
 	QRectF rTileSelection;
 
-	bool bShowObjects, bTileSelectMode, bShowScreenGrid, bShowTileGrid;
+	bool bShowObjects, bTileSelectMode, bScreenSelectMode, bShowScreenGrid, bShowTileGrid;
 	ScreenList vScreens;
 	ScreenPropList vScreenProperties;
-	quint8 iCheckpointIndex;
-	CheckpointList vCheckpoints;
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	ObjectList lObjects;
+	QList<CheckpointItem*> lCheckpoints;
 	QList<QGraphicsLineItem*> lGrid;
 	QGraphicsRectItem *griSelectionBox;
 	QGraphicsRectItem *griTileSelector;

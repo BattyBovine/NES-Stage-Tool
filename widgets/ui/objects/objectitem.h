@@ -2,12 +2,8 @@
 #define OBJECTITEM_H
 
 #include <QGraphicsItem>
-#include <QPixmapCache>
-#include <QPaintEvent>
-#include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QPen>
-#include <QTimer>
 #include <QGraphicsSceneMouseEvent>
 
 #include <QMessageBox>
@@ -36,7 +32,6 @@ public:
 
 	quint8 id(){return this->iId;}
 	void setId(quint8 i){this->iId=i;}
-	bool showInfo(){return this->bShowInfo;}
 
 	int screen() {return (qFloor(this->x()/256)%256)+((qFloor(this->y()/192)%192)*8);}
 	int screenX() {return (qFloor(qAbs(this->x()))%256);}
@@ -48,11 +43,8 @@ protected:
 	QRectF boundingRect() const;
 	void paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*);
 
-	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent*);
-
 private:
 	quint8  iId;
-	bool	bShowInfo;
 };
 
 typedef QList<ObjectItem*>  ObjectList;

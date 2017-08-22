@@ -49,7 +49,7 @@ NESStageTool::NESStageTool(QWidget *parent) :
 	ui->listObjects->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 	ui->listObjects->verticalHeader()->setDefaultSectionSize(OM_OBJECT_IMG_DIM+2);
 
-	this->listCheckpoints = new CheckpointModel();
+	this->listCheckpoints = new CheckpointModel(SM_CHECKPOINT_LIMIT);
 	ui->listCheckpoints->setModel(this->listCheckpoints);
 
 	this->changeBankSize();
@@ -343,13 +343,6 @@ void NESStageTool::getScreenProperties(int song, bool sbl, bool sbr)
 	ui->chkScrollBlockRight->setChecked(sbr);
 }
 
-void NESStageTool::getCheckpointData(int screen, int x, int y)
-{
-	ui->spinCkptScreen->setValue(screen);
-	ui->spinCkptX->setValue(x);
-	ui->spinCkptY->setValue(y);
-}
-
 
 
 void NESStageTool::openStage(QString path)
@@ -360,9 +353,10 @@ void NESStageTool::openStage(QString path)
 	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
 	ui->gvStage->openStageFile(filename);
+	ui->gvStage->openCheckpointsFile(filename);
+	ui->gvStage->openObjectsFile(filename);
 	ui->gvScreenSelector->openStageFile(filename);
 	ui->gvScreenSelector->openScreenPropertiesFile(filename);
-	ui->gvScreenSelector->openCheckpointsFile(filename);
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -386,7 +380,9 @@ void NESStageTool::saveASMStage(QString path)
 	file.write("\n");
 	file.write(ui->gvMetatileSelectorProperties->createMetatileASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
-	file.write(ui->gvScreenSelector->createCheckpointsASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write(ui->gvStage->createCheckpointsASMData(ui->lineASMLabel->text()).toLocal8Bit());
+	file.write("\n");
+	file.write(ui->gvStage->createObjectsASMData(ui->lineASMLabel->text()).toLocal8Bit());
 	file.write("\n");
 	for(int tileset=0; tileset<GTSM_TILESET_COUNT; tileset++)
 		file.write(ui->gvPaletteManager->createPaletteASMData(ui->lineASMLabel->text(),tileset).toUtf8());

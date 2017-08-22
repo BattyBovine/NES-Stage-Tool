@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTableView>
 #include <QAbstractTableModel>
+#include <QMimeData>
 #include <QFont>
 #include <QPixmap>
 #include <QImage>
@@ -12,6 +13,7 @@
 
 #include "objectcache.h"
 
+#define OM_MIME_TYPE			"application/objectdata"
 #define OM_OBJECT_COUNT			256
 #define OM_OBJECT_IMG_DIM		32
 #define OM_INVALID_OBJECT_NAME	"Invalid"
@@ -31,6 +33,8 @@ public:
 	QVariant data(const QModelIndex&,int role = Qt::DisplayRole) const override;
 	bool setData(const QModelIndex&,const QVariant&,int role=Qt::EditRole) override;
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
+	QStringList mimeTypes() const;
+	QMimeData *mimeData(const QModelIndexList&) const;
 	enum { ColumnImage, ColumnName };
 
 	void clear();

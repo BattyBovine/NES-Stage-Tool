@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui svg
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     widgets/ui/objects/objectdelegate.cpp \
     widgets/ui/checkpoints/checkpointmodel.cpp \
     widgets/ui/objects/objectcache.cpp \
-    widgets/ui/objects/objectitem.cpp
+    widgets/ui/objects/objectitem.cpp \
+    widgets/ui/checkpoints/checkpointitem.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -54,7 +55,8 @@ HEADERS  += nesstagetool.h \
     widgets/ui/objects/objectdelegate.h \
     widgets/ui/checkpoints/checkpointmodel.h \
     widgets/ui/objects/objectcache.h \
-    widgets/ui/objects/objectitem.h
+    widgets/ui/objects/objectitem.h \
+    widgets/ui/checkpoints/checkpointitem.h
 
 FORMS    += nesstagetool.ui
 

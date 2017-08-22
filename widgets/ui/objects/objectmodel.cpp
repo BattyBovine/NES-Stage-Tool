@@ -82,6 +82,25 @@ Qt::ItemFlags ObjectModel::flags(const QModelIndex &index) const
 	return QAbstractTableModel::flags(index);
 }
 
+QStringList ObjectModel::mimeTypes() const
+{
+	QStringList types;
+	types << OM_MIME_TYPE;
+	return types;
+}
+
+QMimeData *ObjectModel::mimeData(const QModelIndexList &indices) const
+{
+	QMimeData *mimedata = new QMimeData();
+	QByteArray encodeddata;
+	QDataStream stream(&encodeddata,QIODevice::WriteOnly);
+	foreach(QModelIndex i, indices) {
+		if(i.isValid()) stream << i.row();
+	}
+	mimedata->setData(OM_MIME_TYPE,encodeddata);
+	return mimedata;
+}
+
 
 
 void ObjectModel::clear()

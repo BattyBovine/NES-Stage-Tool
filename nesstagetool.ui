@@ -26,9 +26,6 @@
    <layout class="QHBoxLayout" name="horizontalLayout_12">
     <item>
      <widget class="QTabWidget" name="tabEditors">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
       <widget class="QWidget" name="tabStage">
        <attribute name="title">
         <string>Stage</string>
@@ -94,6 +91,16 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="chkShowCheckpoints">
+               <property name="text">
+                <string>Show Checkpoints</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -147,7 +154,7 @@
         <item>
          <widget class="QTabWidget" name="tabTools">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -244,8 +251,32 @@
             </item>
             <item>
              <widget class="QListView" name="listCheckpoints">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::IgnoreAction</enum>
+              </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="viewMode">
+               <enum>QListView::IconMode</enum>
               </property>
              </widget>
             </item>
@@ -747,67 +778,21 @@
               </spacer>
              </item>
              <item>
-              <layout class="QGridLayout" name="gridLayout_3">
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_9">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Scroll Block:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="chkScrollBlockLeft">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Left</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Song:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="chkScrollBlockRight">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Right</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1" colspan="2">
-                <widget class="QSpinBox" name="spinSong">
-                 <property name="maximum">
-                  <number>63</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Song:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinSong">
+               <property name="maximum">
+                <number>63</number>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_4">
@@ -823,94 +808,46 @@
               </spacer>
              </item>
              <item>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="1" column="2">
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>X:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QSpinBox" name="spinCkptX">
-                 <property name="maximum">
-                  <number>255</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QSpinBox" name="spinCkptScreen">
-                 <property name="maximum">
-                  <number>255</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="5">
-                <widget class="QSpinBox" name="spinCkptY">
-                 <property name="maximum">
-                  <number>255</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>Screen:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="4">
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>Y:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0" colspan="6">
-                <widget class="QComboBox" name="comboCheckpoints">
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 0</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 1</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 2</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 3</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 4</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 5</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 6</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Checkpoint 7</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_9">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Scroll Block:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chkScrollBlockLeft">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Left</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chkScrollBlockRight">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Right</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_11">
@@ -1742,6 +1679,7 @@
     <slot>placeObjectItem(quint8)</slot>
     <slot>toggleShowObjects(bool)</slot>
     <slot>setToolMode(int)</slot>
+    <slot>toggleShowCheckpoints(bool)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2744,86 +2682,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>comboCheckpoints</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>gvScreenSelector</receiver>
-   <slot>setCheckpointIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>431</x>
-     <y>629</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>148</x>
-     <y>390</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinCkptScreen</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>gvScreenSelector</receiver>
-   <slot>setCheckpointScreen(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>371</x>
-     <y>655</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>148</x>
-     <y>344</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinCkptX</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>gvScreenSelector</receiver>
-   <slot>setCheckpointX(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>436</x>
-     <y>655</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>148</x>
-     <y>393</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinCkptY</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>gvScreenSelector</receiver>
-   <slot>setCheckpointY(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>501</x>
-     <y>655</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>148</x>
-     <y>355</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvScreenSelector</sender>
-   <signal>sendCheckpointData(int,int,int)</signal>
-   <receiver>NESStageTool</receiver>
-   <slot>getCheckpointData(int,int,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>417</x>
-     <y>284</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>436</x>
-     <y>595</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>spinCollision</sender>
    <signal>valueChanged(int)</signal>
    <receiver>gvMetatileSelectorProperties</receiver>
@@ -3120,6 +2978,22 @@
     <hint type="sourcelabel">
      <x>965</x>
      <y>364</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>419</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkShowCheckpoints</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gvStage</receiver>
+   <slot>toggleShowCheckpoints(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>459</x>
+     <y>646</y>
     </hint>
     <hint type="destinationlabel">
      <x>419</x>

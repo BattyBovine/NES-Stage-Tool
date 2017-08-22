@@ -1,13 +1,14 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="cp0">cp0.png</file>
-        <file alias="cp1">cp1.png</file>
-        <file alias="cp2">cp2.png</file>
-        <file alias="cp3">cp3.png</file>
-        <file alias="cp4">cp4.png</file>
-        <file alias="cp5">cp5.png</file>
-        <file alias="cp6">cp6.png</file>
-        <file alias="cp7">cp7.png</file>
         <file alias="noicon">noicon.png</file>
+        <file alias="cp0">cp0.svg</file>
+        <file alias="cp1">cp1.svg</file>
+        <file alias="cp2">cp2.svg</file>
+        <file alias="cp3">cp3.svg</file>
+        <file alias="cp4">cp4.svg</file>
+        <file alias="cp5">cp5.svg</file>
+        <file alias="cp6">cp6.svg</file>
+        <file alias="cp7">cp7.svg</file>
+        <file alias="cp">cp.svg</file>
     </qresource>
 </RCC>
