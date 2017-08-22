@@ -81,39 +81,6 @@
               </spacer>
              </item>
              <item>
-              <widget class="QCheckBox" name="chkShowObjects">
-               <property name="text">
-                <string>Show Objects</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="chkShowCheckpoints">
-               <property name="text">
-                <string>Show Checkpoints</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
               <widget class="QLabel" name="labelShowGrid">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -2954,22 +2921,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>chkShowObjects</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gvStage</receiver>
-   <slot>toggleShowObjects(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>379</x>
-     <y>647</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>544</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>tabTools</sender>
    <signal>currentChanged(int)</signal>
    <receiver>gvStage</receiver>
@@ -2978,22 +2929,6 @@
     <hint type="sourcelabel">
      <x>965</x>
      <y>364</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>419</x>
-     <y>370</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkShowCheckpoints</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gvStage</receiver>
-   <slot>toggleShowCheckpoints(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>459</x>
-     <y>646</y>
     </hint>
     <hint type="destinationlabel">
      <x>419</x>

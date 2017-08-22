@@ -28,6 +28,7 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 
 	for(int i=0; i<SM_CHECKPOINT_LIMIT; i++) {
 		this->lCheckpoints.append(new CheckpointItem(i));
+		this->lCheckpoints[i]->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
 		this->lCheckpoints[i]->setEnabled(false);
 		this->gsMetatiles->addItem(this->lCheckpoints[i]);
 	}
@@ -83,8 +84,7 @@ void StageManager::dropEvent(QDropEvent *e)
 				QPointF drop = this->mapToScene(e->pos());
 				item->setX(qFloor(drop.x()));
 				item->setY(qFloor(drop.y()));
-				if(!this->bTileSelectMode)
-					item->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+				item->setVisible(!this->bTileSelectMode);
 				this->lObjects.append(item);
 				this->gsMetatiles->addItem(item);
 			}
@@ -96,7 +96,8 @@ void StageManager::dropEvent(QDropEvent *e)
 			QPointF drop = this->mapToScene(e->pos());
 			this->lCheckpoints[id]->setX(qFloor(drop.x()));
 			this->lCheckpoints[id]->setY(qFloor(drop.y()));
-			this->lCheckpoints[id]->setEnabled(true);
+			this->lCheckpoints[id]->setVisible(!this->bTileSelectMode);
+			this->lCheckpoints[id]->setEnabled(!this->bTileSelectMode);
 		}
 	}
 }
@@ -598,14 +599,10 @@ void StageManager::setScreenProperties(int i, int song, bool sbl, bool sbr)
 
 void StageManager::setToolMode(int t) {
 	this->bTileSelectMode = t?false:true;
-	foreach(ObjectItem *i, this->lObjects) {
-		i->setFlag(QGraphicsItem::ItemIsMovable,!this->bTileSelectMode);
-		i->setFlag(QGraphicsItem::ItemIsSelectable,!this->bTileSelectMode);
-	}
-	foreach(CheckpointItem *i, this->lCheckpoints) {
-		i->setFlag(QGraphicsItem::ItemIsMovable,!this->bTileSelectMode);
-		i->setFlag(QGraphicsItem::ItemIsSelectable,!this->bTileSelectMode);
-	}
+	foreach(ObjectItem *i, this->lObjects)
+		i->setVisible(!this->bTileSelectMode);
+	foreach(CheckpointItem *i, this->lCheckpoints)
+		i->setVisible(!this->bTileSelectMode);
 }
 
 
@@ -1042,9 +1039,12 @@ void StageManager::importCheckpointsBinaryData(QVector<QByteArray> bindata)
 		screen = quint8(bindata[0].at(j));
 		x = quint8(bindata[1].at(j));
 		y = quint8(bindata[2].at(j));
-		if(screen!=0 || x!=0 || y!=0) {
+		if(screen==0 && x==0 && y==0) {
+			this->lCheckpoints[j]->setEnabled(false);
+		} else {
 			this->lCheckpoints[j]->setX(((screen%8)*256)+x+0.5f);
 			this->lCheckpoints[j]->setY((qFloor(screen/8)*192)+y+0.5f);
+			this->lCheckpoints[j]->setVisible(!this->bTileSelectMode);
 			this->lCheckpoints[j]->setEnabled(true);
 		}
 	}
@@ -1067,6 +1067,7 @@ void StageManager::importObjectsBinaryData(QVector<QByteArray> bindata)
 			ObjectItem *i = new ObjectItem(id);
 			i->setX(((screen%8)*256)+x+0.5f);
 			i->setY((qFloor(screen/8)*192)+y+0.5f);
+			i->setVisible(!this->bTileSelectMode);
 			this->gsMetatiles->addItem(i);
 			this->lObjects.append(i);
 		}

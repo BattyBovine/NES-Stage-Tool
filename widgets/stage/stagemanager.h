@@ -69,8 +69,9 @@ public:
 	~StageManager();
 
 	qreal scale(){return this->iScale;}
-
 	void changePalette(int);
+
+	enum{ToolMetatiles,ToolObjects};
 
 signals:
 	void stageFileDropped(QString);
@@ -102,8 +103,6 @@ public slots:
 
 	void clearAllMetatileData();
 
-	void toggleShowCheckpoints(bool b){foreach(CheckpointItem *i, this->lCheckpoints){i->setVisible(b);}}
-	void toggleShowObjects(bool b){foreach(ObjectItem *i, this->lObjects){i->setVisible(b);}}
 	void toggleShowScreenGrid(bool b){this->bShowScreenGrid=b;this->drawGridLines();}
 	void toggleShowTileGrid(bool b){this->bShowTileGrid=b;this->drawGridLines();}
 
