@@ -191,12 +191,15 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 		switch(e->button()) {
 		case Qt::MiddleButton:
 			this->iScale = SM_DEFAULT_ZOOM;
+			this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+			QMatrix matrix;
+			matrix.scale(this->iScale,this->iScale);
+			this->setMatrix(matrix);
 			this->updateStageView();
-			break;
-		default:
-			QGraphicsView::mouseDoubleClickEvent(e);
+			return;
 		}
 	}
+	QGraphicsView::mouseDoubleClickEvent(e);
 }
 
 void StageManager::wheelEvent(QWheelEvent *e)
