@@ -11,7 +11,9 @@ Tilesets can be loaded with the *File > Open CHR* option, or by dragging and dro
 
 Metatiles and palettes are defined on the Metatiles tab. The palette colours can be changed by selecting a colour in one of the subpalettes at the bottom right, then choosing a new colour from the large colour selector below. The subpalette that contains the selection cursor is the subpalette that will be applied when you edit a metatile. Select a tileset on the upper right by using the scroll wheel, and select an 8x8 tile with the left mouse button. Place a tile in the metatile editor on the left with the left mouse button. The selected subpalette is automatically applied to a metatile while placing tiles, but you can also apply the selected subpalette with the right mouse button without otherwise changing the metatile.
 
-Once you've defined a set of metatiles, you can place them in the stage editor on the Stage tab. Use the scroll wheel on the metatile selector on the right to choose the tileset you wish to use, then select a metatile with the left mouse button. Use the left mouse button on the stage editor to place a metatile in the stage, and the right mouse button to apply the current tileset to the selected screen. You can click and drag the left mouse button on the stage editor to paint a metatile continuously. You can also define the label prefix for the output data in the *Label* textbox above the editor canvas. See the data format definition below for more info. You can also navigate around the stage by clicking and holding the middle mouse button, or zoom into the canvas by scrolling the scroll wheel. Double-clicking the middle mouse button will reset the zoom to the default zoom level.
+Once you've defined a set of metatiles, you can place them in the stage editor on the *Stage* tab. Use the scroll wheel on the metatile selector on the right to choose the tileset you wish to use, then select a metatile with the left mouse button. Use the left mouse button on the stage editor to place a metatile in the stage, and the right mouse button to apply the current tileset to the selected screen. You can click and drag the left mouse button on the stage editor to paint a large area of tiles simultaneously. You can also define the label prefix for the output data in the *Label* textbox above the editor canvas. See the data format definition below for more info. You can navigate around the stage by clicking and holding the middle mouse button, or zoom into the canvas by scrolling the scroll wheel. Double-clicking the middle mouse button will reset the zoom to the default zoom level.
+
+After editing the stage, you'll probably want to set up checkpoints and add some objects to the stage. You can do that by clicking the *Objects* tab on the right to switch to the Object editor. Double-clicking on the name of an object will allow you to edit its label, and double-clicking the blank image next to it allows you to add an image representing its sprite. After setting up an object, you can simply drag it to the stage editor to add it to the stage, and drag it around to where you want it to spawn in the game. Pressing the *Delete* key will remove it from the stage and free up a slot for another object. The current number of objects is capped at 64. Similarly, you can add a checkpoint by dragging it from the Checkpoint list into the stage editor and moving it to where the checkpoint should go. Up to seven checkpoints per stage can be added. Since there can only be one of each checkpoint, dragging a duplicate checkpoint number will replace the matching one if it already exists in the stage. Objects and checkpoints will only be editable or visible when the *Objects* tab is selected; to go back to editing the stage layout, click back onto the *Metatiles* tab.
 
 You can save a stage file in ASM format using *File > Save Stage*. You can later reload this file by using *File > Open Stage*, or by dragging and dropping the saved file onto the stage editor canvas.
 
@@ -69,6 +71,9 @@ Each metatile has a configurable "collision" value that affects how the player s
 ### Checkpoints
 Checkpoints can be used to start the player later in the level once they've passed a certain area. The checkpoint data is split into three separate arrays representing the screen, X position, and Y position. They are labelled *examplestage1_checkpoint_screen*, *examplestage1_checkpoint_posx*, and *examplestage1_checkpoint_posy*, respectively. Eight checkpoints are currently supported, with the first one intented to be the starting point for the level. Each of these arrays is eight bytes long, each byte representing the corresponding value. In other words, to load the player at checkpoint 2, read the second value in each array, and use the *screen* value to load the stage at that screen, and the *posx* and *posy* values to load the player at that pixel location within the screen.
 
+### Objects
+Objects are the interactive parts of a stage, such as enemies, items, destructible obstacles, moving platforms, etc. The object data is split into four separate arrays representing the object identifier, screen, X position, and Y position. They are labelled *examplestage1_object_id*, *examplestage1_object_screen*, *examplestage1_object_posx*, and *examplestage1_object_posy*, respectively. Up to 64 objects can be added to a single stage. Each of the object arrays is 64 bytes long, each byte representing the corresponding object's value. In other words, to load an object into the current screen, check which objects are meant to be loaded on the screen using the *screen* array, then add the object's *posx* value to the current camera position, and if the object is within camera boundaries, it can be spawned at the given *posx* and *posy* positions, using the *id* value to determine which object is meant to be loaded.
+
 ### Palette definitions
 Each tileset's palette is defined here, with each byte in each array representing a colour from the NES's global palette. They are labelled *examplestage1_palette_00* for the first palette, *examplestage1_palette_01* for the second, etc. The bytes can be copied as-is from the array into the PPU.
 
@@ -99,6 +104,11 @@ CheckpointScreen   = $1D70
 CheckpointPosX     = $1D78
 CheckpointPosY     = $1D80
 
-StagePalettes      = $1D88
-StageTilesets      = $1E08
+ObjectId           = $1D88
+ObjectScreen       = $1DC8
+ObjectPosX         = $1E08
+ObjectPosY         = $1F48
+
+StagePalettes      = $1E88
+StageTilesets      = $1F08
 ```
