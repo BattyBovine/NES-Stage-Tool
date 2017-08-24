@@ -21,6 +21,8 @@
 #include "palettemanager.h"
 #include "metatileitem.h"
 
+#include "undocommands.h"
+
 
 #define MTM_CANVAS_SIZE      256
 #define MTM_METATILES_W      16
@@ -76,6 +78,8 @@ signals:
 #ifdef METASPRITETILEITEM_H
 	void updateList(GraphicsItemList,GraphicsItemList);
 #endif
+
+	void changeStageTile(ChangeStageTile*);
 
 public slots:
 	void setScale(qreal s){this->iScale=s;}

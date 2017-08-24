@@ -14,6 +14,7 @@ TEMPLATE = app
 INCLUDEPATH += widgets/ui \
 	widgets/ui/objects \
 	widgets/ui/checkpoints \
+	widgets/ui/undo \
 	widgets/metatile \
 	widgets/palette \
 	widgets/sprite \
@@ -38,7 +39,8 @@ SOURCES += main.cpp \
     widgets/ui/checkpoints/checkpointmodel.cpp \
     widgets/ui/objects/objectcache.cpp \
     widgets/ui/objects/objectitem.cpp \
-    widgets/ui/checkpoints/checkpointitem.cpp
+    widgets/ui/checkpoints/checkpointitem.cpp \
+    widgets/ui/undo/undocommands.cpp
 
 HEADERS  += nesstagetool.h \
 	widgets/ui/lineeditasm.h \
@@ -56,7 +58,8 @@ HEADERS  += nesstagetool.h \
     widgets/ui/checkpoints/checkpointmodel.h \
     widgets/ui/objects/objectcache.h \
     widgets/ui/objects/objectitem.h \
-    widgets/ui/checkpoints/checkpointitem.h
+    widgets/ui/checkpoints/checkpointitem.h \
+    widgets/ui/undo/undocommands.h
 
 FORMS    += nesstagetool.ui
 

@@ -26,6 +26,12 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
+	for(int i=0; i<SM_OBJECT_LIMIT; i++) {
+		this->lObjects.append(new ObjectItem(0,i));
+		this->lObjects[i]->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+		this->lObjects[i]->setEnabled(false);
+		this->gsMetatiles->addItem(this->lObjects[i]);
+	}
 	for(int i=0; i<SM_CHECKPOINT_LIMIT; i++) {
 		this->lCheckpoints.append(new CheckpointItem(i));
 		this->lCheckpoints[i]->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
@@ -35,6 +41,9 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 
 	this->rTileSelection = QRect(-1,-1,-1,-1);
 	this->pSceneTranslation = QPoint(-1,-1);
+	this->pSelection = QPoint(-1,-1);
+
+	this->undoStack = new QUndoStack(this);
 
 	this->populateBlankTiles();
 
@@ -68,70 +77,75 @@ void StageManager::dropEvent(QDropEvent *e)
 			e->acceptProposedAction();
 			emit(stageFileDropped(e->mimeData()->urls()[0].toLocalFile()));
 		} else if(e->mimeData()->formats().contains("application/objectdata")) {
-			if(this->lObjects.count()>=SM_OBJECT_LIMIT) {
-				QMessageBox::warning(this,
-									 tr(SM_OBJ_LIMIT_ERROR_TITLE),
-									 tr(SM_OBJ_LIMIT_ERROR_BODY).arg(SM_OBJECT_LIMIT),
-									 QMessageBox::Ok);
-				return;
-			}
 			QDataStream stream(&e->mimeData()->data(OM_MIME_TYPE),QIODevice::ReadOnly);
-			int row;
-			stream >> row;
-			ObjectItem *item = new ObjectItem(row);
-			if(!item->isNull()) {
-				e->acceptProposedAction();
-				QPointF drop = this->mapToScene(e->pos());
-				item->setX(qFloor(drop.x()));
-				item->setY(qFloor(drop.y()));
-				item->setVisible(!this->bTileSelectMode);
-				this->lObjects.append(item);
-				this->gsMetatiles->addItem(item);
+			int id;
+			stream >> id;
+			e->acceptProposedAction();
+			QPointF drop = this->mapToScene(e->pos());
+			foreach(ObjectItem *i, this->lObjects) {
+				if(!i->isEnabled()) {
+					i->setVisible(!this->bTileSelectMode);
+					AddObject *add = new AddObject(i,id,drop);
+					this->undoStack->push(add);
+					return;
+				}
 			}
+			QMessageBox::warning(this,tr(SM_OBJ_LIMIT_ERROR_TITLE),
+								 tr(SM_OBJ_LIMIT_ERROR_BODY).arg(SM_OBJECT_LIMIT),
+								 QMessageBox::Ok);
 		} else if(e->mimeData()->formats().contains("application/checkpointdata")) {
 			QDataStream stream(&e->mimeData()->data(CM_MIME_TYPE),QIODevice::ReadOnly);
 			int id;
 			stream >> id;
 			e->acceptProposedAction();
-			QPointF drop = this->mapToScene(e->pos());
-			this->lCheckpoints[id]->setX(qFloor(drop.x()));
-			this->lCheckpoints[id]->setY(qFloor(drop.y()));
 			this->lCheckpoints[id]->setVisible(!this->bTileSelectMode);
-			this->lCheckpoints[id]->setEnabled(!this->bTileSelectMode);
+			QPointF drop = this->mapToScene(e->pos());
+			QPointF oldpos(this->lCheckpoints[id]->x(),this->lCheckpoints[id]->y());
+			MoveCheckpoint *move = new MoveCheckpoint(this->lCheckpoints[id],oldpos,drop);
+			this->undoStack->push(move);
 		}
 	}
 }
 
 void StageManager::mousePressEvent(QMouseEvent *e)
 {
+	QGraphicsView::mousePressEvent(e);
+
 	this->pSceneTranslation = QPointF(e->x(),e->y());
-	QPointF selection = this->mapToScene(e->pos());
+	this->pSelection = this->mapToScene(e->pos());
 
 	switch(e->button()) {
 	case Qt::LeftButton:
 		if(this->bScreenSelectMode) {
-			if(selection.x()<0 || selection.y()<0 ||
-					selection.x()>=(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW) ||
-					selection.y()>=(MTI_TILEWIDTH*this->iScreenTilesH*this->iScreensH)) {
+			if(this->pSelection.x()<0 || this->pSelection.y()<0 ||
+					this->pSelection.x()>=(MTI_TILEWIDTH*this->iScreenTilesW*this->iScreensW) ||
+					this->pSelection.y()>=(MTI_TILEWIDTH*this->iScreenTilesH*this->iScreensH)) {
 				return;
 			}
-			this->iSelectedScreen = (qFloor(selection.y()/(MTI_TILEWIDTH*this->iScreenTilesH))*this->iScreensW)+
-									qFloor(selection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
+			this->iSelectedScreen = (qFloor(this->pSelection.y()/(MTI_TILEWIDTH*this->iScreenTilesH))*this->iScreensW)+
+									qFloor(this->pSelection.x()/(MTI_TILEWIDTH*this->iScreenTilesW));
 			this->drawSelectionBox();
 		} else if(this->bTileSelectMode) {
-			this->rTileSelection = QRectF(qFloor(selection.x()/MTI_TILEWIDTH),
-										  qFloor(selection.y()/MTI_TILEWIDTH),
+			this->rTileSelection = QRectF(qFloor(this->pSelection.x()/MTI_TILEWIDTH),
+										  qFloor(this->pSelection.y()/MTI_TILEWIDTH),
 										  0, 0);
 			this->drawTileSelectionBox();
+		} else {
+			this->lItemMove.clear();
+			QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+			foreach(QGraphicsItem *i, selected) {
+				if(i->type()==ObjectItem::Type)
+					this->lItemMove.append(qgraphicsitem_cast<ObjectItem*>(i)->pos());
+				if(i->type()==CheckpointItem::Type)
+					this->lItemMove.append(qgraphicsitem_cast<CheckpointItem*>(i)->pos());
+			}
 		}
 		break;
 	case Qt::RightButton:
 		if(!this->bScreenSelectMode)
-			this->replaceScreenTileset(selection);
+			this->replaceScreenTileset(this->mapToScene(e->pos()));
 		break;
 	}
-
-	QGraphicsView::mousePressEvent(e);
 }
 
 void StageManager::mouseMoveEvent(QMouseEvent *e)
@@ -140,23 +154,16 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 
 	if(!this->bScreenSelectMode) {
 		if(e->buttons()&Qt::LeftButton) {
-			QPointF mousepos = this->mapToScene(e->pos());
 			if(this->bTileSelectMode) {
+				QPointF mousepos = this->mapToScene(e->pos());
 				this->rTileSelection.setWidth(qFloor(qFloor(mousepos.x()/MTI_TILEWIDTH)-this->rTileSelection.x()));
 				this->rTileSelection.setHeight(qFloor(qFloor(mousepos.y()/MTI_TILEWIDTH)-this->rTileSelection.y()));
 				this->drawTileSelectionBox();
 			} else {
-				foreach(ObjectItem *i, this->lObjects) {
-					if(i->isSelected()) {
-						i->setX(mousepos.x());
-						i->setY(mousepos.y());
-					}
-				}
-				foreach(CheckpointItem *i, this->lCheckpoints) {
-					if(i->isSelected()) {
-						i->setX(mousepos.x());
-						i->setY(mousepos.y());
-					}
+				QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+				foreach(QGraphicsItem *i, selected) {
+					if(i->type()==ObjectItem::Type)
+						qgraphicsitem_cast<ObjectItem*>(i)->setPos(i->pos());
 				}
 			}
 		} else if(e->buttons()&Qt::MiddleButton) {
@@ -174,14 +181,29 @@ void StageManager::mouseMoveEvent(QMouseEvent *e)
 
 void StageManager::mouseReleaseEvent(QMouseEvent *e)
 {
-	switch(e->button()) {
-	case Qt::LeftButton:
-		if(!this->bScreenSelectMode && this->bTileSelectMode) this->replaceStageTiles();
-		break;
-	case Qt::RightButton:
-		if(!this->bScreenSelectMode && this->bTileSelectMode)	this->replaceScreenTileset(this->mapToScene(e->pos()));
-	default:
-		QGraphicsView::mousePressEvent(e);
+	QGraphicsView::mouseReleaseEvent(e);
+
+	if(!this->bScreenSelectMode) {
+		switch(e->button()) {
+		case Qt::LeftButton:
+			if(this->bTileSelectMode) {
+				this->replaceStageTiles();
+			} else {
+				QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+				for(int i=0; i<this->lItemMove.count(); i++) {
+					if(selected[i]->pos()==this->lItemMove[i])	continue;
+					if(selected[i]->type()==ObjectItem::Type)
+						this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
+					if(selected[i]->type()==CheckpointItem::Type)
+						this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
+				}
+			}
+			break;
+		case Qt::RightButton:
+			if(this->bTileSelectMode)
+				this->replaceScreenTileset(this->mapToScene(e->pos()));
+			break;
+		}
 	}
 }
 
@@ -191,10 +213,6 @@ void StageManager::mouseDoubleClickEvent(QMouseEvent *e)
 		switch(e->button()) {
 		case Qt::MiddleButton:
 			this->iScale = SM_DEFAULT_ZOOM;
-			this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-			QMatrix matrix;
-			matrix.scale(this->iScale,this->iScale);
-			this->setMatrix(matrix);
 			this->updateStageView();
 			return;
 		}
@@ -211,64 +229,61 @@ void StageManager::wheelEvent(QWheelEvent *e)
 		else
 			this->iScale = ((steps<0)?1:SM_MAX_ZOOM);
 
-		this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-		QMatrix matrix;
-		matrix.scale(this->iScale,this->iScale);
-		this->setMatrix(matrix);
-
 		this->updateStageView();
 	}
 }
 
 void StageManager::keyPressEvent(QKeyEvent *e)
 {
-	switch(e->key()) {
-	case Qt::Key_Left:
-		foreach(ObjectItem *i, this->lObjects)
-			if(i->isSelected())
-				i->moveBy(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
-		foreach(CheckpointItem *i, this->lCheckpoints)
-			if(i->isSelected())
-				i->moveBy(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
-		break;
-	case Qt::Key_Right:
-		foreach(ObjectItem *i, this->lObjects)
-			if(i->isSelected())
-				i->moveBy(1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
-		foreach(CheckpointItem *i, this->lCheckpoints)
-			if(i->isSelected())
-				i->moveBy(1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
-		break;
-	case Qt::Key_Up:
-		foreach(ObjectItem *i, this->lObjects)
-			if(i->isSelected())
-				i->moveBy(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
-		foreach(CheckpointItem *i, this->lCheckpoints)
-			if(i->isSelected())
-				i->moveBy(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
-		break;
-	case Qt::Key_Down:
-		foreach(ObjectItem *i, this->lObjects)
-			if(i->isSelected())
-				i->moveBy(0,1*(e->modifiers()&Qt::ShiftModifier?10:1));
-		foreach(CheckpointItem *i, this->lCheckpoints)
-			if(i->isSelected())
-				i->moveBy(0,1*(e->modifiers()&Qt::ShiftModifier?10:1));
-		break;
-	case Qt::Key_Delete:
-		if(!this->bTileSelectMode) {
-			foreach(ObjectItem *i, this->lObjects) {
-				if(i->isSelected()) {
-					this->lObjects.removeAll(i);
-					delete i;
-				}
+	if(!this->bTileSelectMode) {
+		QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+		switch(e->key()) {
+		case Qt::Key_Left:
+			foreach(QGraphicsItem *i, selected) {
+				QPointF newpos = i->pos()+QPointF(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
+				if(i->type()==ObjectItem::Type)
+					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+				if(i->type()==CheckpointItem::Type)
+					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
-			foreach(CheckpointItem *i, this->lCheckpoints) {
-				if(i->isSelected())
-					i->setEnabled(false);
+			break;
+		case Qt::Key_Right:
+			foreach(QGraphicsItem *i, selected) {
+				QPointF newpos = i->pos()+QPointF(e->modifiers()&Qt::ShiftModifier?10:1,0);
+				if(i->type()==ObjectItem::Type)
+					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+				if(i->type()==CheckpointItem::Type)
+					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
+			break;
+		case Qt::Key_Up:
+			foreach(QGraphicsItem *i, selected) {
+				QPointF newpos = i->pos()+QPointF(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
+				if(i->type()==ObjectItem::Type)
+					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+				if(i->type()==CheckpointItem::Type)
+					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+			}
+			break;
+		case Qt::Key_Down:
+			foreach(QGraphicsItem *i, selected) {
+				QPointF newpos = i->pos()+QPointF(0,e->modifiers()&Qt::ShiftModifier?10:1);
+				if(i->type()==ObjectItem::Type)
+					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+				if(i->type()==CheckpointItem::Type)
+					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+			}
+			break;
+		case Qt::Key_Delete:
+			foreach(QGraphicsItem *i, selected) {
+				if(i->type()==ObjectItem::Type)
+					this->undoStack->push(new DeleteObject(qgraphicsitem_cast<ObjectItem*>(i)));
+				if(i->type()==CheckpointItem::Type)
+					this->undoStack->push(new DeleteCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i)));
+			}
+			break;
 		}
-	default:
+	} else {
 		QGraphicsView::keyPressEvent(e);
 	}
 }
@@ -515,14 +530,16 @@ void StageManager::clearAllMetatileData()
 		this->vScreenProperties[i].ScrollBlockRight = false;
 	}
 
+	this->clearAllObjectData();
+	this->clearAllCheckpointData();
+
 	this->updateStageView();
 }
 
 void StageManager::clearAllObjectData()
 {
 	foreach(ObjectItem *i, this->lObjects)
-		delete i;
-	this->lObjects.clear();
+		i->setEnabled(false);
 }
 
 void StageManager::clearAllCheckpointData()
@@ -571,11 +588,6 @@ void StageManager::getUpdatedTile(MetatileItem *mtnew)
 			}
 		}
 	}
-}
-
-void StageManager::getReplacementTile(MetatileItem *mt)
-{
-	emit(requestSelectedMetatile(this->vScreens[mt->screen()][mt->screenIndex()]));
 }
 
 void StageManager::getSelectedTileset(quint8 ts)
@@ -747,8 +759,8 @@ QString StageManager::createObjectsASMData(QString labelprefix)
 	QString objx = asmlabel+QString("_object_posx:\n\t.byte ");
 	QString objy = asmlabel+QString("_object_posy:\n\t.byte ");
 
-	for(int c=0; c<SM_OBJECT_LIMIT; c++) {
-		if(c<this->lObjects.count()) {
+	for(int c=0; c<lObjects.count(); c++) {
+		if(this->lObjects[c]->isEnabled()) {
 			objid += QString("$%1").arg(this->lObjects[c]->id(),2,16,QChar('0')).toUpper().append(",");
 			objscreen += QString("$%1").arg(this->lObjects[c]->screen(),2,16,QChar('0')).toUpper().append(",");
 			objx += QString("$%1").arg(this->lObjects[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
@@ -878,8 +890,7 @@ void StageManager::openCheckpointsFile(QString filename)
 		return;
 	}
 
-	foreach(CheckpointItem *i, this->lCheckpoints)
-		i->setEnabled(false);
+	this->clearAllCheckpointData();
 
 	QVector<QByteArray> inputbytes;
 	bool screensfound = false;
@@ -938,9 +949,7 @@ void StageManager::openObjectsFile(QString filename)
 		return;
 	}
 
-	foreach(ObjectItem *i, this->lObjects)
-		delete i;
-	this->lObjects.clear();
+	this->clearAllObjectData();
 
 	QVector<QByteArray> inputbytes;
 	bool idsfound = false;
@@ -1080,13 +1089,28 @@ void StageManager::importObjectsBinaryData(QVector<QByteArray> bindata)
 		x = quint8(bindata[2].at(j));
 		y = quint8(bindata[3].at(j));
 		if(id!=0 || screen!=0 || x!=0 || y!=0) {
-			ObjectItem *i = new ObjectItem(id);
-			i->setX(((screen%8)*256)+x+0.5f);
-			i->setY((qFloor(screen/8)*192)+y+0.5f);
-			i->setVisible(!this->bTileSelectMode);
-			this->gsMetatiles->addItem(i);
-			this->lObjects.append(i);
+			this->lObjects[j]->setId(id);
+			this->lObjects[j]->setVisible(!this->bTileSelectMode);
+			qreal xcalc = ((screen%8)*256)+x;
+			qreal ycalc = (qFloor(screen/8)*192)+y;
+			this->lObjects[j]->setX(xcalc);
+			this->lObjects[j]->setY(ycalc);
+			this->lObjects[j]->setEnabled(true);
+		} else {
+			this->lObjects[j]->setEnabled(false);
 		}
+	}
+}
+
+
+
+void StageManager::getChangeTileCommand(ChangeStageTile *c)
+{
+	if(this->bScreenSelectMode) {
+		MetatileItem *i = c->tile();
+		this->vScreens[i->screen()][i->screenIndex()]->copy(i);
+	} else {
+		this->undoStack->push(c);
 	}
 }
 
@@ -1094,6 +1118,11 @@ void StageManager::importObjectsBinaryData(QVector<QByteArray> bindata)
 
 void StageManager::updateStageView()
 {
+	this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	QMatrix matrix;
+	matrix.scale(this->iScale,this->iScale);
+	this->setMatrix(matrix);
+
 	this->setSceneRect(0, 0, (MTI_TILEWIDTH*this->iScreenTilesW)*this->iScreensW, (MTI_TILEWIDTH*this->iScreenTilesH)*this->iScreensH);
 	this->drawGridLines();
 	this->drawSelectionBox();

@@ -1378,9 +1378,6 @@
     <addaction name="actionOpenCHR"/>
     <addaction name="actionOpenPalette"/>
     <addaction name="separator"/>
-    <addaction name="actionClearObjectList"/>
-    <addaction name="actionClearCollisionTypes"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -1391,7 +1388,18 @@
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionClearObjectList"/>
+    <addaction name="actionClearCollisionTypes"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionSavePalette">
@@ -1401,22 +1409,28 @@
   </action>
   <action name="actionOpenPalette">
    <property name="text">
-    <string>Open &amp;Palette</string>
+    <string>Open Palette</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>E&amp;xit</string>
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionOpenCHR">
    <property name="text">
-    <string>Open &amp;CHR</string>
+    <string>Open CHR</string>
    </property>
   </action>
   <action name="actionSaveStageFileASM">
    <property name="text">
-    <string>&amp;Save Stage File</string>
+    <string>Save Stage File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSaveStageFileBinary">
@@ -1432,7 +1446,10 @@
   </action>
   <action name="actionOpenStageFile">
    <property name="text">
-    <string>&amp;Open Stage File</string>
+    <string>Open Stage File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionLoadMetaspriteBankBinary">
@@ -1442,7 +1459,10 @@
   </action>
   <action name="actionNewProject">
    <property name="text">
-    <string>&amp;New Project</string>
+    <string>New Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionOpenAnimation">
@@ -1468,7 +1488,7 @@
   </action>
   <action name="actionSaveProject">
    <property name="text">
-    <string>&amp;Save Project</string>
+    <string>Save Project</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -1476,7 +1496,7 @@
   </action>
   <action name="actionOpenProject">
    <property name="text">
-    <string>&amp;Open Project</string>
+    <string>Open Project</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -1484,12 +1504,12 @@
   </action>
   <action name="actionWikiPage">
    <property name="text">
-    <string>&amp;Wiki Page</string>
+    <string>Wiki Page</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>&amp;About...</string>
+    <string>About...</string>
    </property>
   </action>
   <action name="actionClearObjectList">
@@ -1500,6 +1520,22 @@
   <action name="actionClearCollisionTypes">
    <property name="text">
     <string>Clear Collision Types</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>
@@ -1586,6 +1622,7 @@
     <signal>sendSelectedTileset(quint8)</signal>
     <signal>sendSelectionProperties(int,bool,bool)</signal>
     <signal>sendMetatileProperties(int,int,bool,bool)</signal>
+    <signal>changeStageTile(ChangeStageTile*)</signal>
     <slot>updateStageMetatile(MetatileItem*)</slot>
     <slot>setNewTileColours(PaletteVector,quint8,bool)</slot>
     <slot>deleteSelectedTiles()</slot>
@@ -1626,6 +1663,7 @@
     <signal>updateTileset(quint8,quint8)</signal>
     <signal>updateStageData(ScreenList)</signal>
     <signal>objectDropped(quint8)</signal>
+    <signal>sendMetatileToSelector(MetatileItem*)</signal>
     <slot>toggleShowTileGrid(bool)</slot>
     <slot>toggleShowScreenGrid(bool)</slot>
     <slot>setNewGlobalPalette(PaletteVector)</slot>
@@ -1647,6 +1685,7 @@
     <slot>toggleShowObjects(bool)</slot>
     <slot>setToolMode(int)</slot>
     <slot>toggleShowCheckpoints(bool)</slot>
+    <slot>getChangeTileCommand(ChangeStageTile*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -2575,8 +2614,8 @@
    <slot>setPropertySong(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>231</x>
-     <y>630</y>
+     <x>195</x>
+     <y>656</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2591,7 +2630,7 @@
    <slot>setPropertyScrollBlockLeft(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>177</x>
+     <x>400</x>
      <y>654</y>
     </hint>
     <hint type="destinationlabel">
@@ -2607,7 +2646,7 @@
    <slot>setPropertyScrollBlockRight(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>231</x>
+     <x>454</x>
      <y>654</y>
     </hint>
     <hint type="destinationlabel">
@@ -2693,22 +2732,6 @@
     <hint type="destinationlabel">
      <x>1112</x>
      <y>685</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gvStage</sender>
-   <signal>requestSelectedMetatile(MetatileItem*)</signal>
-   <receiver>gvScreenSelector</receiver>
-   <slot>getReplacementTile(MetatileItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>421</x>
-     <y>370</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>289</x>
-     <y>342</y>
     </hint>
    </hints>
   </connection>
@@ -2936,6 +2959,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>gvMetatileSelector</sender>
+   <signal>changeStageTile(ChangeStageTile*)</signal>
+   <receiver>gvStage</receiver>
+   <slot>getChangeTileCommand(ChangeStageTile*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>964</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>419</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gvMetatileSelector</sender>
+   <signal>changeStageTile(ChangeStageTile*)</signal>
+   <receiver>gvScreenSelector</receiver>
+   <slot>getChangeTileCommand(ChangeStageTile*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>964</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>356</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUndo</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>undo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRedo</sender>
+   <signal>triggered()</signal>
+   <receiver>NESStageTool</receiver>
+   <slot>redo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>chrFileOpened(QString)</signal>
@@ -2970,5 +3057,7 @@
   <slot>clearObjectList()</slot>
   <slot>clearCollisionTypes()</slot>
   <slot>createNewObjectItem(quint8)</slot>
+  <slot>undo()</slot>
+  <slot>redo()</slot>
  </slots>
 </ui>
