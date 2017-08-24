@@ -37,6 +37,8 @@ public:
 	explicit NESStageTool(QWidget *parent = 0);
 	~NESStageTool();
 
+	enum{EditorStage,EditorMetatiles,EditorProperties,EditorTilesets};
+
 signals:
 	void chrFileOpened(QString);
 	void metaspriteFileOpened(QString);
@@ -86,6 +88,9 @@ private slots:
 
 	void setStageLabelPrefix(QString);
 	void setNewPaletteFile(QString);
+
+	void undo();
+	void redo();
 
 protected:
 	void keyPressEvent(QKeyEvent*);

@@ -266,11 +266,13 @@ void MetatileManager::getEditorMetatile(MetatileItem *t)
 
 void MetatileManager::getSelectedStageTile(MetatileItem *mtold)
 {
-	MetatileItem *copyfrom = this->mtlMetatiles[this->iSelectedTile];
-	mtold->setMetatileIndex(copyfrom->metatileIndex());
-	mtold->setPalette(copyfrom->palette());
-	mtold->setTileIndices(copyfrom->tileIndices());
-	this->updateScreen();
+	ChangeStageTile *change = new ChangeStageTile(mtold,this->mtlMetatiles[this->iSelectedTile]);
+	emit(changeStageTile(change));
+//	MetatileItem *copyfrom = this->mtlMetatiles[this->iSelectedTile];
+//	mtold->setMetatileIndex(copyfrom->metatileIndex());
+//	mtold->setPalette(copyfrom->palette());
+//	mtold->setTileIndices(copyfrom->tileIndices());
+//	this->updateScreen();
 }
 
 void MetatileManager::updateStageMetatile(MetatileItem *mtold)

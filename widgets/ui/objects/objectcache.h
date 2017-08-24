@@ -1,5 +1,5 @@
-#ifndef TILESETCACHE_H
-#define TILESETCACHE_H
+#ifndef OBJECTCACHE_H
+#define OBJECTCACHE_H
 
 #include <QString>
 #include <QPixmap>
@@ -20,4 +20,4 @@ private:
 	static QHash<int,Object> hObjectList;
 };
 
-#endif // TILESETCACHE_H
+#endif // OBJECTCACHE_H

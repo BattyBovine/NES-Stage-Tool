@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <QGraphicsView>
-#include <QGraphicsSvgItem>
+#include <QGraphicsItem>
 #include <QScrollBar>
+#include <QUndoStack>
 
 #include <QDragMoveEvent>
 #include <QDragEnterEvent>
@@ -24,6 +25,8 @@
 #include "metatileitem.h"
 #include "objectitem.h"
 #include "checkpointitem.h"
+
+#include "undocommands.h"
 
 
 #define SM_SCREEN_TILES_W_DEFAULT 16
@@ -94,6 +97,10 @@ signals:
 	void sendSelectionProperties(int,bool,bool);
 
 public slots:
+	void undo(){this->undoStack->undo();}
+	void redo(){this->undoStack->redo();}
+	void clearUndoHistory(){this->undoStack->clear();}
+
 	void setScale(qreal s){this->iScale=s;}
 	void setSelectionMode(bool);
 	void setScreenProperties(int,int,bool,bool);
@@ -110,7 +117,6 @@ public slots:
 
 	void getNewTile(MetatileItem*, MetatileItem*);
 	void getUpdatedTile(MetatileItem*);
-	void getReplacementTile(MetatileItem*);
 	void getSelectedTileset(quint8);
 	void getNewAnimationFrame(int);
 
@@ -130,6 +136,8 @@ public slots:
 	QString createScreenPropertiesASMData(QString);
 	QString createCheckpointsASMData(QString);
 	QString createObjectsASMData(QString);
+
+	void getChangeTileCommand(ChangeStageTile*);
 
 	void updateStageView();
 
@@ -161,6 +169,7 @@ private:
 	quint8 iScreenTilesW, iScreenTilesH;
 	quint8 iSelectedScreen;
 	QPointF pSceneTranslation;
+	QPointF pSelection;
 	QRectF rTileSelection;
 
 	bool bShowObjects, bTileSelectMode, bScreenSelectMode, bShowScreenGrid, bShowTileGrid;
@@ -169,11 +178,14 @@ private:
 	QGraphicsScene *gsMetatiles;
 	QGraphicsItemGroup *groupMetatiles;
 	ObjectList lObjects;
-	QList<CheckpointItem*> lCheckpoints;
+	CheckpointList lCheckpoints;
 	QList<QGraphicsLineItem*> lGrid;
 	QGraphicsRectItem *griSelectionBox;
 	QGraphicsRectItem *griTileSelector;
 	quint8 iSelectedTileset;
+	QList<QPointF> lItemMove;
+
+	QUndoStack *undoStack;
 };
 
 #endif // STAGEMANAGER_H

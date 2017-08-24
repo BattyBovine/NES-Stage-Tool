@@ -25,7 +25,6 @@ public:
 	void copy(CheckpointItem*);
 
 	bool isNull(){return this->svg->isValid();}
-	bool isValid(){return (this->screen()>=0 && this->screenX()>=0 && this->screenY()>=0);}
 
 	quint8 id(){return this->iId;}
 	void setId(quint8 i){this->iId=i;}

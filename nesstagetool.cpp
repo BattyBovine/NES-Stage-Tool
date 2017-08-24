@@ -151,9 +151,7 @@ void NESStageTool::newProject()
 		ui->gvStage->clearAllMetatileData();
 		ui->gvScreenSelector->clearAllMetatileData();
 		ui->gvMetatileEditor->clearAllMetatileData();
-        ui->gvMetatileSelectorProperties->clearAllMetatileData();
-		ui->gvStage->clearAllObjectData();
-		ui->gvStage->clearAllCheckpointData();
+		ui->gvMetatileSelectorProperties->clearAllMetatileData();
 		ui->gvPaletteManager->clearAllPaletteData();
 		ui->gvGlobalTileset->clearAllTilesetData();
 		ui->spinSong->setValue(0);
@@ -351,6 +349,7 @@ void NESStageTool::openStage(QString path)
 {
     QString filename = path.isEmpty()?QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text().replace("&",""), "", tr("All files (*.*)")):path;
 	if(filename.isEmpty())  return;
+	ui->gvStage->clearUndoHistory();
 	ui->gvPaletteManager->openPaletteFile(filename);
 	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
@@ -516,4 +515,18 @@ void NESStageTool::setNewPaletteFile(QString pal)
 {
 	ui->gvPaletteManager->drawFullPaletteColours(pal);
     ui->gvGlobalTileset->loadCHRData();
+}
+
+
+
+void NESStageTool::undo()
+{
+	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+		ui->gvStage->undo();
+}
+
+void NESStageTool::redo()
+{
+	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+		ui->gvStage->redo();
 }
