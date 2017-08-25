@@ -92,9 +92,6 @@ private slots:
 	void undo();
 	void redo();
 
-protected:
-	void keyPressEvent(QKeyEvent*);
-
 private:
 	Ui::NESStageTool *ui;
 

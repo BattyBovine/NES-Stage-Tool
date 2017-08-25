@@ -63,83 +63,6 @@ NESStageTool::~NESStageTool()
 
 
 
-void NESStageTool::keyPressEvent(QKeyEvent *e)
-{
-//	if(ui->tabWidget->currentWidget()==ui->tabStage) {
-//		if(e->modifiers()&Qt::ControlModifier) {
-//			switch(e->key()) {
-//			case Qt::Key_A:
-//				(e->modifiers()&Qt::ShiftModifier)?ui->gvStage->deselectAllSprites():ui->gvStage->selectAllSprites();
-//				break;
-//			case Qt::Key_X:
-//			case Qt::Key_C:
-//				ui->gvStage->copySpritesToClipboard((e->key()==Qt::Key_X));
-//				break;
-//			case Qt::Key_V:
-//				ui->gvStage->pasteSpritesFromClipboard();
-//				break;
-//			}
-//		} else {
-//			switch(e->key()) {
-//			case Qt::Key_Left:
-//			case Qt::Key_Right:
-//				ui->gvStage->moveSelectedX((e->key()==Qt::Key_Right),(e->modifiers()&Qt::ShiftModifier));
-//				break;
-//			case Qt::Key_Up:
-//			case Qt::Key_Down:
-//				ui->gvStage->moveSelectedX((e->key()==Qt::Key_Down),(e->modifiers()&Qt::ShiftModifier));
-//				break;
-//			case Qt::Key_PageUp:
-//				ui->gvStage->moveSelectedUp();
-//				break;
-//			case Qt::Key_PageDown:
-//				ui->gvStage->moveSelectedDown();
-//				break;
-//			case Qt::Key_Delete:
-//				ui->gvStage->deleteSelectedTiles();
-//				break;
-//			case Qt::Key_1:
-//			case Qt::Key_2:
-//			case Qt::Key_3:
-//			case Qt::Key_4:
-//				ui->gvStage->changePalette(e->key()-Qt::Key_1);
-//			}
-//		}
-//		return;
-//	} else if(ui->tabWidget->currentWidget()==ui->tabMetatiles) {
-//		if(e->modifiers()&Qt::ControlModifier) {
-//			switch(e->key()) {
-//			default:
-//				break;
-//			}
-//		} else {
-//			switch(e->key()) {
-//			case Qt::Key_Comma:
-//			case Qt::Key_Period:
-//			case Qt::Key_BracketLeft:
-//			case Qt::Key_BracketRight:
-//				break;
-//            case Qt::Key_Left:
-//                ui->spinDelay->setValue(ui->spinDelay->value()-1);
-//                break;
-//            case Qt::Key_Right:
-//                ui->spinDelay->setValue(ui->spinDelay->value()+1);
-//                break;
-//            case Qt::Key_PageUp:
-//                ui->spinDelay->setValue(ui->spinDelay->value()+10);
-//                break;
-//            case Qt::Key_PageDown:
-//                ui->spinDelay->setValue(ui->spinDelay->value()-10);
-//                break;
-//			}
-//		}
-//	}
-
-	QMainWindow::keyPressEvent(e);
-}
-
-
-
 void NESStageTool::newProject()
 {
 	int retval = QMessageBox::warning(this,"Clear current data?",
@@ -167,6 +90,7 @@ void NESStageTool::newProject()
 		ui->spinBank6->setValue(0);
 		ui->spinBank7->setValue(0);
 		ui->lineASMLabel->setText("");
+		ui->gvStage->clearUndoHistory();
 		break;
 	}
 }
@@ -349,7 +273,6 @@ void NESStageTool::openStage(QString path)
 {
     QString filename = path.isEmpty()?QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text().replace("&",""), "", tr("All files (*.*)")):path;
 	if(filename.isEmpty())  return;
-	ui->gvStage->clearUndoHistory();
 	ui->gvPaletteManager->openPaletteFile(filename);
 	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
@@ -358,6 +281,7 @@ void NESStageTool::openStage(QString path)
 	ui->gvStage->openObjectsFile(filename);
 	ui->gvScreenSelector->openStageFile(filename);
 	ui->gvScreenSelector->openScreenPropertiesFile(filename);
+	ui->gvStage->clearUndoHistory();
 }
 
 void NESStageTool::saveASMStage(QString path)

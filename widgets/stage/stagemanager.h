@@ -97,9 +97,9 @@ signals:
 	void sendSelectionProperties(int,bool,bool);
 
 public slots:
-	void undo(){this->undoStack->undo();}
-	void redo(){this->undoStack->redo();}
-	void clearUndoHistory(){this->undoStack->clear();}
+	void undo();
+	void redo();
+	void clearUndoHistory();
 
 	void setScale(qreal s){this->iScale=s;}
 	void setSelectionMode(bool);
@@ -185,7 +185,8 @@ private:
 	quint8 iSelectedTileset;
 	QList<QPointF> lItemMove;
 
-	QUndoStack *undoStack;
+	QUndoStack *undoTiles;
+	QUndoStack *undoObjects;
 };
 
 #endif // STAGEMANAGER_H

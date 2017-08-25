@@ -43,7 +43,8 @@ StageManager::StageManager(QWidget *parent) : QGraphicsView(parent)
 	this->pSceneTranslation = QPoint(-1,-1);
 	this->pSelection = QPoint(-1,-1);
 
-	this->undoStack = new QUndoStack(this);
+	this->undoTiles = new QUndoStack(this);
+	this->undoObjects = new QUndoStack(this);
 
 	this->populateBlankTiles();
 
@@ -85,8 +86,7 @@ void StageManager::dropEvent(QDropEvent *e)
 			foreach(ObjectItem *i, this->lObjects) {
 				if(!i->isEnabled()) {
 					i->setVisible(!this->bTileSelectMode);
-					AddObject *add = new AddObject(i,id,drop);
-					this->undoStack->push(add);
+					this->undoObjects->push(new AddObject(i,id,drop));
 					return;
 				}
 			}
@@ -101,8 +101,7 @@ void StageManager::dropEvent(QDropEvent *e)
 			this->lCheckpoints[id]->setVisible(!this->bTileSelectMode);
 			QPointF drop = this->mapToScene(e->pos());
 			QPointF oldpos(this->lCheckpoints[id]->x(),this->lCheckpoints[id]->y());
-			MoveCheckpoint *move = new MoveCheckpoint(this->lCheckpoints[id],oldpos,drop);
-			this->undoStack->push(move);
+			this->undoObjects->push(new MoveCheckpoint(this->lCheckpoints[id],oldpos,drop));
 		}
 	}
 }
@@ -193,9 +192,9 @@ void StageManager::mouseReleaseEvent(QMouseEvent *e)
 				for(int i=0; i<this->lItemMove.count(); i++) {
 					if(selected[i]->pos()==this->lItemMove[i])	continue;
 					if(selected[i]->type()==ObjectItem::Type)
-						this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
+						this->undoObjects->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
 					if(selected[i]->type()==CheckpointItem::Type)
-						this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
+						this->undoObjects->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(selected[i]),this->lItemMove[i],selected[i]->pos()));
 				}
 			}
 			break;
@@ -242,50 +241,74 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 			foreach(QGraphicsItem *i, selected) {
 				QPointF newpos = i->pos()+QPointF(-1*(e->modifiers()&Qt::ShiftModifier?10:1),0);
 				if(i->type()==ObjectItem::Type)
-					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
 				if(i->type()==CheckpointItem::Type)
-					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
 			break;
 		case Qt::Key_Right:
 			foreach(QGraphicsItem *i, selected) {
 				QPointF newpos = i->pos()+QPointF(e->modifiers()&Qt::ShiftModifier?10:1,0);
 				if(i->type()==ObjectItem::Type)
-					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
 				if(i->type()==CheckpointItem::Type)
-					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
 			break;
 		case Qt::Key_Up:
 			foreach(QGraphicsItem *i, selected) {
 				QPointF newpos = i->pos()+QPointF(0,-1*(e->modifiers()&Qt::ShiftModifier?10:1));
 				if(i->type()==ObjectItem::Type)
-					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
 				if(i->type()==CheckpointItem::Type)
-					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
 			break;
 		case Qt::Key_Down:
 			foreach(QGraphicsItem *i, selected) {
 				QPointF newpos = i->pos()+QPointF(0,e->modifiers()&Qt::ShiftModifier?10:1);
 				if(i->type()==ObjectItem::Type)
-					this->undoStack->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveObject(qgraphicsitem_cast<ObjectItem*>(i),i->pos(),newpos));
 				if(i->type()==CheckpointItem::Type)
-					this->undoStack->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
+					this->undoObjects->push(new MoveCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i),i->pos(),newpos));
 			}
 			break;
 		case Qt::Key_Delete:
 			foreach(QGraphicsItem *i, selected) {
 				if(i->type()==ObjectItem::Type)
-					this->undoStack->push(new DeleteObject(qgraphicsitem_cast<ObjectItem*>(i)));
+					this->undoObjects->push(new DeleteObject(qgraphicsitem_cast<ObjectItem*>(i)));
 				if(i->type()==CheckpointItem::Type)
-					this->undoStack->push(new DeleteCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i)));
+					this->undoObjects->push(new DeleteCheckpoint(qgraphicsitem_cast<CheckpointItem*>(i)));
 			}
 			break;
 		}
 	} else {
 		QGraphicsView::keyPressEvent(e);
 	}
+}
+
+
+
+void StageManager::undo()
+{
+	if(this->bTileSelectMode)
+		this->undoTiles->undo();
+	else
+		this->undoObjects->undo();
+}
+
+void StageManager::redo()
+{
+	if(this->bTileSelectMode)
+		this->undoTiles->redo();
+	else
+		this->undoObjects->redo();
+}
+
+void StageManager::clearUndoHistory()
+{
+	this->undoTiles->clear();
+	this->undoObjects->clear();
 }
 
 
@@ -1110,7 +1133,7 @@ void StageManager::getChangeTileCommand(ChangeStageTile *c)
 		MetatileItem *i = c->tile();
 		this->vScreens[i->screen()][i->screenIndex()]->copy(i);
 	} else {
-		this->undoStack->push(c);
+		this->undoTiles->push(c);
 	}
 }
 
