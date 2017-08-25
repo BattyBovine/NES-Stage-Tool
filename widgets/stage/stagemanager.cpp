@@ -776,18 +776,31 @@ QString StageManager::createCheckpointsASMData(QString labelprefix)
 
 QString StageManager::createObjectsASMData(QString labelprefix)
 {
+	ObjectList xsorted;
+	for(int x=0; x<256; x++) {
+		for(int y=0; y<this->lObjects.count(); y++)
+			if(this->lObjects[y]->screenX()==x)
+				xsorted.append(this->lObjects[y]);
+	}
+	ObjectList screensorted;
+	for(int x=0; x<(this->iScreensW*this->iScreensH); x++) {
+		for(int y=0; y<this->lObjects.count(); y++)
+			if(xsorted[y]->screen()==x)
+				screensorted.append(xsorted[y]);
+	}
+
 	QString asmlabel = labelprefix.isEmpty()?"emptylabel":labelprefix;
 	QString objid = asmlabel+QString("_object_id:\n\t.byte ");
 	QString objscreen = asmlabel+QString("_object_screen:\n\t.byte ");
 	QString objx = asmlabel+QString("_object_posx:\n\t.byte ");
 	QString objy = asmlabel+QString("_object_posy:\n\t.byte ");
 
-	for(int c=0; c<lObjects.count(); c++) {
-		if(this->lObjects[c]->isEnabled()) {
-			objid += QString("$%1").arg(this->lObjects[c]->id(),2,16,QChar('0')).toUpper().append(",");
-			objscreen += QString("$%1").arg(this->lObjects[c]->screen(),2,16,QChar('0')).toUpper().append(",");
-			objx += QString("$%1").arg(this->lObjects[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
-			objy += QString("$%1").arg(this->lObjects[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
+	for(int c=0; c<SM_OBJECT_LIMIT; c++) {
+		if(c<screensorted.count()) {
+			objid += QString("$%1").arg(screensorted[c]->id(),2,16,QChar('0')).toUpper().append(",");
+			objscreen += QString("$%1").arg(screensorted[c]->screen(),2,16,QChar('0')).toUpper().append(",");
+			objx += QString("$%1").arg(screensorted[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
+			objy += QString("$%1").arg(screensorted[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
 		} else {
 			objid += QString("$00,");
 			objscreen += QString("$00,");
