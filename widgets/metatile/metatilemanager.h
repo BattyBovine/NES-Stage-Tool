@@ -82,6 +82,10 @@ signals:
 	void changeStageTile(ChangeStageTile*);
 
 public slots:
+	void undo();
+	void redo();
+	void clearUndoHistory();
+
 	void setScale(qreal s){this->iScale=s;}
 	void setSelectionMode(bool);
 	void clearAllMetatileData();
@@ -147,6 +151,8 @@ private:
 	QGraphicsItemGroup *groupMetatiles;
 	QList<QGraphicsLineItem*> lGrid;
 	MetatileList mtlMetatiles;
+
+	QUndoStack *undoMetatiles;
 };
 
 #endif // METATILEMANAGER_H

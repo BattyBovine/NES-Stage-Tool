@@ -1,6 +1,46 @@
 #include "undocommands.h"
 
 
+ChangeMetatile::ChangeMetatile(MetatileItem *mt, quint8 subtile, quint8 tile, quint8 pal, QUndoCommand *parent) : QUndoCommand(parent)
+{
+	this->mtiEditPtr = mt;
+	this->iSubtileIndex = subtile;
+	this->iOldTile = this->mtiEditPtr->tileIndex(this->iSubtileIndex);
+	this->iOldPalette = this->mtiEditPtr->palette();
+	this->iNewTile = tile;
+	this->iNewPalette = pal;
+	this->bTileChanged = true;
+	this->setText(QObject::tr("Replace tile %1 subtile %2 palette %3 with subtile %4 palette %5")
+				  .arg(mt->metatileIndex())
+				  .arg(this->iOldTile).arg(this->iOldPalette)
+				  .arg(this->iNewTile).arg(this->iNewPalette));
+}
+ChangeMetatile::ChangeMetatile(MetatileItem *mt, quint8 pal, QUndoCommand *parent) : QUndoCommand(parent)
+{
+	this->mtiEditPtr = mt;
+	this->iOldPalette = this->mtiEditPtr->palette();
+	this->iNewPalette = pal;
+	this->bTileChanged = false;
+	this->setText(QObject::tr("Replace tile %1 palette %2 with palette %3")
+				  .arg(mt->metatileIndex())
+				  .arg(this->iOldPalette)
+				  .arg(this->iNewPalette));
+}
+void ChangeMetatile::undo()
+{
+	if(this->bTileChanged)
+		this->mtiEditPtr->setTileIndex(this->iSubtileIndex,this->iOldTile);
+	this->mtiEditPtr->setPalette(this->iOldPalette);
+}
+void ChangeMetatile::redo()
+{
+	if(this->bTileChanged)
+		this->mtiEditPtr->setTileIndex(this->iSubtileIndex,this->iNewTile);
+	this->mtiEditPtr->setPalette(this->iNewPalette);
+}
+
+
+
 ChangeStageTile::ChangeStageTile(MetatileItem *tile, MetatileItem *replacement, QUndoCommand *parent) : QUndoCommand(parent)
 {
 	this->mtiEditPtr = tile;

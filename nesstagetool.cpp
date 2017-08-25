@@ -91,6 +91,7 @@ void NESStageTool::newProject()
 		ui->spinBank7->setValue(0);
 		ui->lineASMLabel->setText("");
 		ui->gvStage->clearUndoHistory();
+		ui->gvMetatileEditor->clearUndoHistory();
 		break;
 	}
 }
@@ -282,6 +283,7 @@ void NESStageTool::openStage(QString path)
 	ui->gvScreenSelector->openStageFile(filename);
 	ui->gvScreenSelector->openScreenPropertiesFile(filename);
 	ui->gvStage->clearUndoHistory();
+	ui->gvMetatileEditor->clearUndoHistory();
 }
 
 void NESStageTool::saveASMStage(QString path)
@@ -445,12 +447,24 @@ void NESStageTool::setNewPaletteFile(QString pal)
 
 void NESStageTool::undo()
 {
-	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+	switch(ui->tabEditors->currentIndex()) {
+	case NESStageTool::EditorStage:
 		ui->gvStage->undo();
+		break;
+	case NESStageTool::EditorMetatiles:
+		ui->gvMetatileEditor->undo();
+		break;
+	}
 }
 
 void NESStageTool::redo()
 {
-	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+	switch(ui->tabEditors->currentIndex()) {
+	case NESStageTool::EditorStage:
 		ui->gvStage->redo();
+		break;
+	case NESStageTool::EditorMetatiles:
+		ui->gvMetatileEditor->redo();
+		break;
+	}
 }

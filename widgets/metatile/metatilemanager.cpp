@@ -14,6 +14,8 @@ MetatileManager::MetatileManager(QWidget *parent) : QGraphicsView(parent)
 	this->groupMetatiles = new QGraphicsItemGroup();
 	this->gsMetatiles->addItem(this->groupMetatiles);
 
+	this->undoMetatiles = new QUndoStack(this);
+
 	this->setSceneRect(0, 0, MTM_CANVAS_SIZE, MTM_CANVAS_SIZE);
 
 	this->populateBlankTiles();
@@ -97,25 +99,22 @@ void MetatileManager::wheelEvent(QWheelEvent *e)
 	}
 }
 
-//void MetatileManager::keyPressEvent(QKeyEvent *e)
-//{
-//	switch(e->key()) {
-//	case Qt::Key_1:
-//		this->setTilePalette(p,0);
-//		break;
-//	case Qt::Key_2:
-//		this->setTilePalette(p,1);
-//		break;
-//	case Qt::Key_3:
-//		this->setTilePalette(p,2);
-//		break;
-//	case Qt::Key_4:
-//		this->setTilePalette(p,3);
-//		break;
-//	default:
-//		QGraphicsView::keyPressEvent(e);
-//	}
-//}
+
+
+void MetatileManager::undo()
+{
+	this->undoMetatiles->undo();
+}
+
+void MetatileManager::redo()
+{
+	this->undoMetatiles->redo();
+}
+
+void MetatileManager::clearUndoHistory()
+{
+	this->undoMetatiles->clear();
+}
 
 
 
@@ -233,8 +232,7 @@ void MetatileManager::addNewSubtile(QPointF p) {
 	int subtiley = qFloor((qFloor(p.y()/this->iScale)%MTI_TILEWIDTH)/MTI_SUBTILEWIDTH);
 	quint8 subtileindex = subtiley*(MTI_TILEWIDTH/MTI_SUBTILEWIDTH)+subtilex;
 
-	this->mtlMetatiles[index]->setTileIndex(subtileindex,this->iSelectedSubtile);
-	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette);
+	this->undoMetatiles->push(new ChangeMetatile(this->mtlMetatiles[index],subtileindex,this->iSelectedSubtile,this->iSelectedPalette));
 
 	emit(sendMetatileToSelector(this->mtlMetatiles[index]));
 	emit(metatileUpdated(this->mtlMetatiles[index]));
@@ -249,7 +247,7 @@ void MetatileManager::applySelectedPalette(QPointF p) {
     int tiley = qFloor(p.y()/this->iScale)/MTI_TILEWIDTH;
 	int index = (tiley*MTM_METATILES_W)+tilex;
 
-	this->mtlMetatiles[index]->setPalette(this->iSelectedPalette%PM_SUBPALETTES_MAX);
+	this->undoMetatiles->push(new ChangeMetatile(this->mtlMetatiles[index],this->iSelectedPalette%PM_SUBPALETTES_MAX));
 
 	emit(sendMetatileToSelector(this->mtlMetatiles[index]));
 	emit(metatileUpdated(this->mtlMetatiles[index]));
@@ -268,11 +266,6 @@ void MetatileManager::getSelectedStageTile(MetatileItem *mtold)
 {
 	ChangeStageTile *change = new ChangeStageTile(mtold,this->mtlMetatiles[this->iSelectedTile]);
 	emit(changeStageTile(change));
-//	MetatileItem *copyfrom = this->mtlMetatiles[this->iSelectedTile];
-//	mtold->setMetatileIndex(copyfrom->metatileIndex());
-//	mtold->setPalette(copyfrom->palette());
-//	mtold->setTileIndices(copyfrom->tileIndices());
-//	this->updateScreen();
 }
 
 void MetatileManager::updateStageMetatile(MetatileItem *mtold)

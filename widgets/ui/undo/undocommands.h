@@ -9,6 +9,23 @@
 #include "checkpointitem.h"
 
 
+// Metatile modification commands
+class ChangeMetatile : public QUndoCommand
+{
+public:
+	ChangeMetatile(MetatileItem*,quint8,quint8,quint8,QUndoCommand *parent = NULL);
+	ChangeMetatile(MetatileItem*,quint8,QUndoCommand *parent = NULL);
+	void undo();
+	void redo();
+	MetatileItem *tile(){return this->mtiEditPtr;}
+private:
+	MetatileItem *mtiEditPtr;
+	quint8 iSubtileIndex;
+	quint8 iOldTile,iOldPalette;
+	quint8 iNewTile,iNewPalette;
+	bool bTileChanged;
+};
+
 // Tile modification commands
 class ChangeStageTile : public QUndoCommand
 {
