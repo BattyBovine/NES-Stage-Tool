@@ -14,11 +14,11 @@ QVariant CheckpointModel::headerData(int segment, Qt::Orientation, int role) con
 QVariant CheckpointModel::data(const QModelIndex &index, int role) const
 {
 	switch(role) {
-//	case Qt::DisplayRole:
-//		return tr("Checkpoint %1").arg(QString::number(index.row()));
+	case Qt::DisplayRole:
+		return tr("Checkpoint %1").arg(QString::number(index.row()));
 	case Qt::DecorationRole:
 		QIcon icon(QString(":/icons/cp%1").arg(QString::number(index.row())));
-		return icon.pixmap(QSize(32,32));
+		return icon.pixmap(QSize(24,24));
 	}
 	return QVariant();
 }
