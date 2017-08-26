@@ -189,6 +189,7 @@ void StageManager::mouseReleaseEvent(QMouseEvent *e)
 				this->replaceStageTiles();
 			} else {
 				QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+				if(selected.count()!=this->lItemMove.count())	return;
 				for(int i=0; i<this->lItemMove.count(); i++) {
 					if(selected[i]->pos()==this->lItemMove[i])	continue;
 					if(selected[i]->type()==ObjectItem::Type)

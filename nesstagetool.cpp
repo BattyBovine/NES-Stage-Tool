@@ -272,8 +272,24 @@ void NESStageTool::getScreenProperties(int song, bool sbl, bool sbr)
 
 void NESStageTool::openStage(QString path)
 {
-    QString filename = path.isEmpty()?QFileDialog::getOpenFileName(this, ui->actionOpenStageFile->text().replace("&",""), "", tr("All files (*.*)")):path;
+	QString filename;
+	if(path.isEmpty())
+		filename = QFileDialog::getOpenFileName(this,ui->actionOpenStageFile->text(),
+												this->sSettings.value("LastOpenedProjectDir","").toString(),
+												tr("All files (*.*)"));
+	else
+		filename = path;
 	if(filename.isEmpty())  return;
+
+	QFileInfo info(filename);
+	this->sSettings.setValue("LastOpenedProjectDir",info.absolutePath());
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly)) {
+		QMessageBox::warning(this,tr(FILE_OPEN_ERROR_TITLE),tr(FILE_OPEN_ERROR_BODY),QMessageBox::NoButton);
+		return;
+	}
+	file.close();
+
 	ui->gvPaletteManager->openPaletteFile(filename);
 	ui->gvGlobalTileset->openTilesetFile(filename);
 	ui->gvMetatileEditor->openMetatileFile(filename);
@@ -282,6 +298,7 @@ void NESStageTool::openStage(QString path)
 	ui->gvStage->openObjectsFile(filename);
 	ui->gvScreenSelector->openStageFile(filename);
 	ui->gvScreenSelector->openScreenPropertiesFile(filename);
+
 	ui->gvStage->clearUndoHistory();
 	ui->gvMetatileEditor->clearUndoHistory();
 }
@@ -289,13 +306,16 @@ void NESStageTool::openStage(QString path)
 void NESStageTool::saveASMStage(QString path)
 {
 	QString filename;
-	if(path.isEmpty()) {
-        filename = QFileDialog::getSaveFileName(this, ui->actionSaveStageFileASM->text().replace("&",""), "", tr("All files (*.*)"));
-		if(filename.isEmpty())  return;
-	} else {
+	if(path.isEmpty())
+		filename = QFileDialog::getSaveFileName(this,ui->actionSaveStageFileASM->text(),
+												this->sSettings.value("LastOpenedProjectDir","").toString(),
+												tr("All files (*.*)"));
+	else
 		filename = path;
-	}
+	if(filename.isEmpty())  return;
 
+	QFileInfo info(filename);
+	this->sSettings.setValue("LastOpenedProjectDir",info.absolutePath());
 	QFile file(filename);
 	if(!file.open(QIODevice::WriteOnly)) {
 		QMessageBox::warning(this,tr(FILE_SAVE_ERROR_TITLE),tr(FILE_SAVE_ERROR_BODY),QMessageBox::NoButton);
@@ -323,7 +343,7 @@ void NESStageTool::saveBinaryStage(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
-        filename = QFileDialog::getSaveFileName(this, ui->actionSaveStageFileBinary->text().replace("&",""), "", tr("All files (*.*)"));
+		filename = QFileDialog::getSaveFileName(this, ui->actionSaveStageFileBinary->text().replace("&",""), "", tr("All files (*.*)"));
 		if(filename.isEmpty())  return;
 	} else {
 		filename = path;
@@ -345,14 +365,14 @@ void NESStageTool::saveBinaryStage(QString path)
 
 void NESStageTool::openCHR()
 {
-    QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenCHR->text().replace("&",""), "", tr("CHR-ROM data (*.chr);;All files (*.*)"));
+	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenCHR->text().replace("&",""), "", tr("CHR-ROM data (*.chr);;All files (*.*)"));
 	if(filename.isEmpty()) return;
 	ui->gvGlobalTileset->loadCHRData(filename);
 }
 
 void NESStageTool::openPalette()
 {
-    QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenPalette->text().replace("&",""), "", tr("Palette data (*.pal);;All files (*.*)"));
+	QString filename = QFileDialog::getOpenFileName(this, ui->actionOpenPalette->text().replace("&",""), "", tr("Palette data (*.pal);;All files (*.*)"));
 	if(filename.isEmpty())  return;
 	ui->gvPaletteManager->openPaletteFile(filename);
 }
@@ -361,7 +381,7 @@ void NESStageTool::savePalette(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
-        filename = QFileDialog::getSaveFileName(this, ui->actionSavePalette->text().replace("&",""), "", tr("Palette data (*.pal);;All files (*.*)"));
+		filename = QFileDialog::getSaveFileName(this, ui->actionSavePalette->text().replace("&",""), "", tr("Palette data (*.pal);;All files (*.*)"));
 		if(filename.isEmpty())  return;
 	} else {
 		filename = path;
@@ -413,7 +433,7 @@ void NESStageTool::saveASMAnimation(QString path)
 {
 	QString filename;
 	if(path.isEmpty()) {
-        filename = QFileDialog::getSaveFileName(this, ui->actionSaveAnimationASM->text().replace("&",""), "", tr("All files (*.*)"));
+		filename = QFileDialog::getSaveFileName(this, ui->actionSaveAnimationASM->text().replace("&",""), "", tr("All files (*.*)"));
 		if(filename.isEmpty())  return;
 	} else {
 		filename = path;
