@@ -97,6 +97,9 @@ signals:
 	void sendSelectionProperties(int,bool,bool);
 
 public slots:
+	void cut();
+	void copy();
+	void paste();
 	void undo();
 	void redo();
 	void clearUndoHistory();
@@ -185,6 +188,7 @@ private:
 	quint8 iSelectedTileset;
 	QList<QPointF> lItemMove;
 
+	ObjectList lClipboard;
 	QUndoStack *undoTiles;
 	QUndoStack *undoObjects;
 };

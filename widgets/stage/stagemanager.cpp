@@ -290,6 +290,57 @@ void StageManager::keyPressEvent(QKeyEvent *e)
 
 
 
+void StageManager::cut()
+{
+	this->lClipboard.clear();
+	QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+	foreach(QGraphicsItem *i, selected) {
+		if(i->type()==ObjectItem::Type) {
+			ObjectItem *obj = qgraphicsitem_cast<ObjectItem*>(i);
+			ObjectItem *objcopy = new ObjectItem(obj);
+			this->undoObjects->push(new DeleteObject(obj));
+			this->lClipboard.append(objcopy);
+		}
+	}
+}
+
+void StageManager::copy()
+{
+	this->lClipboard.clear();
+	QList<QGraphicsItem*> selected = this->gsMetatiles->selectedItems();
+	foreach(QGraphicsItem *i, selected) {
+		if(i->type()==ObjectItem::Type) {
+			ObjectItem *objcopy = new ObjectItem(qgraphicsitem_cast<ObjectItem*>(i));
+			this->lClipboard.append(objcopy);
+		}
+	}
+}
+
+void StageManager::paste()
+{
+	foreach(QGraphicsItem *i, this->gsMetatiles->selectedItems())
+		i->setSelected(false);
+
+	foreach(ObjectItem *clip, this->lClipboard) {
+		bool slotsopen = false;
+		foreach(ObjectItem *obj, this->lObjects) {
+			if(!obj->isEnabled()) {
+				clip->setPos(QPointF(clip->x()+5,clip->y()+5));
+				obj->setVisible(!this->bTileSelectMode);
+				this->undoObjects->push(new AddObject(obj,clip->id(),clip->pos()));
+				slotsopen = true;
+				break;
+			}
+		}
+		if(!slotsopen) {
+			QMessageBox::warning(this,tr(SM_OBJ_LIMIT_ERROR_TITLE),
+								 tr(SM_OBJ_LIMIT_ERROR_BODY).arg(SM_OBJECT_LIMIT),
+								 QMessageBox::Ok);
+			break;
+		}
+	}
+}
+
 void StageManager::undo()
 {
 	if(this->bTileSelectMode)

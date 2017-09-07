@@ -89,6 +89,9 @@ private slots:
 	void setStageLabelPrefix(QString);
 	void setNewPaletteFile(QString);
 
+	void cut();
+	void copy();
+	void paste();
 	void undo();
 	void redo();
 

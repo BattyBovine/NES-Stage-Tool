@@ -88,6 +88,8 @@ void AddObject::redo()
 	this->objPtr->setEnabled(true);
 	this->objPtr->setX(this->pPos.x());
 	this->objPtr->setY(this->pPos.y());
+	this->objPtr->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+	this->objPtr->setSelected(true);
 }
 
 MoveObject::MoveObject(ObjectItem *obj, QPointF oldpos, QPointF newpos, QUndoCommand *parent) : QUndoCommand(parent)

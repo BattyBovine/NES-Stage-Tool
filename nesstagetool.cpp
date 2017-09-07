@@ -465,6 +465,24 @@ void NESStageTool::setNewPaletteFile(QString pal)
 
 
 
+void NESStageTool::cut()
+{
+	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+		ui->gvStage->cut();
+}
+
+void NESStageTool::copy()
+{
+	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+		ui->gvStage->copy();
+}
+
+void NESStageTool::paste()
+{
+	if(ui->tabEditors->currentIndex()==NESStageTool::EditorStage)
+		ui->gvStage->paste();
+}
+
 void NESStageTool::undo()
 {
 	switch(ui->tabEditors->currentIndex()) {

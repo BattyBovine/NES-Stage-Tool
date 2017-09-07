@@ -38,13 +38,15 @@ void ObjectItem::paint(QPainter *p, const QStyleOptionGraphicsItem*, QWidget*)
 			font.setStyleHint(QFont::Monospace);
 			p->setFont(font);
 			p->setPen(QColor(Qt::white));
-			p->drawText(qFloor(obj.img.width()/2.0f)+4,-obj.img.height()+6,QString("%1 %2")
-						.arg(QString::number(this->iId,16),2,'0')
-						.arg(obj.name));
-			p->drawText(qFloor(obj.img.width()/2.0f)+4,-obj.img.height()+17,QString("%1 (%2,%3)")
-						.arg(QString::number(this->iScreen,16).toUpper(),2,'0')
-						.arg(QString::number(this->iX),3,'0')
-						.arg(QString::number(this->iY),3,'0'));
+			QString line1 = QString("%1 %2")
+							.arg(QString::number(this->iId,16),2,'0')
+							.arg(obj.name);
+			QString line2 = QString("%1 (%2,%3)")
+							.arg(QString::number(this->iScreen,16).toUpper(),2,'0')
+							.arg(QString::number(this->iX),3,'0')
+							.arg(QString::number(this->iY),3,'0');
+			p->drawText(qFloor(obj.img.width()/2.0f)+4,-obj.img.height()+6,line1);
+			p->drawText(qFloor(obj.img.width()/2.0f)+4,-obj.img.height()+17,line2);
 
 			p->setPen(QPen(Qt::black, 0, Qt::SolidLine));
 			p->setBrush(Qt::NoBrush);
@@ -65,5 +67,4 @@ void ObjectItem::copy(ObjectItem *i)
 	this->setId(i->id());
 	this->setX(i->x());
 	this->setY(i->y());
-	this->setFlags(i->flags());
 }
