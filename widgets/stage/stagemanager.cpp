@@ -831,12 +831,12 @@ QString StageManager::createObjectsASMData(QString labelprefix)
 	ObjectList xsorted;
 	for(int x=0; x<256; x++) {
 		for(int y=0; y<this->lObjects.count(); y++)
-			if(this->lObjects[y]->screenX()==x)
+			if(this->lObjects[y]->id()!=0 && this->lObjects[y]->screenX()==x)
 				xsorted.append(this->lObjects[y]);
 	}
 	ObjectList screensorted;
 	for(int x=0; x<(this->iScreensW*this->iScreensH); x++) {
-		for(int y=0; y<this->lObjects.count(); y++)
+		for(int y=0; y<xsorted.count(); y++)
 			if(xsorted[y]->screen()==x)
 				screensorted.append(xsorted[y]);
 	}
@@ -847,18 +847,17 @@ QString StageManager::createObjectsASMData(QString labelprefix)
 	QString objx = asmlabel+QString("_object_posx:\n\t.byte ");
 	QString objy = asmlabel+QString("_object_posy:\n\t.byte ");
 
-	for(int c=0; c<SM_OBJECT_LIMIT; c++) {
-		if(c<screensorted.count()) {
-			objid += QString("$%1").arg(screensorted[c]->id(),2,16,QChar('0')).toUpper().append(",");
-			objscreen += QString("$%1").arg(screensorted[c]->screen(),2,16,QChar('0')).toUpper().append(",");
-			objx += QString("$%1").arg(screensorted[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
-			objy += QString("$%1").arg(screensorted[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
-		} else {
-			objid += QString("$00,");
-			objscreen += QString("$00,");
-			objx += QString("$00,");
-			objy += QString("$00,");
-		}
+	for(int c=0; c<screensorted.count(); c++) {
+		objid += QString("$%1").arg(screensorted[c]->id(),2,16,QChar('0')).toUpper().append(",");
+		objscreen += QString("$%1").arg(screensorted[c]->screen(),2,16,QChar('0')).toUpper().append(",");
+		objx += QString("$%1").arg(screensorted[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
+		objy += QString("$%1").arg(screensorted[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
+	}
+	for(int c=screensorted.count(); c<SM_OBJECT_LIMIT; c++) {
+		objid += QString("$00,");
+		objscreen += QString("$00,");
+		objx += QString("$00,");
+		objy += QString("$00,");
 	}
 
 	objid = objid.left(objid.length()-1) + QString("\n");
@@ -1176,7 +1175,7 @@ void StageManager::importObjectsBinaryData(QVector<QByteArray> bindata)
 		screen = quint8(bindata[1].at(j));
 		x = quint8(bindata[2].at(j));
 		y = quint8(bindata[3].at(j));
-		if(id!=0 || screen!=0 || x!=0 || y!=0) {
+		if(id!=0) {
 			this->lObjects[j]->setId(id);
 			this->lObjects[j]->setVisible(!this->bTileSelectMode);
 			qreal xcalc = ((screen%8)*256)+x;
