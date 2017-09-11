@@ -22,7 +22,7 @@ ObjectItem::ObjectItem(ObjectItem *i, QGraphicsItem *parent) : QGraphicsItem(par
 
 QRectF ObjectItem::boundingRect() const {
 	Object obj = ObjectCache::find(this->iId);
-	return QRectF(-qFloor(obj.img.width()/2.0f)+1,-obj.img.height()+1,
+	return QRectF(-qFloor(obj.img.width()/2.0f),-obj.img.height()+1,
 				  obj.img.width(),obj.img.height());
 }
 
@@ -30,7 +30,7 @@ void ObjectItem::paint(QPainter *p, const QStyleOptionGraphicsItem*, QWidget*)
 {
 	if(this->isEnabled() && this->iId>0) {
 		Object obj = ObjectCache::find(this->iId);
-		p->drawPixmap(-(obj.img.width()/2.0f)+1,-obj.img.height()+1,obj.img);
+		p->drawPixmap(-(obj.img.width()/2.0f),-obj.img.height()+1,obj.img);
 
 		if(this->isSelected()) {
 			QFont font;
