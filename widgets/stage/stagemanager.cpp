@@ -831,7 +831,7 @@ QString StageManager::createObjectsASMData(QString labelprefix)
 	ObjectList xsorted;
 	for(int x=0; x<256; x++) {
 		for(int y=0; y<this->lObjects.count(); y++)
-			if(this->lObjects[y]->id()!=0 && this->lObjects[y]->screenX()==x)
+			if(this->lObjects[y]->isEnabled() && this->lObjects[y]->id()!=0 && this->lObjects[y]->screenX()==x)
 				xsorted.append(this->lObjects[y]);
 	}
 	ObjectList screensorted;

@@ -144,9 +144,9 @@ DeleteObject::DeleteObject(ObjectItem *obj, QUndoCommand *parent) : QUndoCommand
 void DeleteObject::undo()
 {
 	this->objPtr->setId(this->iId);
-	this->objPtr->setEnabled(true);
 	this->objPtr->setX(this->pPos.x());
 	this->objPtr->setY(this->pPos.y());
+	this->objPtr->setEnabled(true);
 }
 void DeleteObject::redo()
 {

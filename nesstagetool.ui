@@ -1549,9 +1549,6 @@
    <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
   </action>
   <action name="actionCopy">
    <property name="text">
@@ -1560,9 +1557,6 @@
    <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
   </action>
   <action name="actionPaste">
    <property name="text">
@@ -1570,9 +1564,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
    </property>
   </action>
  </widget>
