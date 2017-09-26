@@ -813,9 +813,9 @@ QString StageManager::createCheckpointsASMData(QString labelprefix)
 			ckptx += QString("$%1").arg(this->lCheckpoints[c]->screenX(),2,16,QChar('0')).toUpper().append(",");
 			ckpty += QString("$%1").arg(this->lCheckpoints[c]->screenY(),2,16,QChar('0')).toUpper().append(",");
 		} else {
-			ckptscreen += QString("$00,");
-			ckptx += QString("$00,");
-			ckpty += QString("$00,");
+			ckptscreen += QString("$FF,");
+			ckptx += QString("$FF,");
+			ckpty += QString("$FF,");
 		}
 	}
 
@@ -1151,7 +1151,7 @@ void StageManager::importCheckpointsBinaryData(QVector<QByteArray> bindata)
 		screen = quint8(bindata[0].at(j));
 		x = quint8(bindata[1].at(j));
 		y = quint8(bindata[2].at(j));
-		if(screen==0 && x==0 && y==0) {
+		if((screen==0xFF && x==0xFF && y==0xFF) || (y>=(this->iScreenTilesH*MTI_TILEWIDTH))) {
 			this->lCheckpoints[j]->setEnabled(false);
 		} else {
 			this->lCheckpoints[j]->setX(((screen%8)*256)+x+0.5f);
