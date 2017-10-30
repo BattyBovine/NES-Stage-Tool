@@ -65,8 +65,10 @@ private slots:
 	void restoreSettings();
 
 	void storeCollisionName(QString);
+	void storeMusicTitle(QString);
 	void storeOpenedChrFile(QString);
 	void retrieveCollisionName(int);
+	void retrieveMusicTitle(int);
 
 	void sendBankUpdates();
 	void getBankUpdates(int,int,int,int,int,int,int,int);
@@ -83,6 +85,7 @@ private slots:
 
 	void clearObjectList();
 	void clearCollisionTypes();
+	void clearMusicTitles();
 
 	void saveASMAnimation(QString path="");
 

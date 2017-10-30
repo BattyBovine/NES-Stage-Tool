@@ -211,6 +211,10 @@ void NESStageTool::storeCollisionName(QString name)
 {
 	this->sSettings.setValue(QString("CollisionDescriptions/%1").arg(QString::number(ui->spinCollision->value(),16),2,'0').toUpper(),name);
 }
+void NESStageTool::storeMusicTitle(QString name)
+{
+	this->sSettings.setValue(QString("MusicTitles/%1").arg(QString::number(ui->spinSong->value())),name);
+}
 void NESStageTool::storeOpenedChrFile(QString file)
 {
 	this->sSettings.setValue("LastOpenedChrFile", file);
@@ -218,6 +222,10 @@ void NESStageTool::storeOpenedChrFile(QString file)
 void NESStageTool::retrieveCollisionName(int value)
 {
 	ui->lineCollisionDescription->setText(this->sSettings.value(QString("CollisionDescriptions/%1").arg(QString::number(value,16),2,'0').toUpper(),"").toString());
+}
+void NESStageTool::retrieveMusicTitle(int value)
+{
+	ui->lineMusicTitle->setText(this->sSettings.value(QString("MusicTitles/%1").arg(QString::number(value)),"").toString());
 }
 
 
@@ -231,6 +239,7 @@ void NESStageTool::restoreSettings()
 	ui->comboPalettes->setCurrentIndex(this->sSettings.value("PaletteSwatch",0).toInt());
 	ui->chkAnimation->setChecked(this->sSettings.value("ShowAnimation",false).toBool());
 	this->retrieveCollisionName(ui->spinCollision->value());
+	this->retrieveMusicTitle(ui->spinSong->value());
 }
 
 
@@ -423,6 +432,20 @@ void NESStageTool::clearCollisionTypes()
 		for(int i=0; i<256; i++)
 			this->sSettings.remove(QString("CollisionDescriptions/%1").arg(QString::number(i,16),2,'0').toUpper());
 		ui->lineCollisionDescription->setText("");
+		break;
+	}
+}
+
+void NESStageTool::clearMusicTitles()
+{
+	switch(QMessageBox::warning(this,tr("Clear Music Titles"),
+								tr("Are you sure you wish to clear all music titles?"),
+								QMessageBox::Ok,QMessageBox::Cancel))
+	{
+	case QMessageBox::Ok:
+		for(int i=0; i<256; i++)
+			this->sSettings.remove(QString("MusicTitles/%1").arg(QString::number(i)));
+		ui->lineMusicTitle->setText("");
 		break;
 	}
 }
